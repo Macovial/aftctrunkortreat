@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body style="margin:0">
 <title>Host a Trunk 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -319,6 +326,41 @@ a.submit {
 a.submit:hover { filter: brightness(1.09); }
 
 .status { font-size: 13.5px; color: var(--cream-dim); min-height: 1.4em; }
+
+.receipt {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--orange);
+  border-radius: 8px;
+  padding: 32px 26px;
+}
+
+.receipt h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -.015em;
+  margin-bottom: 10px;
+}
+
+.receipt p { margin: 0 0 20px; color: var(--cream-dim); max-width: 54ch; }
+
+dl.summary {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(120px, 32%) 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 14.5px;
+}
+
+dl.summary dt, dl.summary dd { background: var(--card-sunk); margin: 0; padding: 9px 13px; }
+
+dl.summary dt { font-weight: 600; color: var(--cream-dim); font-size: 13px; }
+
+dl.summary dd { color: var(--cream); }
 
 .status.bad { color: var(--danger); }
 
@@ -943,16 +985,22 @@ footer a { color: var(--focus); }
       </fieldset>
 
       <div class="actions">
-        <p class="handoff">Press this and you are signed up. You will see a confirmation, and the committee gets your details straight away.</p>
+        <p class="handoff">Press this and you are signed up. The committee gets your details straight away.</p>
         <a class="submit" id="finishBtn" href="#" role="button">Register our trunk</a>
         <div class="status" id="status" role="status" aria-live="polite"></div>
       </div>
+    </div>
+
+    <div class="receipt" id="receipt" hidden aria-live="polite">
+      <h2>You are on the list</h2>
+      <p>Here is what came through. The committee will email setup instructions and arrival details as the event gets closer.</p>
+      <dl class="summary" id="summary"></dl>
     </div>
   </section>
 </main>
 
 <footer>
-  <div>Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.<span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 6A</span></div>
+  <div>Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.<span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 6B</span></div>
 </footer>
 
 <script>
@@ -1066,8 +1114,74 @@ footer a { color: var(--focus); }
       return;
     }
 
+    e.preventDefault();
     refresh();
+
+    var url = buildUrl();
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '.55';
     say('Sending your registration...');
+
+    var settled = false;
+    function done() {
+      if (settled) return;
+      settled = true;
+      showReceipt();
+    }
+    function fallback() {
+      if (settled) return;
+      settled = true;
+      window.location.href = url;
+    }
+
+    if (window.fetch) {
+      var guard = setTimeout(done, 4000);
+      fetch(url, { mode: 'no-cors', cache: 'no-store' })
+        .then(function () { clearTimeout(guard); done(); })
+        .catch(function () { clearTimeout(guard); fallback(); });
+    } else {
+      fallback();
+    }
   });
+
+  var RECEIPT_LABELS = [
+    ['name', 'Contact'],
+    ['email', 'Email'],
+    ['textnum', 'Text number'],
+    ['org', 'Organization'],
+    ['connection', 'CSD connection'],
+    ['theme', 'Theme'],
+    ['power', 'Power needed'],
+    ['needs', 'Notes']
+  ];
+
+  function showReceipt() {
+    var card = document.querySelector('.card');
+    var receipt = document.getElementById('receipt');
+    var summary = document.getElementById('summary');
+    if (!card || !receipt || !summary) { return; }
+
+    summary.innerHTML = '';
+    RECEIPT_LABELS.forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      if (!el) return;
+      var val = el.type === 'checkbox' ? (el.checked ? 'Yes' : '') : (el.value || '').trim();
+      if (!val) return;
+      var dt = document.createElement('dt');
+      dt.textContent = pair[1];
+      var dd = document.createElement('dd');
+      dd.textContent = val;
+      summary.appendChild(dt);
+      summary.appendChild(dd);
+    });
+
+    say('');
+    card.hidden = true;
+    receipt.hidden = false;
+    receipt.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
 })();
 </script>
+
+</body>
+</html>
