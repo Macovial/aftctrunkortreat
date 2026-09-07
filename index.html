@@ -152,6 +152,33 @@ h1, h2 {
 
 .langbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
+/* The language you are NOT reading breathes, so a Spanish speaker landing on
+   the English page can see there is another option without hunting for it. */
+@keyframes langPulse {
+  0%, 100% {
+    border-color: rgba(242, 163, 101, .5);
+    color: #E9C39A;
+    background: rgba(232, 118, 26, .07);
+    box-shadow: 0 0 0 0 rgba(255, 176, 102, 0);
+  }
+  50% {
+    border-color: #FFB877;
+    color: #FFE3C2;
+    background: rgba(232, 118, 26, .2);
+    box-shadow: 0 0 16px 3px rgba(255, 176, 102, .55);
+  }
+}
+
+.langbtn:not(.is-on) {
+  border-color: rgba(242, 163, 101, .5);
+  color: #E9C39A;
+  background: rgba(232, 118, 26, .07);
+  animation: langPulse 2.6s ease-in-out infinite;
+}
+
+.langbtn:not(.is-on):hover,
+.langbtn:not(.is-on):focus-visible { animation: none; }
+
 .facts {
   display: flex;
   flex-wrap: wrap;
@@ -1037,7 +1064,7 @@ footer a { color: var(--focus); }
 </main>
 
 <footer>
-  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 7C</span></div>
+  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 7F</span></div>
 </footer>
 
 <script>
