@@ -119,6 +119,39 @@ h1, h2 {
   text-shadow: 0 2px 0 rgba(0, 0, 0, .35);
 }
 
+
+.langbar {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.langbtn {
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: color .12s ease, border-color .12s ease, background .12s ease;
+}
+
+.langbtn:hover { color: var(--cream); border-color: var(--orange); }
+
+.langbtn.is-on {
+  color: var(--orange-ink);
+  background: var(--orange);
+  border-color: var(--orange);
+}
+
+.langbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
 .facts {
   display: flex;
   flex-wrap: wrap;
@@ -897,110 +930,114 @@ footer a { color: var(--focus); }
 <header class="band">
 
   <div class="band-inner">
-    <h1>Host a trunk</h1>
-    <p>Decorate your trunk, hand out goodies, and give kids a safe place to&nbsp;trick&nbsp;or&nbsp;treat.</p>
-    <p class="cta-line">Sign up to reserve a spot!</p>
-    <div class="facts">
-      <div class="fact"><b>Date</b><span>Wednesday<br>October 28, 2026</span></div>
-      <div class="fact"><b>Time</b><span>6:00 PM to 7:30 PM</span></div>
-      <div class="fact"><b>Where</b><span>CSD Football Field<br>39350 Gallaudet Dr<br>Fremont, CA 94538</span></div>
+    <div class="langbar">
+      <button type="button" class="langbtn is-on" data-lang="en">English</button>
+      <button type="button" class="langbtn" data-lang="es">Español</button>
     </div>
-    <p class="boo">BOO! The Middle School Haunted Cottages run the same night until 9 PM.</p>
+    <h1 data-t="h1">Host a trunk</h1>
+    <p data-t="intro">Decorate your trunk, hand out goodies, and give kids a safe place to&nbsp;trick&nbsp;or&nbsp;treat.</p>
+    <p class="cta-line" data-t="cta">Sign up to reserve a spot!</p>
+    <div class="facts">
+      <div class="fact"><b data-t="lblDate">Date</b><span data-t="valDate">Wednesday<br>October 28, 2026</span></div>
+      <div class="fact"><b data-t="lblTime">Time</b><span data-t="valTime">6:00 PM to 7:30 PM</span></div>
+      <div class="fact"><b data-t="lblWhere">Where</b><span data-t="valWhere">CSD Football Field<br>39350 Gallaudet Dr<br>Fremont, CA 94538</span></div>
+    </div>
+    <p class="boo" data-t="boo">BOO! The Middle School Haunted Cottages run the same night until 9 PM.</p>
   </div>
 </header>
 
 <main>
   <section>
-    <h2>What hosting a trunk means</h2>
+    <h2 data-t="h2what">What hosting a trunk means</h2>
     <ul class="plain">
-      <li><span><b>Bring a vehicle and decorate it.</b></span></li>
-      <li><span><b>Judges are watching.</b> <span class="sub">They creep the rows after dark. The best trunks take home prizes.</span></span></li>
-      <li><span><b>Hand out goodies from 6:00 PM to 7:30 PM.</b></span></li>
-      <li><span><b>Arrive early to set up.</b> <span class="sub">Cars enter the field ahead of the opening. The committee emails setup times as the date gets closer.</span></span></li>
-      <li><span><b>Tell us what you need.</b> <span class="sub">Power for lights or an inflatable, or anything else. Ask here, not that night.</span></span></li>
+      <li><span><b data-t="b1">Bring a vehicle and decorate it.</b></span></li>
+      <li><span><b data-t="b2">Judges are watching.</b> <span class="sub" data-t="s2">They creep the rows after dark. The best trunks take home prizes.</span></span></li>
+      <li><span><b data-t="b3">Hand out goodies from 6:00 PM to 7:30 PM.</b></span></li>
+      <li><span><b data-t="b4">Arrive early to set up.</b> <span class="sub" data-t="s4">Cars enter the field ahead of the opening. The committee emails setup times as the date gets closer.</span></span></li>
+      <li><span><b data-t="b5">Tell us what you need.</b> <span class="sub" data-t="s5">Power for lights or an inflatable, or anything else. Ask here, not that night.</span></span></li>
     </ul>
   </section>
 
   <section>
     <div class="card">
       <fieldset>
-        <legend>Who is registering</legend>
+        <legend data-t="leg1">Who is registering</legend>
 
         <div class="row">
           <div class="field">
-            <label for="name">Contact name <span class="req">*</span></label>
+            <label for="name" data-t="lblName">Contact name <span class="req">*</span></label>
             <input id="name" type="text" autocomplete="name" data-entry="entry.1065496501">
           </div>
           <div class="field">
-            <label for="email">Email <span class="req">*</span></label>
+            <label for="email" data-t="lblEmail">Email <span class="req">*</span></label>
             <input id="email" type="email" autocomplete="email" data-entry="entry.1086704148">
           </div>
         </div>
 
         <div class="row">
           <div class="field">
-            <label for="textnum">Text number <span class="req">*</span></label>
+            <label for="textnum" data-t="lblText">Text number <span class="req">*</span></label>
             <input id="textnum" type="tel" autocomplete="tel" inputmode="numeric" maxlength="14"
                    placeholder="(555) 123-4567" data-entry="entry.69872108">
-            <span class="hint">Day-of updates only.</span>
+            <span class="hint" data-t="hintPhone">Day-of updates only.</span>
           </div>
           <div class="field">
-            <label for="org">Business or organization</label>
+            <label for="org" data-t="lblOrg">Business or organization</label>
             <input id="org" type="text" data-entry="entry.1188891607">
           </div>
         </div>
 
         <div class="field">
-          <label for="connection">Connected to CSD? <span class="req">*</span></label>
+          <label for="connection" data-t="lblConn">Connected to CSD? <span class="req">*</span></label>
           <select id="connection" data-entry="entry.112727840">
-            <option value="">Choose one</option>
-            <option value="CSD family">CSD family</option>
-            <option value="CSD staff">CSD staff</option>
-            <option value="Community agency">Community agency</option>
-            <option value="Just joining in">Just joining in</option>
+            <option value="" data-t="optChoose">Choose one</option>
+            <option value="CSD family" data-t="optFam">CSD family</option>
+            <option value="CSD staff" data-t="optStaff">CSD staff</option>
+            <option value="Community agency" data-t="optAgency">Community agency</option>
+            <option value="Just joining in" data-t="optJoin">Just joining in</option>
           </select>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>Your trunk</legend>
+        <legend data-t="leg2">Your trunk</legend>
 
         <div class="field">
-          <label for="theme">Trunk theme <span class="req">*</span></label>
-          <input id="theme" type="text" data-entry="entry.946136708" placeholder="Pirate ship, candy shop, monster garage">
+          <label for="theme" data-t="lblTheme">Trunk theme <span class="req">*</span></label>
+          <input id="theme" type="text" data-entry="entry.946136708" data-tph="phTheme" placeholder="Pirate ship, candy shop, monster garage">
         </div>
 
         <div class="field">
           <label class="check">
             <input type="checkbox" id="power" data-entry="entry.1224835156"
                    value="We need power for lights, a fog machine, or an inflatable">
-            <span>We need power for lights, a fog machine, or an inflatable. Outlets and generators are limited, so tell us now rather than that night.</span>
+            <span data-t="powerTxt">We need power for lights, a fog machine, or an inflatable. Outlets and generators are limited, so tell us now rather than that night.</span>
           </label>
         </div>
 
         <div class="field">
-          <label for="needs">Anything else we should know</label>
+          <label for="needs" data-t="lblNeeds">Anything else we should know</label>
           <textarea id="needs" data-entry="entry.842848814"></textarea>
         </div>
       </fieldset>
 
       <div class="actions">
-        <p class="handoff">Press this and you are signed up. The committee gets your details straight away.</p>
-        <a class="submit" id="finishBtn" href="#" role="button">Register our trunk</a>
+        <p class="handoff" data-t="handoff">Press this and you are signed up. The committee gets your details straight away.</p>
+        <a class="submit" id="finishBtn" href="#" role="button" data-t="btn">Register our trunk</a>
         <div class="status" id="status" role="status" aria-live="polite"></div>
       </div>
     </div>
 
     <div class="receipt" id="receipt" hidden aria-live="polite">
-      <h2>You are on the list</h2>
-      <p>Here is what came through. The committee will email setup instructions and arrival details as the event gets closer.</p>
+      <h2 data-t="rH">You are on the list</h2>
+      <p data-t="rP">Here is what came through. The committee will email setup instructions and arrival details as the event gets closer.</p>
       <dl class="summary" id="summary"></dl>
     </div>
   </section>
 </main>
 
 <footer>
-  <div>Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.<span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 6C</span></div>
+  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 7A</span></div>
 </footer>
 
 <script>
@@ -1041,6 +1078,7 @@ footer a { color: var(--focus); }
       if (!val) return;
       parts.push(key + '=' + encodeURIComponent(val));
     });
+    parts.push('lang=' + encodeURIComponent(typeof LANG === 'string' ? LANG : 'en'));
     return BASE + '?' + parts.join('&');
   }
 
@@ -1086,6 +1124,121 @@ footer a { color: var(--focus); }
     });
   });
 
+
+  // ---------- language ----------
+  var T = {
+    en: {},
+    es: {
+      h1: 'Decora tu cajuela',
+      intro: 'Decora tu cajuela, reparte dulces y dales a los niños un lugar seguro para&nbsp;pedir&nbsp;dulces.',
+      cta: '¡Regístrate para reservar tu lugar!',
+      lblDate: 'Fecha', lblTime: 'Hora', lblWhere: 'Lugar',
+      valDate: 'Miércoles<br>28 de octubre de 2026',
+      valTime: '6:00 PM a 7:30 PM',
+      valWhere: 'Campo de Fútbol de CSD<br>39350 Gallaudet Dr<br>Fremont, CA 94538',
+      boo: '¡BU! Las Casas Embrujadas de la escuela secundaria abren esa misma noche hasta las 9 PM.',
+      h2what: 'Qué significa participar',
+      b1: 'Trae un vehículo y decóralo.',
+      b2: 'Los jueces están observando.',
+      s2: 'Recorren las filas al anochecer. Las mejores cajuelas se llevan premios.',
+      b3: 'Reparte dulces de 6:00 PM a 7:30 PM.',
+      b4: 'Llega temprano para instalarte.',
+      s4: 'Los autos entran al campo antes de la apertura. El comité enviará por correo los horarios conforme se acerque la fecha.',
+      b5: 'Dinos qué necesitas.',
+      s5: 'Electricidad para luces o un inflable, o cualquier otra cosa. Pídelo aquí, no esa noche.',
+      leg1: 'Quién se registra',
+      leg2: 'Tu cajuela',
+      lblName: 'Nombre de contacto <span class="req">*</span>',
+      lblEmail: 'Correo electrónico <span class="req">*</span>',
+      lblText: 'Número para mensajes <span class="req">*</span>',
+      hintPhone: 'Solo para avisos el día del evento.',
+      lblOrg: 'Negocio u organización',
+      lblConn: '¿Conectado con CSD? <span class="req">*</span>',
+      optChoose: 'Elige una opción',
+      optFam: 'Familia de CSD',
+      optStaff: 'Personal de CSD',
+      optAgency: 'Agencia comunitaria',
+      optJoin: 'Solo nos acompañan',
+      lblTheme: 'Tema de tu cajuela <span class="req">*</span>',
+      phTheme: 'Barco pirata, dulcería, garaje de monstruos',
+      powerTxt: 'Necesitamos electricidad para luces, una máquina de humo o un inflable. Los enchufes y generadores son limitados, así que avísanos ahora y no esa noche.',
+      lblNeeds: 'Algo más que debamos saber',
+      handoff: 'Presiona aquí y quedarás registrado. El comité recibirá tus datos de inmediato.',
+      btn: 'Registrar nuestra cajuela',
+      rH: 'Ya estás en la lista',
+      rP: 'Esto es lo que recibimos. El comité te enviará por correo las instrucciones y los detalles de llegada conforme se acerque el evento.',
+      footer: '¿Preguntas? Escribe a <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> y el comité te responderá.'
+    }
+  };
+
+  var MSG = {
+    en: {
+      sending: 'Sending your registration...',
+      needed: 'Still needed: ',
+      name: 'a contact name',
+      email: 'a valid email',
+      phone: 'a 10 digit text number',
+      theme: 'a trunk theme',
+      conn: 'your CSD connection',
+      labels: [['name','Contact'],['email','Email'],['textnum','Text number'],['org','Organization'],
+               ['connection','CSD connection'],['theme','Theme'],['power','Power needed'],['needs','Notes']],
+      yes: 'Yes'
+    },
+    es: {
+      sending: 'Enviando tu registro...',
+      needed: 'Aún falta: ',
+      name: 'un nombre de contacto',
+      email: 'un correo electrónico válido',
+      phone: 'un número de 10 dígitos',
+      theme: 'un tema para tu cajuela',
+      conn: 'tu conexión con CSD',
+      labels: [['name','Contacto'],['email','Correo'],['textnum','Número'],['org','Organización'],
+               ['connection','Conexión con CSD'],['theme','Tema'],['power','Electricidad'],['needs','Notas']],
+      yes: 'Sí'
+    }
+  };
+
+  var LANG = 'en';
+
+  // capture the English original of every translatable node
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) {
+    T.en[el.getAttribute('data-t')] = el.innerHTML;
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tph]'), function (el) {
+    T.en[el.getAttribute('data-tph')] = el.getAttribute('placeholder') || '';
+  });
+
+  function applyLang(l) {
+    if (!T[l]) l = 'en';
+    LANG = l;
+    var d = T[l];
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) {
+      var k = el.getAttribute('data-t');
+      if (d[k] !== undefined) el.innerHTML = d[k];
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tph]'), function (el) {
+      var k = el.getAttribute('data-tph');
+      if (d[k] !== undefined) el.setAttribute('placeholder', d[k]);
+    });
+    document.documentElement.lang = l;
+    Array.prototype.forEach.call(document.querySelectorAll('.langbtn'), function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-lang') === l);
+    });
+    try { localStorage.setItem('aftc-lang', l); } catch (e) {}
+    refresh();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.langbtn'), function (b) {
+    b.addEventListener('click', function () { applyLang(this.getAttribute('data-lang')); });
+  });
+
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('aftc-lang'); } catch (e) {}
+    if (!saved && (navigator.language || '').toLowerCase().indexOf('es') === 0) { saved = 'es'; }
+    if (saved === 'es') { applyLang('es'); }
+  })();
+
   btn.addEventListener('click', function (e) {
     var problems = [];
     mark(nameEl, false);
@@ -1094,21 +1247,21 @@ footer a { color: var(--focus); }
     mark(connEl, false);
     mark(textEl, false);
 
-    if (!nameEl.value.trim()) { mark(nameEl, true); problems.push('a contact name'); }
+    if (!nameEl.value.trim()) { mark(nameEl, true); problems.push(MSG[LANG].name); }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
       mark(emailEl, true);
-      problems.push('a valid email');
+      problems.push(MSG[LANG].email);
     }
-    if (!themeEl.value.trim()) { mark(themeEl, true); problems.push('a trunk theme'); }
-    if (!connEl.value) { mark(connEl, true); problems.push('your CSD connection'); }
+    if (!themeEl.value.trim()) { mark(themeEl, true); problems.push(MSG[LANG].theme); }
+    if (!connEl.value) { mark(connEl, true); problems.push(MSG[LANG].conn); }
     if (digitsOf(textEl.value).length !== 10) {
       mark(textEl, true);
-      problems.push('a 10 digit text number');
+      problems.push(MSG[LANG].phone);
     }
 
     if (problems.length) {
       e.preventDefault();
-      say('Still needed: ' + problems.join(', ') + '.', true);
+      say(MSG[LANG].needed + problems.join(', ') + '.', true);
       var firstBad = document.querySelector('[aria-invalid="true"]');
       if (firstBad) firstBad.focus();
       return;
@@ -1120,7 +1273,7 @@ footer a { color: var(--focus); }
     var url = buildUrl();
     btn.style.pointerEvents = 'none';
     btn.style.opacity = '.55';
-    say('Sending your registration...');
+    say(MSG[LANG].sending);
 
     var settled = false;
     function done() {
@@ -1162,10 +1315,10 @@ footer a { color: var(--focus); }
     if (!card || !receipt || !summary) { return; }
 
     summary.innerHTML = '';
-    RECEIPT_LABELS.forEach(function (pair) {
+    MSG[LANG].labels.forEach(function (pair) {
       var el = document.getElementById(pair[0]);
       if (!el) return;
-      var val = el.type === 'checkbox' ? (el.checked ? 'Yes' : '') : (el.value || '').trim();
+      var val = el.type === 'checkbox' ? (el.checked ? MSG[LANG].yes : '') : (el.value || '').trim();
       if (!val) return;
       var dt = document.createElement('dt');
       dt.textContent = pair[1];
