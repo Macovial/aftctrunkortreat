@@ -1087,25 +1087,25 @@ footer a { color: var(--focus); }
 
   /* Filled in once the Apps Script web app is deployed. Until then the button
      reports that the page is not connected instead of navigating nowhere. */
-  var EXEC_URL = "__EXEC_URL__";
+  var EXEC_URL = "https://script.google.com/macros/s/AKfycbwyc3-JjpIdEF6fEWGiXe1GKpQMI4opC9B72RxNfYVRL8-f2TJYTVLwJzwthpqj9Y93/exec";
 
   var IDS = {
-    name:            "__ENTRY_NAME__",
-    email:           "__ENTRY_EMAIL__",
-    phone:           "__ENTRY_PHONE__",
-    contact:         "__ENTRY_CONTACT__",
-    teamTrunkReg:    "__ENTRY_TEAMTRUNKREG__",
-    teamFood:        "__ENTRY_TEAMFOOD__",
-    teamBooth:       "__ENTRY_TEAMBOOTH__",
-    teamPublicity:   "__ENTRY_TEAMPUBLICITY__",
-    teamSafety:      "__ENTRY_TEAMSAFETY__",
-    teamJudges:      "__ENTRY_TEAMJUDGES__",
-    teamDecor:       "__ENTRY_TEAMDECOR__",
-    teamLogistics:   "__ENTRY_TEAMLOGISTICS__",
-    teamCleanup:     "__ENTRY_TEAMCLEANUP__",
-    assistDiscGolf:  "__ENTRY_ASSISTDISCGOLF__",
-    firstChoice:     "__ENTRY_FIRSTCHOICE__",
-    notes:           "__ENTRY_NOTES__"
+    name:            "entry.1580774493",
+    email:           "entry.1287263644",
+    phone:           "entry.653720177",
+    contact:         "entry.845401933",
+    teamTrunkReg:    "entry.902522894",
+    teamFood:        "entry.142496396",
+    teamBooth:       "entry.2034856318",
+    teamPublicity:   "entry.527021596",
+    teamSafety:      "entry.1436325670",
+    teamJudges:      "entry.1315870063",
+    teamDecor:       "entry.1198875429",
+    teamLogistics:   "entry.1625845540",
+    teamCleanup:     "entry.164622499",
+    assistDiscGolf:  "entry.2024480015",
+    firstChoice:     "entry.1771610204",
+    notes:           "entry.448274408"
   };
 
   var LEAD  = "I'll lead this team";
@@ -1321,9 +1321,19 @@ footer a { color: var(--focus); }
     return "";
   }
 
+  /* True until every entry id has been filled in. Guards against a page that
+     looks wired because the endpoint is set, but would post unmapped fields. */
+  function unwired() {
+    if (EXEC_URL.indexOf("__") > -1) return true;
+    for (var k in IDS) {
+      if (IDS[k].indexOf("__") > -1) return true;
+    }
+    return false;
+  }
+
   function refresh() {
     markAnswered();
-    if (EXEC_URL.indexOf("__") === -1) btn.setAttribute("href", buildUrl());
+    if (!unwired()) btn.setAttribute("href", buildUrl());
   }
 
   /* Live mask: digits only, rendered as (555) 123-4567. A leading country 1
@@ -1360,7 +1370,7 @@ footer a { color: var(--focus); }
       statusEl.className = "status bad";
       return;
     }
-    if (EXEC_URL.indexOf("__") > -1) {
+    if (unwired()) {
       e.preventDefault();
       statusEl.textContent = "This page is not connected to the response sheet yet. Nothing was sent.";
       statusEl.className = "status bad";
