@@ -449,10 +449,11 @@ footer div {
 footer p { margin: 0; }
 
 footer a,
-.card a,
+.card a:not(.submit),
 .done a { color: var(--focus); }
 
-.done a:hover, .card a:hover { color: var(--orange); }
+.done a:hover,
+.card a:not(.submit):hover { color: var(--orange); }
 
 /* ---------- banner atmosphere ----------
    Opacity only, no transforms: SVG children need transform-box to scale
@@ -1056,7 +1057,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
 <main>
 
-  <section>
+  <section id="waysIn">
     <h2>Two ways in</h2>
     <ul class="plain">
       <li><span><b>Lead a team.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings.</span></span></li>
@@ -1126,7 +1127,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.8</p>
+    <p class="build">Build 2026-09-07.10</p>
   </div>
 </footer>
 
@@ -1274,7 +1275,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
     var head = el("div", "team-head");
     head.appendChild(el("h3", null, t.name));
-    head.appendChild(el("span", "tag " + (t.status === "need" ? "need" : "set"), t.tag));
+    head.appendChild(el("span", "tag need", t.tag));
     block.appendChild(head);
 
     block.appendChild(el("p", "pitch", t.pitch));
@@ -1437,7 +1438,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
          starts asking for helpers. */
       block.classList.add("filled");
       var tag = block.querySelector(".tag");
-      if (tag) { tag.textContent = "Helpers needed"; tag.className = "tag set"; }
+      if (tag) { tag.textContent = "Helpers needed"; tag.className = "tag need"; }
     });
     refresh();
   }
@@ -1467,6 +1468,12 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   }
 
   function showDone() {
+    /* Once someone has signed up, the explainer above the form is answering a
+       question they no longer have. Take it away so the confirmation is the
+       only thing on screen. */
+    var ways = document.getElementById("waysIn");
+    if (ways && ways.parentNode) ways.parentNode.removeChild(ways);
+
     var card = document.getElementById("signup").parentNode;
     card.innerHTML =
       '<div class="done"><h2>You are on the list</h2>' +
