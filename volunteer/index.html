@@ -775,6 +775,21 @@ footer a,
 a.submit.busy { opacity: .6; pointer-events: none; }
 
 .build { color: #7C6A8A; font-size: 12px; }
+
+/* ---------- a team that is finished ---------- */
+
+.team.done {
+  opacity: .55;
+  padding: 13px 18px;
+  border-left-color: var(--line);
+  gap: 0;
+}
+
+.tag.done {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--cream-dim);
+}
 </style>
 </head>
 <body>
@@ -1060,8 +1075,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <section id="waysIn">
     <h2>Two ways in</h2>
     <ul class="plain">
-      <li><span><b>Lead a team.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings.</span></span></li>
-      <li><span><b>Help on a team.</b><span class="sub">You take pieces of the work and answer to the lead.</span></span></li>
+      <li><span><b>Lead a team.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings. Two people can claim the same team, so you may end up co-leading it, or settling it over a coin toss in the dark.</span></span></li>
+      <li><span><b>Help on a team.</b><span class="sub">You take pieces of the work and answer to the lead(s).</span></span></li>
     </ul>
   </section>
 
@@ -1127,7 +1142,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.10</p>
+    <p class="build">Build 2026-09-07.11</p>
   </div>
 </footer>
 
@@ -1417,35 +1432,62 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   document.getElementById("signup").addEventListener("input", refresh);
   document.getElementById("signup").addEventListener("change", refresh);
 
-  /* ---------- teams whose lead is already confirmed ----------
-     Read from the Leads tab of the response sheet. If the request fails we
-     fail open and leave every option available: a sign-up form that blocks
-     people because a status check timed out is worse than a stale label. */
+  /* Grey out the roles that are full, collapse a team that is finished, and
+     stop the form entirely if every team is staffed. The server decides all
+     of that and sends the exact option strings to disable, so the page never
+     has to duplicate the rules. */
+  function applyStatus(data) {
+    var teams = (data && data.teams) || {};
 
-  function applyClaimed(claimed) {
-    Object.keys(claimed).forEach(function (key) {
+    Object.keys(teams).forEach(function (key) {
+      var st = teams[key];
       var block = document.querySelector('[data-block="' + key + '"]');
       if (!block) return;
 
-      var input = block.querySelector('input[value="' + LEAD + '"]');
-      if (input) {
-        if (input.checked) input.checked = false;
-        input.disabled = true;
+      if (st.full) {
+        var name = block.querySelector("h3");
+        var title = name ? name.textContent : "";
+        block.className = "team done";
+        block.innerHTML = "";
+        var head = el("div", "team-head");
+        head.appendChild(el("h3", null, title));
+        head.appendChild(el("span", "tag done", "Fully staffed"));
+        block.appendChild(head);
+        return;
       }
 
-      /* The lead's name is never rendered. What the Leads tab holds is a
-         trigger, not content: the card just stops asking for a lead and
-         starts asking for helpers. */
-      block.classList.add("filled");
-      var tag = block.querySelector(".tag");
-      if (tag) { tag.textContent = "Helpers needed"; tag.className = "tag need"; }
+      (st.disable || []).forEach(function (value) {
+        var input = block.querySelector('input[value="' + value + '"]');
+        if (!input) return;
+        if (input.checked) input.checked = false;
+        input.disabled = true;
+      });
+
+      if ((st.disable || []).indexOf(LEAD) > -1) {
+        block.classList.add("filled");
+        var tag = block.querySelector(".tag");
+        if (tag) tag.textContent = "Helpers needed";
+      }
     });
+
+    if (data && data.allFull) {
+      var card = document.getElementById("signup").parentNode;
+      card.innerHTML =
+        '<div class="done"><h2>Every team has its people</h2>' +
+        '<p>All nine committee teams are staffed for October 28. Thanks for ' +
+        'checking. If you would still like to help, email ' +
+        '<a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a> and we will ' +
+        'find you something.</p></div>';
+      var ways = document.getElementById("waysIn");
+      if (ways && ways.parentNode) ways.parentNode.removeChild(ways);
+    }
+
     refresh();
   }
 
   fetch(EXEC_URL + "?action=status", { method: "GET" })
     .then(function (r) { return r.json(); })
-    .then(function (d) { if (d && d.ok && d.claimed) applyClaimed(d.claimed); })
+    .then(function (d) { if (d && d.ok) applyStatus(d); })
     .catch(function () { /* fail open */ });
 
   /* ---------- submit ---------- */
