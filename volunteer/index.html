@@ -1,3 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Volunteer for AFTC's Trunk or Treat committee. Wednesday, October 28, 2026, CSD Football Field, Fremont.">
+<meta property="og:title" content="Pick Your Team - AFTC Trunk or Treat 2026">
+<meta property="og:description" content="Nine teams make this night work. Pick the ones you can help with.">
 <title>Pick Your Team 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -720,8 +728,40 @@ footer a { color: var(--focus); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
-</style>
 
+/* ---------- claimed teams and the finished state ---------- */
+
+.opt input:disabled + span {
+  opacity: .38;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.opt input:disabled + span:hover { border-color: var(--line); color: var(--cream-dim); }
+
+.team.filled { border-left-color: var(--focus); }
+
+.done { text-align: center; padding: 26px 6px 8px; }
+
+.done h2 {
+  font-family: "Creepster", "Bricolage Grotesque", cursive;
+  font-size: clamp(30px, 6vw, 42px);
+  font-weight: 400;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--orange);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .35);
+  margin-bottom: 12px;
+}
+
+.done p { margin: 0 auto; max-width: 46ch; color: var(--cream-dim); }
+
+a.submit.busy { opacity: .6; pointer-events: none; }
+
+.build { color: #7C6A8A; font-size: 12px; white-space: nowrap; }
+</style>
+</head>
+<body>
 <svg class="banner" viewBox="0 0 2400 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AFTC's 4th annual Trunk or Treat 2026" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#160423"/><stop offset="26%" stop-color="#2C0B44"/><stop offset="50%" stop-color="#5A1A5C"/><stop offset="68%" stop-color="#96305A"/><stop offset="83%" stop-color="#D4632B"/><stop offset="94%" stop-color="#F2A03C"/><stop offset="100%" stop-color="#FBC96A"/></linearGradient><radialGradient id="moonG" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#E4E6EC"/><stop offset="100%" stop-color="#B9BECB"/></radialGradient><radialGradient id="moonHalo" cx="50%" cy="50%" r="50%"><stop offset="55%" stop-color="#FFF6D8" stop-opacity="0.30"/><stop offset="100%" stop-color="#FFF6D8" stop-opacity="0"/></radialGradient><radialGradient id="glowO" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFB33C" stop-opacity="0.75"/><stop offset="100%" stop-color="#FFB33C" stop-opacity="0"/></radialGradient><radialGradient id="pumpSkin" cx="38%" cy="32%" r="78%"><stop offset="0%" stop-color="#FFA33A"/><stop offset="60%" stop-color="#E8761A"/><stop offset="100%" stop-color="#A6440C"/></radialGradient><radialGradient id="headlamp" cx="20%" cy="50%" r="80%"><stop offset="0%" stop-color="#FFE9A8" stop-opacity="0.85"/><stop offset="100%" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient></defs><rect width="2400" height="600" fill="url(#sky)"/>
   <g class="shootstar" opacity="0">
     <line x1="0" y1="0" x2="-150" y2="-46" stroke="url(#shootFade)" stroke-width="3.4" stroke-linecap="round"/>
@@ -1078,7 +1118,7 @@ footer a { color: var(--focus); }
 </main>
 
 <footer>
-  <div>Questions before you commit? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a>. Hosted by the California School for the Deaf, 39350 Gallaudet Drive, Fremont.</div>
+  <div>Questions before you commit? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a>. Hosted by the California School for the Deaf, 39350 Gallaudet Drive, Fremont. <span class="build">Build 2026-09-07.4</span></div>
 </footer>
 
 <script>
@@ -1304,7 +1344,7 @@ footer a { color: var(--focus); }
     if (!/^\S+@\S+\.\S+$/.test(email.value.trim())) {
       flag(email, true); email.focus(); return "Add an email we can reach you at.";
     }
-    if (phone.value.replace(/\D/g, "").length < 10) {
+    if (digitsOf(phone.value).length < 10) {
       flag(phone, true); phone.focus(); return "Add a 10 digit number we can text on event day.";
     }
     if (!contact.value) { flag(contact, true); contact.focus(); return "Pick how you would rather be contacted."; }
@@ -1321,66 +1361,169 @@ footer a { color: var(--focus); }
     return "";
   }
 
-  /* True until every entry id has been filled in. Guards against a page that
-     looks wired because the endpoint is set, but would post unmapped fields. */
-  function unwired() {
-    if (EXEC_URL.indexOf("__") > -1) return true;
-    for (var k in IDS) {
-      if (IDS[k].indexOf("__") > -1) return true;
-    }
-    return false;
-  }
-
-  function refresh() {
-    markAnswered();
-    if (!unwired()) btn.setAttribute("href", buildUrl());
-  }
-
   /* Live mask: digits only, rendered as (555) 123-4567. A leading country 1
-     is dropped so a pasted +1 number lands correctly. */
-  function formatPhone(raw) {
-    var d = String(raw).replace(/\D/g, "");
+     is dropped so a pasted +1 number lands correctly.
+
+     Formatted on several events, not just input: paste and autofill do not
+     reliably raise input. The caret reads and writes are guarded because a
+     browser that refuses selectionStart on this field type would throw and
+     kill the handler silently. Validation counts digits, never the mask. */
+  function digitsOf(v) {
+    var d = String(v || "").replace(/\D/g, "");
     if (d.length > 10 && d.charAt(0) === "1") d = d.slice(1);
-    d = d.slice(0, 10);
-    if (d.length < 4) return d;
+    return d.slice(0, 10);
+  }
+
+  function formatPhone(v) {
+    var d = digitsOf(v);
+    if (!d.length) return "";
+    if (d.length < 4) return "(" + d;
     if (d.length < 7) return "(" + d.slice(0, 3) + ") " + d.slice(3);
     return "(" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6);
   }
 
+  function applyFormat(el) {
+    var atEnd = true;
+    try { atEnd = el.selectionStart === el.value.length; } catch (err) {}
+    el.value = formatPhone(el.value);
+    if (atEnd) {
+      try { el.selectionStart = el.selectionEnd = el.value.length; } catch (err) {}
+    }
+  }
+
   var phoneEl = document.getElementById("f-phone");
 
-  phoneEl.addEventListener("input", function () {
-    var atEnd = this.selectionStart === this.value.length;
-    this.value = formatPhone(this.value);
-    if (atEnd) this.selectionStart = this.selectionEnd = this.value.length;
+  ["input", "keyup", "paste", "change", "blur"].forEach(function (evt) {
+    phoneEl.addEventListener(evt, function () {
+      var t = this;
+      if (evt === "paste") { setTimeout(function () { applyFormat(t); }, 0); }
+      else { applyFormat(t); }
+    });
   });
 
   phoneEl.addEventListener("keypress", function (e) {
     if (e.key && e.key.length === 1 && /\D/.test(e.key)) e.preventDefault();
   });
 
+  function unwired() {
+    if (EXEC_URL.indexOf("__") > -1) return true;
+    for (var k in IDS) { if (IDS[k].indexOf("__") > -1) return true; }
+    return false;
+  }
+
+  function refresh() { markAnswered(); }
+
   document.getElementById("signup").addEventListener("input", refresh);
   document.getElementById("signup").addEventListener("change", refresh);
 
+  /* ---------- teams whose lead is already confirmed ----------
+     Read from the Leads tab of the response sheet. If the request fails we
+     fail open and leave every option available: a sign-up form that blocks
+     people because a status check timed out is worse than a stale label. */
+
+  function applyClaimed(claimed) {
+    Object.keys(claimed).forEach(function (key) {
+      var block = document.querySelector('[data-block="' + key + '"]');
+      if (!block) return;
+
+      var input = block.querySelector('input[value="' + LEAD + '"]');
+      if (input) {
+        if (input.checked) input.checked = false;
+        input.disabled = true;
+      }
+
+      /* The lead's name is never rendered. What the Leads tab holds is a
+         trigger, not content: the card just stops asking for a lead and
+         starts asking for helpers. */
+      block.classList.add("filled");
+      var tag = block.querySelector(".tag");
+      if (tag) { tag.textContent = "Helpers needed"; tag.className = "tag set"; }
+    });
+    refresh();
+  }
+
+  fetch(EXEC_URL + "?action=status", { method: "GET" })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { if (d && d.ok && d.claimed) applyClaimed(d.claimed); })
+    .catch(function () { /* fail open */ });
+
+  /* ---------- submit ---------- */
+
+  /* One token per attempt, reused if the attempt is retried, so a slow
+     network cannot turn one sign-up into two rows. */
+  var submitToken = null;
+
+  function payload() {
+    if (!submitToken) {
+      submitToken = String(Date.now()) + "-" + Math.random().toString(36).slice(2, 10);
+    }
+    var body = new URLSearchParams();
+    Object.keys(IDS).forEach(function (key) {
+      var v = valueFor(key);
+      if (v) body.append(IDS[key], v);
+    });
+    body.append("token", submitToken);
+    return body;
+  }
+
+  function showDone() {
+    var card = document.getElementById("signup").parentNode;
+    card.innerHTML =
+      '<div class="done"><h2>You are on the list</h2>' +
+      '<p>Thanks for signing up. J.R. will follow up with team assignments and ' +
+      'the first meeting time. Questions before then go to ' +
+      '<a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a>.</p></div>';
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   btn.addEventListener("click", function (e) {
+    e.preventDefault();
+
     var msg = problem();
     if (msg) {
-      e.preventDefault();
       statusEl.textContent = msg;
       statusEl.className = "status bad";
       return;
     }
     if (unwired()) {
-      e.preventDefault();
       statusEl.textContent = "This page is not connected to the response sheet yet. Nothing was sent.";
       statusEl.className = "status bad";
       return;
     }
+
+    btn.classList.add("busy");
     statusEl.textContent = "Sending your sign-up.";
     statusEl.className = "status";
-    btn.setAttribute("href", buildUrl());
+
+    var settled = false;
+    function fallback() {
+      if (settled) return;
+      settled = true;
+      /* The GET route, already proven end to end. The sheet is the proof. */
+      window.location.href = EXEC_URL + "?" + payload().toString();
+    }
+    statusEl.textContent = "Sending your sign-up.";
+    setTimeout(function () {
+      if (!settled) statusEl.textContent = "Still sending. Google can take a few seconds.";
+    }, 4000);
+
+    /* Long enough that a busy Apps Script finishes first. The token makes the
+       fallback safe even if this does fire. */
+    var guard = setTimeout(fallback, 20000);
+
+    fetch(EXEC_URL, { method: "POST", body: payload() })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        clearTimeout(guard);
+        if (settled) return;
+        if (d && d.ok) { settled = true; showDone(); return; }
+        throw new Error(d && d.error ? d.error : "rejected");
+      })
+      .catch(function () { clearTimeout(guard); fallback(); });
   });
 
   refresh();
 })();
 </script>
+</body>
+</html>
