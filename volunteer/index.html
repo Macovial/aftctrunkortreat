@@ -448,7 +448,11 @@ footer div {
 
 footer p { margin: 0; }
 
-footer a { color: var(--focus); }
+footer a,
+.card a,
+.done a { color: var(--focus); }
+
+.done a:hover, .card a:hover { color: var(--orange); }
 
 /* ---------- banner atmosphere ----------
    Opacity only, no transforms: SVG children need transform-box to scale
@@ -1053,11 +1057,10 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 <main>
 
   <section>
-    <h2>Three ways in</h2>
+    <h2>Two ways in</h2>
     <ul class="plain">
       <li><span><b>Lead a team.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings.</span></span></li>
       <li><span><b>Help on a team.</b><span class="sub">You take pieces of the work and answer to the lead.</span></span></li>
-      <li><span><b>Event day only.</b><span class="sub">You show up on October 28 and work the night.</span></span></li>
     </ul>
   </section>
 
@@ -1123,7 +1126,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.7</p>
+    <p class="build">Build 2026-09-07.8</p>
   </div>
 </footer>
 
@@ -1155,10 +1158,9 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
   var LEAD  = "I'll lead this team";
   var HELP  = "I'll help on this team";
-  var DAY   = "Event day only";
   var NO    = "Not this one";
 
-  var SET_A = [LEAD, HELP, DAY, NO];
+  var SET_A = [LEAD, HELP, NO];
 
   var TEAMS = [
     {
@@ -1207,7 +1209,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       status: "set", tag: "Helpers needed",
       pitch: "You would help the lead get the prizes ready.",
       detail: "Collect the gift cards and prizes for each category, keep track of what has come in, and have everything sorted and ready to hand out that night.",
-      options: ["I'll help with the prizes", DAY, NO]
+      options: ["I'll help with the prizes", NO]
     },
     {
       key: "teamDecor",
@@ -1470,7 +1472,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       '<div class="done"><h2>You are on the list</h2>' +
       '<p>Thanks for signing up. J.R. will follow up with team assignments and ' +
       'the first meeting time. Questions before then go to ' +
-      '<a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a>.</p></div>';
+      '<a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a>.</p></div>';
     card.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
