@@ -435,7 +435,18 @@ a.submit:hover { filter: brightness(1.09); }
 
 footer { border-top: 1px solid var(--line); padding: 24px 20px 60px; }
 
-footer div { max-width: 660px; margin: 0 auto; font-size: 14px; color: var(--cream-dim); }
+footer div {
+  max-width: 660px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: var(--cream-dim);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+footer p { margin: 0; }
 
 footer a { color: var(--focus); }
 
@@ -758,7 +769,7 @@ footer a { color: var(--focus); }
 
 a.submit.busy { opacity: .6; pointer-events: none; }
 
-.build { color: #7C6A8A; font-size: 12px; white-space: nowrap; }
+.build { color: #7C6A8A; font-size: 12px; }
 </style>
 </head>
 <body>
@@ -1089,15 +1100,6 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       </fieldset>
 
       <fieldset>
-        <legend>Narrowing it down</legend>
-
-        <div class="field">
-          <label for="f-first">If you can only take one team, which is it? <span class="req">*</span></label>
-          <select id="f-first" data-key="firstChoice"></select>
-        </div>
-      </fieldset>
-
-      <fieldset>
         <legend>Anything else</legend>
 
         <div class="field">
@@ -1118,7 +1120,11 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 </main>
 
 <footer>
-  <div>Questions before you commit? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a>. Hosted by the California School for the Deaf, 39350 Gallaudet Drive, Fremont. <span class="build">Build 2026-09-07.4</span></div>
+  <div>
+    <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
+    <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
+    <p class="build">Build 2026-09-07.7</p>
+  </div>
 </footer>
 
 <script>
@@ -1144,7 +1150,6 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     teamLogistics:   "entry.1625845540",
     teamCleanup:     "entry.164622499",
     assistDiscGolf:  "entry.2024480015",
-    firstChoice:     "entry.1771610204",
     notes:           "entry.448274408"
   };
 
@@ -1290,12 +1295,6 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   assistBlock.appendChild(assistOpts);
   teamsEl.appendChild(assistBlock);
 
-  var firstSel = document.getElementById("f-first");
-  firstSel.appendChild(new Option("Choose one", ""));
-  TEAMS.forEach(function (t) { firstSel.appendChild(new Option(t.name, t.name)); });
-  firstSel.appendChild(new Option("No preference, put me where I am needed",
-    "No preference, put me where I am needed"));
-
   function valueFor(key) {
     var nodes = document.querySelectorAll('[data-key="' + key + '"]');
     var checked = [];
@@ -1338,7 +1337,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     var contact = document.getElementById("f-contact");
 
     flag(name, false); flag(email, false); flag(phone, false);
-    flag(contact, false); flag(firstSel, false);
+    flag(contact, false);
 
     if (!name.value.trim()) { flag(name, true); name.focus(); return "Add your name so we know who to thank."; }
     if (!/^\S+@\S+\.\S+$/.test(email.value.trim())) {
@@ -1356,7 +1355,6 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
     if (!picked) return "Pick at least one team you can help with.";
 
-    if (!firstSel.value) { flag(firstSel, true); firstSel.focus(); return "Choose a first pick, or tell us you have no preference."; }
 
     return "";
   }
