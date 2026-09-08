@@ -1066,7 +1066,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       <div class="fb"><b>Time</b><span>6:00 to 7:30 PM</span></div>
       <div class="fb"><b>Where</b><span>CSD Football Field, Fremont</span></div>
     </div>
-    <p class="meets">Subcommittee leads will meet weekly, either in person or on Zoom.</p>
+    <p class="meets">Subcommittee leads will meet weekly as needed, either in person or on Zoom.</p>
   </div>
 </div>
 
@@ -1142,7 +1142,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.11</p>
+    <p class="build">Build 2026-09-07.14</p>
   </div>
 </footer>
 
@@ -1208,7 +1208,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       name: "Publicity & Outreach",
       status: "need", tag: "Lead needed",
       pitch: "You would make sure people show up.",
-      detail: "Announce the event through ParentSquare, Instagram, and Facebook, invite the California School for the Blind through Lisa Nunez, and produce the trick-or-treat promo video. Kate Kovacs is already making the flyer.",
+      detail: "Announce the event through ParentSquare, Instagram, and Facebook, invite the California School for the Blind through Lisa Nunez, and produce the trick-or-treat promo video. A script will be provided.",
       options: SET_A
     },
     {
@@ -1485,7 +1485,10 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     refresh();
   }
 
-  fetch(EXEC_URL + "?action=status", { method: "GET" })
+  /* Cache-busted on purpose. Without this the browser happily serves the
+     status it fetched an hour ago, so deleted rows keep closing teams and the
+     page looks broken when it is only stale. */
+  fetch(EXEC_URL + "?action=status&t=" + Date.now(), { method: "GET", cache: "no-store" })
     .then(function (r) { return r.json(); })
     .then(function (d) { if (d && d.ok) applyStatus(d); })
     .catch(function () { /* fail open */ });
