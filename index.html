@@ -409,6 +409,23 @@ input[aria-invalid="true"] { border-color: var(--danger); }
   flex: none;
 }
 
+/* The box flickers like a bad bulb until someone ticks it. The selector stops
+   matching the moment it is checked, so the animation simply ends. */
+.check input:not(:checked) {
+  border-radius: 3px;
+  animation: boxFlicker 2.6s steps(1, end) infinite;
+}
+
+@keyframes boxFlicker {
+  0%, 62%, 100% { box-shadow: 0 0 0 0 rgba(255, 176, 102, 0); }
+  64%           { box-shadow: 0 0 10px 2px rgba(255, 176, 102, .85); }
+  67%           { box-shadow: 0 0 0 0 rgba(255, 176, 102, 0); }
+  70%           { box-shadow: 0 0 14px 3px rgba(255, 176, 102, .95); }
+  73%           { box-shadow: 0 0 0 0 rgba(255, 176, 102, 0); }
+  76%           { box-shadow: 0 0 8px 2px rgba(255, 176, 102, .6); }
+  80%           { box-shadow: 0 0 0 0 rgba(255, 176, 102, 0); }
+}
+
 .actions {
   margin-top: 26px;
   padding-top: 22px;
@@ -1079,7 +1096,7 @@ footer a { color: var(--focus); }
       <li><span><b data-t="b4">Arrive early or the ghosts take your spot.</b> <span class="sub" data-t="s4">Cars roll onto the field before the gates open. The committee emails setup times as the night creeps closer.</span></span></li>
       <li><span><b data-t="b3">Hand out goodies from 6:00 PM to 7:30 PM.</b> <span class="sub" data-t="s3">Ninety minutes of tiny hands and enormous eyes. Bring more than you think you need.</span></span></li>
       <li><span><b data-t="b2">The judges are watching.</b> <span class="sub" data-t="s2">They drift down the rows after dark, saying nothing. The best trunks take home prizes, and the prizes are a secret.</span></span></li>
-      <li><span><b data-t="b5">Tell us what you need.</b> <span class="sub" data-t="s5">Power for lights, a fog machine, an inflatable spider the size of a car. Ask here, not that night.</span></span></li>
+      <li><span><b data-t="b5">Tell us what you need.</b> <span class="sub" data-t="s5">Power for lights, a fog machine, a coffin that opens by itself. Ask here, not that night.</span></span></li>
     </ul>
   </section>
 
@@ -1150,7 +1167,7 @@ footer a { color: var(--focus); }
 </main>
 
 <footer>
-  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 8Q</span></div>
+  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 8U</span></div>
 </footer>
 
 <script>
@@ -1194,8 +1211,11 @@ footer a { color: var(--focus); }
     return BASE + '?' + parts.join('&');
   }
 
+  // Deliberately does NOT put the submission URL in the href. Browsers
+  // speculatively fetch links on hover or touch, and that prefetch reaches the
+  // web app as a real submission, which files the row and the emails twice.
   function refresh() {
-    btn.setAttribute('href', buildUrl());
+    btn.setAttribute('href', '#');
   }
 
   fields.forEach(function (el) {
@@ -1227,7 +1247,7 @@ footer a { color: var(--focus); }
       b2: 'Los jueces están observando.',
       s2: 'Recorren las filas al anochecer sin decir nada. Las mejores cajuelas se llevan premios, y los premios son un secreto.',
       b5: 'Dinos qué necesitas.',
-      s5: 'Electricidad para luces, una máquina de humo, una araña inflable del tamaño de un auto. Pídelo aquí, no esa noche.',
+      s5: 'Electricidad para luces, una máquina de humo, un ataúd que se abre solo. Pídelo aquí, no esa noche.',
       leg1: 'Quién se registra',
       leg2: 'Tu cajuela',
       lblName: 'Nombre de contacto <span class="req">*</span>',
@@ -1276,6 +1296,7 @@ footer a { color: var(--focus); }
   };
 
   var LANG = 'en';
+  var sending = false;
 
   // The markup is the English source of truth: harvest it before anything swaps.
   Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) {
@@ -1333,6 +1354,7 @@ footer a { color: var(--focus); }
 
     if (problems.length) {
       e.preventDefault();
+      sending = false;
       say(MSG[LANG].needed + problems.join(', ') + '.', true);
       var firstBad = document.querySelector('[aria-invalid="true"]');
       if (firstBad) firstBad.focus();
@@ -1340,7 +1362,8 @@ footer a { color: var(--focus); }
     }
 
     e.preventDefault();
-    refresh();
+    if (sending) return;
+    sending = true;
 
     var url = buildUrl();
     btn.style.pointerEvents = 'none';
