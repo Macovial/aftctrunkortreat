@@ -760,14 +760,6 @@ footer a,
 
 /* ---------- claimed teams and the finished state ---------- */
 
-.opt input:disabled + span {
-  opacity: .38;
-  text-decoration: line-through;
-  cursor: not-allowed;
-}
-
-.opt input:disabled + span:hover { border-color: var(--line); color: var(--cream-dim); }
-
 .team.filled { border-left-color: var(--focus); }
 
 .done { text-align: center; padding: 26px 6px 8px; }
@@ -1156,7 +1148,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.17</p>
+    <p class="build">Build 2026-09-07.21</p>
   </div>
 </footer>
 
@@ -1206,7 +1198,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       name: "Concessions",
       status: "need", tag: "Lead needed",
       pitch: "You would keep the food and drinks selling all night.",
-      detail: "Coordinate with the Foothills Athletic Association to sell from the clubhouse, and follow up on bringing in the Mozzeria food truck. FAA ran out of food in 2025, so the goal this year is more capacity.",
+      detail: "Coordinate with the Foothills Athletic Association (FAA) to sell from the clubhouse, and (?) reach out to bring in the Mozzeria food truck. FAA ran out of food in 2025, so the goal this year is more capacity.",
       options: SET_A
     },
     {
@@ -1470,11 +1462,15 @@ a.submit.busy { opacity: .6; pointer-events: none; }
         return;
       }
 
+      /* Remove a closed option rather than striking it through. A greyed
+         option still reads as something you might have had, which invites
+         people to ask why they cannot have it. Gone is cleaner. */
       (st.disable || []).forEach(function (value) {
         var input = block.querySelector('input[value="' + value + '"]');
         if (!input) return;
         if (input.checked) input.checked = false;
-        input.disabled = true;
+        var pill = input.parentNode;
+        if (pill && pill.parentNode) pill.parentNode.removeChild(pill);
       });
 
       if ((st.disable || []).indexOf(LEAD) > -1) {
