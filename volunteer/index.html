@@ -390,12 +390,6 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
   color: var(--orange-ink);
 }
 
-.opt input:checked + span.quiet {
-  background: var(--line);
-  border-color: var(--line);
-  color: var(--cream);
-}
-
 .assist {
   border-left-color: var(--line);
   border-style: dashed;
@@ -1148,7 +1142,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.21</p>
+    <p class="build">Build 2026-09-07.22</p>
   </div>
 </footer>
 
@@ -1180,9 +1174,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
   var LEAD  = "I'll lead this team";
   var HELP  = "I'll help on this team";
-  var NO    = "Not this one";
 
-  var SET_A = [LEAD, HELP, NO];
+  var SET_A = [LEAD, HELP];
 
   var TEAMS = [
     {
@@ -1231,7 +1224,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       status: "set", tag: "Helpers needed",
       pitch: "You would help the lead get the prizes ready.",
       detail: "Collect the gift cards and prizes for each category, keep track of what has come in, and have everything sorted and ready to hand out that night.",
-      options: ["I'll help with the prizes", NO]
+      options: ["I'll help with the prizes"]
     },
     {
       key: "teamDecor",
@@ -1263,7 +1256,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     key: "assistDiscGolf",
     name: "Disc Golf and Glow Putt Night",
     pitch: "Assist Carley Carbin with Disc Golf and Glow Putt Night setup and take down.",
-    options: ["Yes, count me in", NO]
+    options: ["Yes, count me in"]
   };
 
   var teamsEl = document.getElementById("teams");
@@ -1284,7 +1277,18 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     input.name = key;
     input.value = value;
     input.setAttribute("data-key", key);
-    var span = el("span", value === NO ? "quiet" : null, value);
+    var span = el("span", null, value);
+
+    /* With nothing to switch to, a second click on a chosen pill clears it.
+       Without this a misclick is permanent, which is worse than the option
+       that was just removed. */
+    input.addEventListener("mousedown", function () { this._was = this.checked; });
+    input.addEventListener("click", function () {
+      if (this._was) this.checked = false;
+      this._was = false;
+      refresh();
+    });
+
     wrap.appendChild(input);
     wrap.appendChild(span);
     return wrap;
@@ -1337,7 +1341,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     document.querySelectorAll("[data-block]").forEach(function (b) {
       var key = b.getAttribute("data-block");
       var v = valueFor(key);
-      b.classList.toggle("answered", !!v && v !== NO);
+      b.classList.toggle("answered", !!v);
     });
   }
 
@@ -1372,10 +1376,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     }
     if (!contact.value) { flag(contact, true); contact.focus(); return "Pick how you would rather be contacted."; }
 
-    var picked = TEAMS.some(function (t) {
-      var v = valueFor(t.key);
-      return v && v !== NO;
-    }) || (valueFor(ASSIST.key) && valueFor(ASSIST.key) !== NO);
+    var picked = TEAMS.some(function (t) { return !!valueFor(t.key); })
+      || !!valueFor(ASSIST.key);
 
     if (!picked) return "Pick at least one team you can help with.";
 
