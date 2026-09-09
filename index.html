@@ -401,17 +401,50 @@ input[aria-invalid="true"] { border-color: var(--danger); }
   cursor: pointer;
 }
 
-.check input {
-  margin: 3px 0 0;
-  width: 17px;
-  height: 17px;
-  accent-color: var(--orange);
+/* Drawn rather than native: Safari refuses to paint box-shadow on a system
+   checkbox, so the flicker below was invisible there. */
+.check input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
   flex: none;
+  margin: 2px 0 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  background: var(--card-sunk);
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease;
+}
+
+.check input[type="checkbox"]:hover { border-color: var(--orange); }
+
+.check input[type="checkbox"]:checked {
+  background: var(--orange);
+  border-color: var(--orange);
+}
+
+.check input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4.5px;
+  top: 1px;
+  width: 4px;
+  height: 9px;
+  border: solid var(--orange-ink);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+
+.check input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 /* The box flickers like a bad bulb until someone ticks it. The selector stops
    matching the moment it is checked, so the animation simply ends. */
-.check input:not(:checked) {
+.check input[type="checkbox"]:not(:checked) {
   border-radius: 3px;
   animation: boxFlicker 2.6s steps(1, end) infinite;
 }
@@ -1167,7 +1200,7 @@ footer a { color: var(--focus); }
 </main>
 
 <footer>
-  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 8U</span></div>
+  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 8V</span></div>
 </footer>
 
 <script>
