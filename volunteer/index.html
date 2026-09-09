@@ -419,13 +419,15 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
   border-top: 1px solid var(--line);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 12px;
 }
 
-.handoff { font-size: 14px; color: var(--cream-dim); margin: 0; max-width: 52ch; }
+.handoff { font-size: 14px; color: var(--cream-dim); margin: 0; max-width: 52ch; text-wrap: balance; }
 
 a.submit {
-  align-self: flex-start;
+  align-self: center;
   display: inline-block;
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 18px;
@@ -897,6 +899,32 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   0%, 100% { transform: rotate(-2deg); }
   50%      { transform: rotate(2deg); }
 }
+
+/* ---------- the headline runs off a bad bulb ----------
+   Irregular timing on purpose: an even pulse reads as a design effect, an
+   uneven one reads as failing wiring. Dropouts dim to 45% rather than off,
+   and never come faster than about twice a second, which keeps it from
+   strobing. */
+@keyframes titleFlicker {
+  /* Lit and steady for most of the cycle. */
+  0%, 67%, 69.2%, 71.6%, 74%, 92%, 94.2%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(255, 196, 107, .38),
+                 0 0 26px rgba(232, 118, 26, .22),
+                 0 3px 0 rgba(0, 0, 0, .3);
+  }
+  /* Then a short burst of trouble, and one late blip. */
+  68.2%, 70.4%, 93.2% {
+    opacity: .45;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, .3);
+  }
+  72.8% {
+    opacity: .72;
+    text-shadow: 0 0 6px rgba(255, 196, 107, .2), 0 3px 0 rgba(0, 0, 0, .3);
+  }
+}
+
+.page-title { animation: titleFlicker 15s linear infinite; }
 </style>
 </head>
 <body>
@@ -1290,6 +1318,11 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     <form id="signup" novalidate>
 
       <fieldset>
+        <legend>The teams</legend>
+        <div class="teams" id="teams"></div>
+      </fieldset>
+
+      <fieldset>
         <legend>Your info</legend>
 
         <div class="row">
@@ -1320,11 +1353,6 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       </fieldset>
 
       <fieldset>
-        <legend>The teams</legend>
-        <div class="teams" id="teams"></div>
-      </fieldset>
-
-      <fieldset>
         <legend>Anything else</legend>
 
         <div class="field">
@@ -1334,7 +1362,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       </fieldset>
 
       <div class="actions">
-        <p class="handoff">Pressing the button records your sign-up and shows a confirmation. Nothing is posted publicly.</p>
+        <p class="handoff">Press it and your name joins the list. No blood oath, no public posting, just a confirmation and a committee lead who will haunt your inbox.</p>
         <a class="submit" id="finishBtn" href="#" role="button">Sign me up</a>
         <p class="status" id="status" role="status"></p>
       </div>
@@ -1348,7 +1376,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.33</p>
+    <p class="build">Build 2026-09-07.38</p>
   </div>
 </footer>
 
