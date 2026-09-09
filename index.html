@@ -336,6 +336,8 @@ legend {
 
 .field { display: flex; flex-direction: column; gap: 6px; }
 
+.field-center { align-items: center; text-align: center; }
+
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 
 @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
@@ -363,6 +365,16 @@ textarea {
 }
 
 input::placeholder, textarea::placeholder { color: #96829E; }
+
+#connection {
+  text-align: center;
+  text-align-last: center;
+  width: auto;
+  min-width: 260px;
+  max-width: 100%;
+  align-self: center;
+  padding-right: 34px;
+}
 
 select option { color: #F7E7C8; background: #2E0C43; }
 
@@ -1088,7 +1100,7 @@ footer a { color: var(--focus); }
         </div>
 
 
-        <div class="field">
+        <div class="field field-center">
           <label for="connection" data-t="lblConn">Connected to CSD? <span class="req">*</span></label>
           <select id="connection" data-entry="entry.112727840">
             <option value="" data-t="optChoose">Choose one</option>
@@ -1138,7 +1150,7 @@ footer a { color: var(--focus); }
 </main>
 
 <footer>
-  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 8N</span></div>
+  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 8Q</span></div>
 </footer>
 
 <script>
@@ -1192,6 +1204,117 @@ footer a { color: var(--focus); }
   });
 
   refresh();
+
+  // ---------- language ----------
+  var T = {
+    en: {},
+    es: {
+      h1: 'Decora tu cajuela',
+      intro: 'Decora tu cajuela, reparte dulces y dales a los niños un lugar seguro para&nbsp;pedir&nbsp;dulces.',
+      cta: '¡Regístrate para reservar tu lugar!',
+      lblDate: 'Fecha', lblTime: 'Hora', lblWhere: 'Lugar',
+      valDate: 'Miércoles<br>28 de octubre de 2026',
+      valTime: '6:00 PM a 7:30 PM',
+      valWhere: 'Campo de Fútbol de CSD<br>39350 Gallaudet Dr<br>Fremont, CA 94538',
+      boo: '<span class="boo-word">¡BU!</span> Las Casas Embrujadas de la escuela secundaria abren esa misma noche hasta las 9 PM.',
+      h2what: 'Qué significa participar',
+      b1: 'Trae un vehículo. Embrújalo.',
+      s1: 'Telarañas, lápidas, ese inflable que compraste el año pasado y nunca usaste.',
+      b4: 'Llega temprano o los fantasmas te ganan el lugar.',
+      s4: 'Los autos entran al campo antes de que abran las puertas. El comité enviará los horarios conforme se acerque la noche.',
+      b3: 'Reparte dulces de 6:00 PM a 7:30 PM.',
+      s3: 'Noventa minutos de manitas y ojos enormes. Trae más de lo que crees que necesitas.',
+      b2: 'Los jueces están observando.',
+      s2: 'Recorren las filas al anochecer sin decir nada. Las mejores cajuelas se llevan premios, y los premios son un secreto.',
+      b5: 'Dinos qué necesitas.',
+      s5: 'Electricidad para luces, una máquina de humo, una araña inflable del tamaño de un auto. Pídelo aquí, no esa noche.',
+      leg1: 'Quién se registra',
+      leg2: 'Tu cajuela',
+      lblName: 'Nombre de contacto <span class="req">*</span>',
+      lblEmail: 'Correo electrónico <span class="req">*</span>',
+      lblConn: '¿Conectado con CSD? <span class="req">*</span>',
+      optChoose: 'Elige una opción',
+      optFam: 'Familia de CSD',
+      optStaff: 'Personal de CSD',
+      optAgency: 'Agencia comunitaria',
+      optJoin: 'Solo nos acompañan',
+      lblTheme: 'Tema de tu cajuela <span class="req">*</span>',
+      phTheme: 'Barco pirata, dulcería, garaje de monstruos',
+      powerTxt: 'Necesitamos electricidad para luces, una máquina de humo o un inflable. Los enchufes y generadores son limitados, así que avísanos ahora y no esa noche.',
+      lblNeeds: 'Algo más que debamos saber',
+      handoff: 'Presiona aquí y quedarás registrado. El comité recibirá tus datos de inmediato.',
+      btn: 'Registrar nuestra cajuela',
+      rH: 'Ya estás en la lista',
+      rP: 'Esto es lo que recibimos. El comité te enviará por correo las instrucciones y los detalles de llegada conforme se acerque el evento.',
+      footer: '¿Preguntas? Escribe a <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> y el comité te responderá.'
+    }
+  };
+
+  var MSG = {
+    en: {
+      sending: 'Sending your registration...',
+      needed: 'Still needed: ',
+      name: 'a contact name',
+      email: 'a valid email',
+      theme: 'a trunk theme',
+      conn: 'your CSD connection',
+      labels: [['name', 'Contact'], ['email', 'Email'], ['connection', 'CSD connection'],
+               ['theme', 'Theme'], ['power', 'Power needed'], ['needs', 'Notes']],
+      yes: 'Yes'
+    },
+    es: {
+      sending: 'Enviando tu registro...',
+      needed: 'Aún falta: ',
+      name: 'un nombre de contacto',
+      email: 'un correo electrónico válido',
+      theme: 'un tema para tu cajuela',
+      conn: 'tu conexión con CSD',
+      labels: [['name', 'Contacto'], ['email', 'Correo'], ['connection', 'Conexión con CSD'],
+               ['theme', 'Tema'], ['power', 'Electricidad'], ['needs', 'Notas']],
+      yes: 'Sí'
+    }
+  };
+
+  var LANG = 'en';
+
+  // The markup is the English source of truth: harvest it before anything swaps.
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) {
+    T.en[el.getAttribute('data-t')] = el.innerHTML;
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tph]'), function (el) {
+    T.en[el.getAttribute('data-tph')] = el.getAttribute('placeholder') || '';
+  });
+
+  function applyLang(l) {
+    if (!T[l]) l = 'en';
+    LANG = l;
+    var d = T[l];
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) {
+      var k = el.getAttribute('data-t');
+      if (d[k] !== undefined) el.innerHTML = d[k];
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tph]'), function (el) {
+      var k = el.getAttribute('data-tph');
+      if (d[k] !== undefined) el.setAttribute('placeholder', d[k]);
+    });
+    document.documentElement.lang = l;
+    Array.prototype.forEach.call(document.querySelectorAll('.langbtn'), function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-lang') === l);
+    });
+    try { localStorage.setItem('aftc-lang', l); } catch (e) {}
+    refresh();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.langbtn'), function (b) {
+    b.addEventListener('click', function () { applyLang(this.getAttribute('data-lang')); });
+  });
+
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('aftc-lang'); } catch (e) {}
+    if (!saved && (navigator.language || '').toLowerCase().indexOf('es') === 0) { saved = 'es'; }
+    if (saved === 'es') { applyLang('es'); }
+  })();
 
   btn.addEventListener('click', function (e) {
     var problems = [];
