@@ -173,6 +173,19 @@ main {
   gap: 30px;
 }
 
+.page-title {
+  font-family: "Creepster", "Bricolage Grotesque", cursive;
+  font-size: clamp(42px, 9vw, 68px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, .3);
+  margin: 0;
+}
+
 section > h2 {
   font-family: "Creepster", "Bricolage Grotesque", cursive;
   font-size: clamp(30px, 6vw, 40px);
@@ -1060,7 +1073,6 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
 <div class="band">
   <div class="band-inner">
-    <h1>Pick Your Team</h1>
     <div class="factbar">
       <div class="fb"><b>When</b><span>Wednesday, October 28, 2026</span></div>
       <div class="fb"><b>Time</b><span>6:00 to 7:30 PM</span></div>
@@ -1071,6 +1083,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 </div>
 
 <main>
+
+  <h1 class="page-title">Pick Your Team</h1>
 
   <section id="waysIn">
     <h2>Two ways in</h2>
@@ -1100,7 +1114,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
         <div class="row">
           <div class="field">
             <label for="f-phone">Text number <span class="req">*</span></label>
-            <input id="f-phone" type="tel" data-key="phone" autocomplete="tel" inputmode="numeric" placeholder="(555) 123-4567" maxlength="14">
+            <input id="f-phone" type="tel" data-key="phone" autocomplete="tel" inputmode="numeric" maxlength="14">
           </div>
           <div class="field">
             <label for="f-contact">Preferred way to reach you <span class="req">*</span></label>
@@ -1142,7 +1156,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.14</p>
+    <p class="build">Build 2026-09-07.17</p>
   </div>
 </footer>
 
