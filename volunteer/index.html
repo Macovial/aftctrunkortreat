@@ -156,7 +156,7 @@ h1, h2, h3 {
 }
 
 .meets {
-  margin: 20px auto 0;
+  margin: 4px auto;
   max-width: 46ch;
   padding: 12px 20px;
   text-align: center;
@@ -1376,7 +1376,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.38</p>
+    <p class="build">Build 2026-09-07.39</p>
   </div>
 </footer>
 
@@ -1546,6 +1546,11 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
     teamsEl.appendChild(block);
   });
+
+  /* The meeting note belongs with the nine teams it applies to, so it sits
+     after Cleanup Crew and before the disc golf ask, which is not a team. */
+  var meetsEl = document.querySelector(".meets");
+  if (meetsEl) teamsEl.appendChild(meetsEl);
 
   var assistBlock = el("div", "team assist");
   assistBlock.setAttribute("data-block", ASSIST.key);
