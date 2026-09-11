@@ -443,6 +443,16 @@ a.submit {
 
 a.submit:hover { filter: brightness(1.09); }
 
+a.submit.off { opacity: .4; filter: grayscale(.5); }
+
+.instruct {
+  margin: 16px 0 0;
+  text-align: center;
+  color: var(--cream);
+  font-weight: 600;
+  text-wrap: balance;
+}
+
 .status { font-size: 13.5px; color: var(--cream-dim); min-height: 1.4em; }
 
 .status.bad { color: var(--danger); }
@@ -809,7 +819,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 46px;
+  width: 23px;
   height: auto;
   pointer-events: none;
 }
@@ -822,7 +832,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 .walker .eye   { fill: #14101F; }
 .walker .glint { fill: #FFC46B; }
 
-.walker-b { width: 41px; }
+.walker-b { width: 21px; }
 .walker-b .skin  { fill: #93A870; }
 .walker-b .shirt { fill: #2C4A50; }
 .walker-b .pants { fill: #1E2636; }
@@ -842,7 +852,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 70px;
+  width: 35px;
   height: auto;
   pointer-events: none;
   z-index: 0;
@@ -1229,7 +1239,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
         <ellipse class="eye" cx="69" cy="21" rx="2.3" ry="2"/>
       </g>
     </svg>
-    <h1 class="page-title">Pick Your Team</h1>
+    <h1 class="page-title">Pick Your Crew</h1>
     <svg class="walker" viewBox="0 0 62 94" aria-hidden="true">
       <g>
         <path class="pants" d="M14,92 L17,58 L23,58 L21,92 Z"/>
@@ -1308,19 +1318,15 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       </g>
     </svg><h2>Two ways in</h2></div>
     <ul class="plain">
-      <li><span><b>Lead a team.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings. Two people can claim the same team, so you may end up co-leading it, or settling it over a coin toss in the dark.</span></span></li>
-      <li><span><b>Help on a team.</b><span class="sub">You take pieces of the work and answer to the lead(s).</span></span></li>
+      <li><span><b>Lead a crew.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings. Two people can claim the same crew, so you may end up co-leading it, or settling it over a coin toss in the dark.</span></span></li>
+      <li><span><b>Help on a crew.</b><span class="sub">You take pieces of the work and answer to the lead(s).</span></span></li>
     </ul>
-    <p class="meets">Subcommittee leads will meet weekly as needed, either in person or on Zoom.</p>
+    <p class="instruct">Please fill out your information and pick a crew you would like to join.</p>
+    <p class="meets">Crew leads will meet weekly as needed, either in person or on Zoom.</p>
   </section>
 
   <section class="card">
     <form id="signup" novalidate>
-
-      <fieldset>
-        <legend>The teams</legend>
-        <div class="teams" id="teams"></div>
-      </fieldset>
 
       <fieldset>
         <legend>Your info</legend>
@@ -1353,6 +1359,11 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       </fieldset>
 
       <fieldset>
+        <legend>The crews</legend>
+        <div class="teams" id="teams"></div>
+      </fieldset>
+
+      <fieldset>
         <legend>Anything else</legend>
 
         <div class="field">
@@ -1376,7 +1387,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-07.42</p>
+    <p class="build">Build 2026-09-10.5</p>
   </div>
 </footer>
 
@@ -1406,8 +1417,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     notes:           "entry.448274408"
   };
 
-  var LEAD  = "I'll lead this team";
-  var HELP  = "I'll help on this team";
+  var LEAD  = "I'll lead this crew";
+  var HELP  = "I'll help on this crew";
 
   var SET_A = [LEAD, HELP];
 
@@ -1417,7 +1428,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       name: "Trunk Registration & Communication",
       status: "need", tag: "Lead needed",
       pitch: "You would be the front door for everyone bringing a trunk.",
-      detail: "Manage sign-ups, send setup instructions and reminders, and be the person trunk hosts contact on event day. A link to the registration list will be provided.",
+      detail: "Send setup instructions and reminders, and appear in a short video posted on the registration website. Trunk hosts reach you by text. A link to the registration list will be provided.",
       options: SET_A
     },
     {
@@ -1618,7 +1629,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     var picked = TEAMS.some(function (t) { return !!valueFor(t.key); })
       || !!valueFor(ASSIST.key);
 
-    if (!picked) return "Pick at least one team you can help with.";
+    if (!picked) return "Pick at least one crew you can help with.";
 
 
     return "";
@@ -1674,7 +1685,19 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     return false;
   }
 
-  function refresh() { markAnswered(); }
+  /* The button stays visibly dead until at least one team is chosen. It is
+     still clickable, so a click explains what is missing rather than doing
+     nothing at all, which is the failure people report as "it is broken". */
+  function hasPick() {
+    return TEAMS.some(function (t) { return !!valueFor(t.key); }) || !!valueFor(ASSIST.key);
+  }
+
+  function refresh() {
+    markAnswered();
+    var ok = hasPick();
+    btn.classList.toggle("off", !ok);
+    btn.setAttribute("aria-disabled", ok ? "false" : "true");
+  }
 
   document.getElementById("signup").addEventListener("input", refresh);
   document.getElementById("signup").addEventListener("change", refresh);
@@ -1724,8 +1747,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     if (data && data.allFull) {
       var card = document.getElementById("signup").parentNode;
       card.innerHTML =
-        '<div class="done"><h2>Every team has its people</h2>' +
-        '<p>All nine committee teams are staffed for October 28. Thanks for ' +
+        '<div class="done"><h2>Every crew has its people</h2>' +
+        '<p>All nine crews are staffed for October 28. Thanks for ' +
         'checking. If you would still like to help, email ' +
         '<a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a> and we will ' +
         'find you something.</p></div>';
@@ -1773,7 +1796,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     var card = document.getElementById("signup").parentNode;
     card.innerHTML =
       '<div class="done"><h2>You are on the list</h2>' +
-      '<p>Thanks for signing up. J.R. will follow up with team assignments and ' +
+      '<p>Thanks for signing up. J.R. will follow up with subcommittee assignments and ' +
       'the first meeting time. Questions before then go to ' +
       '<a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a>.</p></div>';
     card.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1848,7 +1871,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     return;
   }
 
-  var WIDTH = 46;
+  var WIDTH = 23;
   function speed() { return 13 + Math.random() * 20; }
 
   var zs = els.map(function (el) {
@@ -1869,7 +1892,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   /* The dog stays in frame and wanders: it pauses to sniff, turns for no
      reason, and re-rolls its pace, so it never looks like it is on rails. */
   var dogEl = wrap.querySelector(".dog");
-  var DOG_W = 70;
+  var DOG_W = 35;
   var dog = { x: 60, dir: 1, v: 16, pause: 0, next: 1 + Math.random() * 3 };
 
   function dogStep(dt, limitW) {
