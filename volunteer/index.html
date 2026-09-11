@@ -937,6 +937,15 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 }
 
 .page-title { animation: titleFlicker 15s linear infinite; }
+
+
+.crew-people {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--focus);
+  text-wrap: balance;
+}
 </style>
 </head>
 <body>
@@ -1320,7 +1329,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       </g>
     </svg><h2>Two ways in</h2></div>
     <ul class="plain">
-      <li><span><b>Lead a crew.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings. Two people can claim the same crew, so you may end up co-leading it, or settling it over a coin toss in the dark.</span></span></li>
+      <li><span><b>Lead a crew.</b><span class="sub">You own it: make the plan, pull in help, and report back at committee meetings. One lead per crew, so whoever claims it first takes it, and the rest of us stop asking.</span></span></li>
       <li><span><b>Help on a crew.</b><span class="sub">You take pieces of the work and answer to the lead(s).</span></span></li>
     </ul>
     <p class="instruct">Please fill out your information and pick a crew you would like to join.</p>
@@ -1389,7 +1398,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-10.10</p>
+    <p class="build">Build 2026-09-10.15</p>
   </div>
 </footer>
 
@@ -1429,8 +1438,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       key: "teamTrunkReg",
       name: "Trunk Registration & Communication",
       status: "need", tag: "Lead needed",
-      pitch: "You would be the first person every trunk host hears from.",
-      detail: "Send setup instructions and reminders, and appear in a short video posted on the registration website. Trunk hosts reach you by text. A link to the registration list will be provided.",
+      pitch: "You would be the front door for everyone bringing a trunk.",
+      detail: "Manage sign-ups, send setup instructions and reminders, and be the person trunk hosts contact on event day. A link to the registration list will be provided.",
       options: SET_A
     },
     {
@@ -1728,9 +1737,11 @@ a.submit.busy { opacity: .6; pointer-events: none; }
         return;
       }
 
-      /* Remove a closed option rather than striking it through. A greyed
-         option still reads as something you might have had, which invites
-         people to ask why they cannot have it. Gone is cleaner. */
+      /* A claimed lead stays on the card, dimmed and unclickable, with the
+         name beside it. Other closed options are removed, since nothing else
+         on the card would explain their absence. */
+      /* A filled role loses its pill and gains a name line. The pill would be
+         offering something that is gone; the name says who took it. */
       (st.disable || []).forEach(function (value) {
         var input = block.querySelector('input[value="' + value + '"]');
         if (!input) return;
@@ -1738,6 +1749,17 @@ a.submit.busy { opacity: .6; pointer-events: none; }
         var pill = input.parentNode;
         if (pill && pill.parentNode) pill.parentNode.removeChild(pill);
       });
+
+      var opts = block.querySelector(".opts");
+
+      if (st.lead) {
+        block.insertBefore(el("p", "crew-people", "Lead - " + st.lead), opts);
+      }
+
+      if (st.helpers && st.helpers.length) {
+        block.insertBefore(el("p", "crew-people",
+          (st.helpers.length > 1 ? "Helpers - " : "Helper - ") + st.helpers.join(", ")), opts);
+      }
 
       if ((st.disable || []).indexOf(LEAD) > -1) {
         block.classList.add("filled");
