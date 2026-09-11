@@ -818,7 +818,9 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 .walker {
   position: absolute;
   left: 0;
-  bottom: 0;
+  /* Lifted so their feet land on the bottom of the letters rather than the
+     bottom of the box. Scales with the headline, which is sized in vw. */
+  bottom: clamp(5px, 1.1vw, 12px);
   width: 23px;
   height: auto;
   pointer-events: none;
@@ -1387,7 +1389,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-10.7</p>
+    <p class="build">Build 2026-09-10.9</p>
   </div>
 </footer>
 
@@ -1436,7 +1438,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       name: "Concessions",
       status: "need", tag: "Lead needed",
       pitch: "You would keep the food and drinks selling all night.",
-      detail: "Check with Sulghi, the PE and Athletics supervisor, on whether the Foothills Athletic Association (FAA) still wants to sell food and drinks that evening, then coordinate the clubhouse with them. Also (?) reach out about bringing in the Mozzeria food truck. FAA was picked clean by 2025’s hungry goblins, so this year we come properly stocked.",
+      detail: "Check with Sulghi, the interim PE and Athletics supervisor, on whether the Foothills Athletic Association (FAA) still wants to sell food and drinks that evening. Also (?) reach out about bringing in the Mozzeria food truck. FAA was picked clean by 2025’s hungry goblins, so this year we come properly stocked.",
       options: SET_A
     },
     {
