@@ -946,6 +946,34 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   color: var(--focus);
   text-wrap: balance;
 }
+
+/* ---------- the vacancy sign ----------
+   A dead motel sign: hollow, thin neon tube, cold red glow, and a flicker
+   that mostly behaves. Scoped to this one chip so nothing else shifts. */
+.tag.vacancy {
+  background: transparent;
+  border: 1px solid rgba(255, 106, 77, .75);
+  color: #FF8A6B;
+  letter-spacing: .18em;
+  text-shadow: 0 0 6px rgba(255, 106, 77, .75), 0 0 14px rgba(255, 60, 30, .45);
+  box-shadow: 0 0 7px rgba(255, 60, 30, .30), inset 0 0 7px rgba(255, 60, 30, .18);
+  animation: neonFlicker 9s linear infinite;
+}
+
+@keyframes neonFlicker {
+  0%, 61%, 63.4%, 66%, 92%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 6px rgba(255, 106, 77, .75), 0 0 14px rgba(255, 60, 30, .45);
+  }
+  62.2%, 64.6% {
+    opacity: .3;
+    text-shadow: none;
+  }
+  93% {
+    opacity: .62;
+    text-shadow: 0 0 3px rgba(255, 106, 77, .4);
+  }
+}
 </style>
 </head>
 <body>
@@ -1398,7 +1426,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-11.4</p>
+    <p class="build">Build 2026-09-11.5</p>
   </div>
 </footer>
 
@@ -1556,7 +1584,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
 
     var head = el("div", "team-head");
     head.appendChild(el("h3", null, t.name));
-    head.appendChild(el("span", "tag need", t.tag));
+    head.appendChild(el("span",
+      t.tag === "No vacancies" ? "tag vacancy" : "tag need", t.tag));
     block.appendChild(head);
 
     block.appendChild(el("p", "pitch", t.pitch));
@@ -1754,7 +1783,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
         /* A finished crew keeps its card and its names. Collapsing it hid the
            very thing people come back to check. */
         block.classList.add("filled");
-        if (tag) { tag.textContent = "No vacancies"; tag.className = "tag set"; }
+        if (tag) { tag.textContent = "No vacancies"; tag.className = "tag vacancy"; }
       } else if ((st.disable || []).indexOf(LEAD) > -1) {
         block.classList.add("filled");
         if (tag) tag.textContent = "Helpers needed";
