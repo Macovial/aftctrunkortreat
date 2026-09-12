@@ -1398,7 +1398,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-11.2</p>
+    <p class="build">Build 2026-09-11.3</p>
   </div>
 </footer>
 
@@ -1725,18 +1725,6 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       var block = document.querySelector('[data-block="' + key + '"]');
       if (!block) return;
 
-      if (st.full) {
-        var name = block.querySelector("h3");
-        var title = name ? name.textContent : "";
-        block.className = "team done";
-        block.innerHTML = "";
-        var head = el("div", "team-head");
-        head.appendChild(el("h3", null, title));
-        head.appendChild(el("span", "tag done", "No vacancies"));
-        block.appendChild(head);
-        return;
-      }
-
       /* A claimed lead stays on the card, dimmed and unclickable, with the
          name beside it. Other closed options are removed, since nothing else
          on the card would explain their absence. */
@@ -1761,9 +1749,14 @@ a.submit.busy { opacity: .6; pointer-events: none; }
           (st.helpers.length > 1 ? "Helpers - " : "Helper - ") + st.helpers.join(", ")), opts);
       }
 
-      if ((st.disable || []).indexOf(LEAD) > -1) {
+      var tag = block.querySelector(".tag");
+      if (st.full) {
+        /* A finished crew keeps its card and its names. Collapsing it hid the
+           very thing people come back to check. */
         block.classList.add("filled");
-        var tag = block.querySelector(".tag");
+        if (tag) { tag.textContent = "No vacancies"; tag.className = "tag set"; }
+      } else if ((st.disable || []).indexOf(LEAD) > -1) {
+        block.classList.add("filled");
         if (tag) tag.textContent = "Helpers needed";
       }
     });
