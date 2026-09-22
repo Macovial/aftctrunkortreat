@@ -363,6 +363,14 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 
 .tag.need { background: var(--orange); color: var(--orange-ink); }
 
+/* Helpers wanted reads as a different ask from a crew with no lead at all,
+   so it gets its own colour rather than a second orange chip. */
+.tag.helpers {
+  background: #7CFF5A;
+  color: #10240B;
+  box-shadow: 0 0 9px rgba(124, 255, 90, .40);
+}
+
 .tag.set { background: transparent; border: 1px solid var(--line); color: var(--cream-dim); }
 
 .team .pitch { margin: 0; font-weight: 600; font-size: 15px; color: var(--cream); }
@@ -1426,7 +1434,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
   <div>
     <p>Questions before you commit? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-22.2</p>
+    <p class="build">Build 2026-09-22.3</p>
   </div>
 </footer>
 
@@ -1577,7 +1585,8 @@ a.submit.busy { opacity: .6; pointer-events: none; }
     var head = el("div", "team-head");
     head.appendChild(el("h3", null, t.name));
     head.appendChild(el("span",
-      t.tag === "No vacancies" ? "tag vacancy" : "tag need", t.tag));
+      t.tag === "No vacancies" ? "tag vacancy"
+        : t.tag === "Helpers needed" ? "tag helpers" : "tag need", t.tag));
     block.appendChild(head);
 
     block.appendChild(el("p", "pitch", t.pitch));
@@ -1778,7 +1787,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
         if (tag) { tag.textContent = "No vacancies"; tag.className = "tag vacancy"; }
       } else if ((st.disable || []).indexOf(LEAD) > -1) {
         block.classList.add("filled");
-        if (tag) tag.textContent = "Helpers needed";
+        if (tag) { tag.textContent = "Helpers needed"; tag.className = "tag helpers"; }
       }
     });
 
@@ -1786,7 +1795,7 @@ a.submit.busy { opacity: .6; pointer-events: none; }
       var card = document.getElementById("signup").parentNode;
       card.innerHTML =
         '<div class="done"><h2>Every crew has its people</h2>' +
-        '<p>All nine crews are staffed for October 28. Thanks for ' +
+        '<p>Every crew is staffed for October 28. Thanks for ' +
         'checking. If you would still like to help, email ' +
         '<a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a> and we will ' +
         'find you something.</p></div>';
