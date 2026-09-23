@@ -371,6 +371,29 @@ select option { background: var(--card-sunk); color: var(--cream); }
   color: var(--orange-ink);
 }
 
+.sechead .sectitle {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.sechead .seclead {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--orange-ink);
+  opacity: .85;
+}
+
+.sechead .seclead.tbd {
+  background: var(--danger);
+  color: var(--ground-deep);
+  border-radius: 999px;
+  padding: 1px 9px;
+  opacity: 1;
+}
+
 .sechead .count { font-size: 13px; font-weight: 700; }
 
 .secbody {
@@ -654,8 +677,8 @@ footer a:hover { color: var(--orange); }
       <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
       <span class="mini-status" id="syncLine"></span>
     </div>
-    <p class="locked" id="lockNote" hidden>Add your name above and the checkboxes,
-      notes and claim buttons switch on.</p>
+    <p class="locked" id="lockNote" hidden>Pick your name above to switch on the
+      crew you belong to. Everything else stays read-only.</p>
   </section>
 
   <div id="board"></div>
@@ -703,7 +726,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.8</p>
+    <p class="build">Build 2026-09-23.10</p>
   </div>
 </footer>
 
@@ -764,6 +787,62 @@ footer a:hover { color: var(--orange); }
       if (SECTIONS[i].key === key) return SECTIONS[i].title;
     }
     return key;
+  }
+
+  /* Who may edit what. A crew belongs to the names in its owner column; a
+     crew still owned by TBD is open to everyone until a lead is put in. The
+     admin list comes from the script, so it changes without touching this
+     file. This is a guard against wrong taps, not a security boundary. */
+  var admins = [];
+  var canEdit = {};
+
+  function isAdmin() {
+    var n = String(me || "").toLowerCase();
+    if (!n) return false;
+    for (var i = 0; i < admins.length; i++) {
+      if (String(admins[i]).toLowerCase() === n) return true;
+    }
+    return false;
+  }
+
+  function computeCanEdit() {
+    canEdit = {};
+    if (!me || !state || !state.tasks) return;
+    var mine = me.toLowerCase();
+    var seen = {};
+    state.tasks.forEach(function (t) {
+      if (!seen[t.section]) seen[t.section] = { named: false, mine: false };
+      var o = String(t.owner || "");
+      if (o && !isTbd(o)) seen[t.section].named = true;
+      if (o && o.toLowerCase().indexOf(mine) > -1) seen[t.section].mine = true;
+    });
+    var admin = isAdmin();
+    Object.keys(seen).forEach(function (k) {
+      canEdit[k] = admin || seen[k].mine || !seen[k].named;
+    });
+  }
+
+  function mayEdit(t) { return !!me && !!canEdit[t.section]; }
+
+  /* A crew's lead is whatever its owner column says most often, with the
+     "Crew: " prefix trimmed off. Shown once in the header instead of on
+     every task. A task owned by somebody else still says so. */
+  function crewOwner(rows) {
+    var tally = {}, best = "", n = 0;
+    rows.forEach(function (t) {
+      var o = String(t.owner || "").trim();
+      if (!o) return;
+      tally[o] = (tally[o] || 0) + 1;
+      if (tally[o] > n) { n = tally[o]; best = o; }
+    });
+    return best;
+  }
+
+  function shortOwner(owner) {
+    var o = String(owner || "").trim();
+    var i = o.indexOf(":");
+    if (i > -1) o = o.slice(i + 1).trim();
+    return o;
   }
 
   /* Reads a yyyy-mm-dd date for display. Undated work sorts to the end. */
@@ -1040,15 +1119,23 @@ footer a:hover { color: var(--orange); }
       days === 0 ? "Today" : "Wrapped";
   }
 
-  /* Only the add-task form has a picker now. */
+  /* Only the add-task form has a picker now, and it offers a crew only if
+     this person can edit it. */
   function fillSelects() {
     var add = $("addSec");
-    if (!add.options.length) {
-      SECTIONS.forEach(function (s) {
-        if (s.key === "settled") return;
-        var o = el("option", null, s.title); o.value = s.key; add.appendChild(o);
-      });
-    }
+    var keep = add.value;
+    add.innerHTML = "";
+    SECTIONS.forEach(function (s) {
+      if (s.key === "settled" || !canEdit[s.key]) return;
+      var o = el("option", null, s.title); o.value = s.key; add.appendChild(o);
+    });
+    add.value = keep;
+    var none = !add.options.length;
+    add.disabled = none;
+    $("addBtn").disabled = none;
+    $("addStatus").textContent = none && me
+      ? "You can add tasks once a crew lists your name."
+      : "";
   }
 
   function statusTag(t) {
@@ -1068,7 +1155,7 @@ footer a:hover { color: var(--orange); }
     tick.setAttribute("aria-checked", t.status === "done" ? "true" : "false");
     tick.setAttribute("aria-label", (t.status === "done" ? "Reopen: " : "Mark done: ") + t.task);
     tick.textContent = t.status === "done" ? "✓" : "";
-    tick.disabled = !me;
+    tick.disabled = !mayEdit(t);
     tick.addEventListener("click", function () {
       send({ action: "status", id: t.id, status: t.status === "done" ? "open" : "done" });
     });
@@ -1078,9 +1165,11 @@ footer a:hover { color: var(--orange); }
     mid.appendChild(el("div", "ttext", t.task));
 
     var meta = el("div", "tmeta");
-    if (t.due) meta.appendChild(el("span", "tdue", fmtDue(t.due)));
-    var ownerTag = el("span", "tag" + (isTbd(t.owner) ? " tbd" : ""), t.owner || "Unassigned");
-    meta.appendChild(ownerTag);
+    /* The crew's own name lives in the header. Only an exception shows here. */
+    if (t._odd) {
+      meta.appendChild(el("span", "tag" + (isTbd(t.owner) ? " tbd" : ""),
+        t.owner || "Unassigned"));
+    }
     var st = statusTag(t);
     if (st) meta.appendChild(st);
     if (t.notes.length) {
@@ -1113,13 +1202,18 @@ footer a:hover { color: var(--orange); }
     /* status */
     var sh = el("h4", null, "Status");
     p.appendChild(sh);
+    if (me && !mayEdit(t)) {
+      p.appendChild(el("p", "locked",
+        "Read-only. Only " + crewName(t.section) + " can update this one."));
+    }
+
     var srow = el("div", "statusrow");
     [["open", "Not started"], ["doing", "Working on it"],
      ["done", "Done"]].forEach(function (pair) {
       var b = el("button", "chip", pair[1]);
       b.type = "button";
       b.setAttribute("aria-pressed", t.status === pair[0] ? "true" : "false");
-      b.disabled = !me;
+      b.disabled = !mayEdit(t);
       b.addEventListener("click", function () {
         send({ action: "status", id: t.id, status: pair[0] });
       });
@@ -1135,12 +1229,12 @@ footer a:hover { color: var(--orange); }
     oin.type = "text";
     oin.value = t.owner;
     oin.placeholder = "Crew: Name";
-    oin.disabled = !me;
+    oin.disabled = !mayEdit(t);
     ofield.appendChild(oin);
     orow.appendChild(ofield);
     var obtn = el("button", "btn ghost", "Save owner");
     obtn.type = "button";
-    obtn.disabled = !me;
+    obtn.disabled = !mayEdit(t);
     obtn.addEventListener("click", function () {
       var v = oin.value.trim();
       if (!v) return;
@@ -1168,15 +1262,17 @@ footer a:hover { color: var(--orange); }
 
     var form = el("div", "noteform");
     var ta = el("textarea");
-    ta.placeholder = me
-      ? "What changed? Who did you hear from? What is in the way?"
-      : "Add your name at the top of the page first.";
-    ta.disabled = !me;
+    ta.placeholder = !me
+      ? "Pick your name at the top of the page first."
+      : (mayEdit(t)
+          ? "What changed? Who did you hear from? What is in the way?"
+          : "This crew is not yours to update.");
+    ta.disabled = !mayEdit(t);
     form.appendChild(ta);
     var brow = el("div", "btnrow");
     var post = el("button", "btn", "Post update");
     post.type = "button";
-    post.disabled = !me;
+    post.disabled = !mayEdit(t);
     var msg = el("span", "mini-status");
     post.addEventListener("click", function () {
       var v = ta.value.trim();
@@ -1281,16 +1377,26 @@ footer a:hover { color: var(--orange); }
 
       var block = el("section", "sec");
       var head = el("div", "sechead");
-      head.appendChild(el("h2", null, sec.title));
+      var hl = el("div", "sectitle");
+      hl.appendChild(el("h2", null, sec.title));
+      var owner = crewOwner(rows);
+      var short = shortOwner(owner);
+      if (short) {
+        hl.appendChild(el("span", "seclead" + (isTbd(short) ? " tbd" : ""),
+          isTbd(short) ? "No lead yet" : short));
+      }
+      head.appendChild(hl);
       var done = rows.filter(function (t) { return t.status === "done"; }).length;
       head.appendChild(el("span", "count", done + " of " + rows.length + " done"));
       block.appendChild(head);
+      sec._owner = owner;
 
       var body = el("div", "secbody");
       if (sec.blurb) body.appendChild(el("p", "secblurb", sec.blurb));
 
       rows.forEach(function (t) {
-        body.appendChild(sec.kind === "lead" ? buildLead(t) : buildTask(t));
+        t._odd = String(t.owner || "") !== owner;
+        body.appendChild(buildTask(t));
       });
 
       block.appendChild(body);
@@ -1322,6 +1428,7 @@ footer a:hover { color: var(--orange); }
 
   function render() {
     if (!state) return;
+    computeCanEdit();
     fillSelects();
     paintBoard();
     paintFeed();
@@ -1359,6 +1466,7 @@ footer a:hover { color: var(--orange); }
     call({ action: "load" }, function (res) {
       state = res.state || res;
       if (!state.tasks) { topNote("The sheet came back empty. Run setUp() in the script.", true); return; }
+      admins = state.admins || [];
       if (state.people && state.people.length) {
         var before = people.join("|");
         people = state.people;
