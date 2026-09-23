@@ -488,6 +488,7 @@ select option { background: var(--card-sunk); color: var(--cream); }
 
 .tag.tbd { background: var(--orange); border-color: var(--orange); color: var(--orange-ink); }
 .tag.doing { border-color: var(--orange); color: var(--orange); }
+.tag.done { border-color: var(--green); color: var(--green); }
 
 .tnotes { font-weight: 600; color: var(--focus); }
 
@@ -726,7 +727,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.12</p>
+    <p class="build">Build 2026-09-23.13</p>
   </div>
 </footer>
 
@@ -998,6 +999,10 @@ footer a:hover { color: var(--orange); }
   var code = store("tt2026.code") || "";
   var openPanels = {};
 
+  /* A status picked but not yet confirmed, per task. Kept out here so the
+     90-second refresh cannot wipe a choice somebody is part way through. */
+  var pendingStatus = {};
+
   /* ---------------------------------------------------------- name control */
 
   /**
@@ -1161,6 +1166,7 @@ footer a:hover { color: var(--orange); }
 
   function statusTag(t) {
     if (t.status === "doing") return el("span", "tag doing", "Working on it");
+    if (t.status === "done") return el("span", "tag done", "Done");
     return null;
   }
 
@@ -1169,18 +1175,6 @@ footer a:hover { color: var(--orange); }
     wrap.setAttribute("data-id", t.id);
 
     var row = el("div", "trow");
-
-    var tick = el("button", "tick");
-    tick.type = "button";
-    tick.setAttribute("role", "checkbox");
-    tick.setAttribute("aria-checked", t.status === "done" ? "true" : "false");
-    tick.setAttribute("aria-label", (t.status === "done" ? "Reopen: " : "Mark done: ") + t.task);
-    tick.textContent = t.status === "done" ? "✓" : "";
-    tick.disabled = !mayEdit(t);
-    tick.addEventListener("click", function () {
-      send({ action: "status", id: t.id, status: t.status === "done" ? "open" : "done" });
-    });
-    row.appendChild(tick);
 
     var mid = el("div", "tmid");
     mid.appendChild(el("div", "ttext", t.task));
@@ -1229,18 +1223,48 @@ footer a:hover { color: var(--orange); }
     }
 
     var srow = el("div", "statusrow");
+    var picked = pendingStatus[t.id] || t.status;
+    var chips = [];
+
+    function paintChips() {
+      chips.forEach(function (c) {
+        c.btn.setAttribute("aria-pressed", c.key === picked ? "true" : "false");
+      });
+      var changed = picked !== t.status;
+      confirm.disabled = !changed || !mayEdit(t);
+      confirm.textContent = changed ? "Confirm" : "Confirmed";
+    }
+
     [["open", "Not started"], ["doing", "Working on it"],
      ["done", "Done"]].forEach(function (pair) {
       var b = el("button", "chip", pair[1]);
       b.type = "button";
-      b.setAttribute("aria-pressed", t.status === pair[0] ? "true" : "false");
       b.disabled = !mayEdit(t);
       b.addEventListener("click", function () {
-        send({ action: "status", id: t.id, status: pair[0] });
+        picked = pair[0];
+        if (picked === t.status) delete pendingStatus[t.id];
+        else pendingStatus[t.id] = picked;
+        paintChips();
       });
+      chips.push({ key: pair[0], btn: b });
       srow.appendChild(b);
     });
+
+    var confirm = el("button", "btn", "Confirmed");
+    confirm.type = "button";
+    confirm.addEventListener("click", function () {
+      var want = picked;
+      confirm.disabled = true;
+      confirm.textContent = "Saving";
+      delete pendingStatus[t.id];
+      send({ action: "status", id: t.id, status: want }, function (err) {
+        if (err) { pendingStatus[t.id] = want; render(); }
+      });
+    });
+    srow.appendChild(confirm);
+
     p.appendChild(srow);
+    paintChips();
 
     /* owner */
     p.appendChild(el("h4", null, "Who has it"));
