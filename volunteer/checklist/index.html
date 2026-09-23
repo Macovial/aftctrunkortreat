@@ -662,56 +662,6 @@ footer a:hover { color: var(--orange); }
       notes and claim buttons switch on.</p>
   </section>
 
-  <!-- progress -->
-  <section class="card" aria-labelledby="progHead">
-    <div class="prog-top">
-      <h2 id="progHead">Where the committee stands</h2>
-      <span class="prog-num" id="progNum"></span>
-    </div>
-    <div class="meter" id="meter" role="img" aria-label="Overall progress">
-      <i class="done" style="width:0"></i><i class="doing" style="width:0"></i><i class="blocked" style="width:0"></i>
-    </div>
-    <div class="key">
-      <span><i class="dot done"></i> Done <b id="cDone">0</b></span>
-      <span><i class="dot doing"></i> Working on it <b id="cDoing">0</b></span>
-      <span><i class="dot blocked"></i> Blocked <b id="cBlocked">0</b></span>
-      <span><i class="dot open"></i> Not started <b id="cOpen">0</b></span>
-      <span>No owner yet <b id="cTbd">0</b></span>
-    </div>
-    <div class="crewgrid" id="crewGrid"></div>
-  </section>
-
-  <!-- filters -->
-  <section class="card" aria-labelledby="filtHead">
-    <h2 id="filtHead" class="srOnly">Filters</h2>
-    <div class="filters">
-      <div class="field">
-        <label for="q">Search</label>
-        <input type="text" id="q" placeholder="Word in a task, a name, a date">
-      </div>
-      <div class="field">
-        <label for="crewSel">Crew</label>
-        <select id="crewSel"><option value="">Every crew</option></select>
-      </div>
-      <div class="field">
-        <label for="statSel">Status</label>
-        <select id="statSel">
-          <option value="">Any status</option>
-          <option value="open">Not started</option>
-          <option value="doing">Working on it</option>
-          <option value="blocked">Blocked</option>
-          <option value="done">Done</option>
-        </select>
-      </div>
-    </div>
-    <div class="toggles" style="margin-top:12px">
-      <button class="chip" id="tMine" type="button" aria-pressed="false">Only mine</button>
-      <button class="chip" id="tOpen" type="button" aria-pressed="false">Hide finished</button>
-      <button class="chip" id="tSettled" type="button" aria-pressed="false">Show already settled</button>
-      <button class="chip" id="tClear" type="button" aria-pressed="false">Clear filters</button>
-    </div>
-  </section>
-
   <div id="board"></div>
 
   <!-- add -->
@@ -757,7 +707,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.3</p>
+    <p class="build">Build 2026-09-23.4</p>
   </div>
 </footer>
 
@@ -951,7 +901,6 @@ footer a:hover { color: var(--orange); }
   var me = store("tt2026.name") || "";
   var code = store("tt2026.code") || "";
   var openPanels = {};
-  var filters = { q: "", crew: "", status: "", mine: false, hideDone: false, settled: false };
 
   /* ---------------------------------------------------------- name control */
 
@@ -1058,7 +1007,6 @@ footer a:hover { color: var(--orange); }
     $("whoIs").hidden = !have;
     $("lockNote").hidden = have;
     if (have) $("whoLabel").textContent = me;
-    $("tMine").disabled = !have;
   }
 
   $("whoSave").addEventListener("click", function () {
@@ -1096,106 +1044,15 @@ footer a:hover { color: var(--orange); }
       days === 0 ? "Today" : "Wrapped";
   }
 
-  function tracked(t) {
-    for (var i = 0; i < SECTIONS.length; i++) {
-      if (SECTIONS[i].key === t.section) return SECTIONS[i].counts !== false;
-    }
-    return true;
-  }
-
-  function paintProgress() {
-    var done = 0, doing = 0, blocked = 0, open = 0, tbd = 0, total = 0;
-    var crews = {};
-
-    state.tasks.forEach(function (t) {
-      if (!tracked(t)) return;
-      total++;
-      if (t.status === "done") done++;
-      else if (t.status === "doing") doing++;
-      else if (t.status === "blocked") blocked++;
-      else open++;
-      if (t.status !== "done" && isTbd(t.owner)) tbd++;
-
-      var c = crewName(t.section);
-      if (!crews[c]) crews[c] = { done: 0, total: 0, tbd: false };
-      crews[c].total++;
-      if (t.status === "done") crews[c].done++;
-      if (isTbd(t.owner)) crews[c].tbd = true;
-    });
-
-    var pct = total ? Math.round(done / total * 100) : 0;
-    $("progNum").textContent = done + " of " + total + " done, " + pct + " per cent";
-    var bars = $("meter").children;
-    bars[0].style.width = (total ? done / total * 100 : 0) + "%";
-    bars[1].style.width = (total ? doing / total * 100 : 0) + "%";
-    bars[2].style.width = (total ? blocked / total * 100 : 0) + "%";
-    $("meter").setAttribute("aria-label", "Overall progress, " + pct + " per cent done");
-
-    $("cDone").textContent = done;
-    $("cDoing").textContent = doing;
-    $("cBlocked").textContent = blocked;
-    $("cOpen").textContent = open;
-    $("cTbd").textContent = tbd;
-
-    var grid = $("crewGrid");
-    grid.innerHTML = "";
-    Object.keys(crews).sort().forEach(function (name) {
-      var c = crews[name];
-      var cell = el("div", "crewcell" + (c.tbd ? " noLead" : ""));
-      cell.appendChild(el("b", null, name));
-      var mini = el("div", "mini");
-      var fill = el("i");
-      fill.style.width = (c.total ? c.done / c.total * 100 : 0) + "%";
-      mini.appendChild(fill);
-      cell.appendChild(mini);
-      cell.appendChild(el("small", null, c.done + " of " + c.total +
-        (c.tbd ? ", no lead" : "")));
-      grid.appendChild(cell);
-    });
-  }
-
+  /* Only the add-task form has a picker now. */
   function fillSelects() {
-    var crews = {};
-    state.tasks.forEach(function (t) { crews[crewName(t.section)] = 1; });
-    var sel = $("crewSel");
-    var keep = sel.value;
-    sel.innerHTML = '<option value="">Every crew</option>';
-    Object.keys(crews).sort().forEach(function (c) {
-      var o = el("option", null, c); o.value = c; sel.appendChild(o);
-    });
-    sel.value = keep;
-
     var add = $("addSec");
     if (!add.options.length) {
       SECTIONS.forEach(function (s) {
-        if (s.key === "settled" || s.kind === "lead") return;
+        if (s.key === "settled") return;
         var o = el("option", null, s.title); o.value = s.key; add.appendChild(o);
       });
     }
-  }
-
-  function passes(t) {
-    if (filters.crew && crewName(t.section) !== filters.crew) return false;
-    if (filters.status && t.status !== filters.status) return false;
-    if (filters.hideDone && t.status === "done") return false;
-    if (filters.mine && me) {
-      var hay = (t.owner + " " + t.by).toLowerCase();
-      if (hay.indexOf(me.toLowerCase()) === -1) return false;
-    }
-    if (filters.q) {
-      var q = filters.q.toLowerCase();
-      var blob = (t.task + " " + t.owner + " " + t.by).toLowerCase();
-      var hit = blob.indexOf(q) > -1;
-      if (!hit) {
-        for (var i = 0; i < t.notes.length; i++) {
-          if ((t.notes[i].note + " " + t.notes[i].person).toLowerCase().indexOf(q) > -1) {
-            hit = true; break;
-          }
-        }
-      }
-      if (!hit) return false;
-    }
-    return true;
   }
 
   function statusTag(t) {
@@ -1416,10 +1273,8 @@ footer a:hover { color: var(--orange); }
     board.innerHTML = "";
 
     SECTIONS.forEach(function (sec) {
-      if (sec.key === "settled" && !filters.settled) return;
-
       var rows = state.tasks.filter(function (t) {
-        return t.section === sec.key && passes(t);
+        return t.section === sec.key;
       });
       if (!rows.length) return;
 
@@ -1449,7 +1304,7 @@ footer a:hover { color: var(--orange); }
     });
 
     if (!board.children.length) {
-      board.appendChild(el("p", "empty", "Nothing matches those filters."));
+      board.appendChild(el("p", "empty", "No tasks yet. Add one at the bottom of the page."));
     }
   }
 
@@ -1473,7 +1328,6 @@ footer a:hover { color: var(--orange); }
 
   function render() {
     if (!state) return;
-    paintProgress();
     fillSelects();
     paintBoard();
     paintFeed();
@@ -1529,43 +1383,6 @@ footer a:hover { color: var(--orange); }
     });
   }
 
-  /* ------------------------------------------------------------- filter UI */
-
-  function bindFilters() {
-    var t;
-    $("q").addEventListener("input", function () {
-      clearTimeout(t);
-      var v = this.value;
-      t = setTimeout(function () { filters.q = v.trim(); paintBoard(); }, 160);
-    });
-    $("crewSel").addEventListener("change", function () {
-      filters.crew = this.value; paintBoard();
-    });
-    $("statSel").addEventListener("change", function () {
-      filters.status = this.value; paintBoard();
-    });
-
-    function toggle(id, key, after) {
-      $(id).addEventListener("click", function () {
-        filters[key] = !filters[key];
-        this.setAttribute("aria-pressed", filters[key] ? "true" : "false");
-        (after || paintBoard)();
-      });
-    }
-    toggle("tMine", "mine");
-    toggle("tOpen", "hideDone");
-    toggle("tSettled", "settled");
-
-    $("tClear").addEventListener("click", function () {
-      filters = { q: "", crew: "", status: "", mine: false, hideDone: false, settled: false };
-      $("q").value = ""; $("crewSel").value = ""; $("statSel").value = "";
-      ["tMine", "tOpen", "tSettled"].forEach(function (i) {
-        $(i).setAttribute("aria-pressed", "false");
-      });
-      paintBoard();
-    });
-  }
-
   $("addBtn").addEventListener("click", function () {
     var task = $("addTask").value.trim();
     var st = $("addStatus");
@@ -1591,7 +1408,6 @@ footer a:hover { color: var(--orange); }
   setInterval(countdown, 3600000);
   mountWho();
   paintWho();
-  bindFilters();
   state = localState();
   render();
   loadState(false);
