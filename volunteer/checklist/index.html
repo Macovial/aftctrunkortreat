@@ -162,6 +162,43 @@ main { max-width: 980px; margin: 0 auto; padding: 22px 20px 10px; }
 
 /* ---------- who are you ---------- */
 
+/* The sign-in box, narrow and centred, with a flag beside it. On a phone the
+   flag drops above the box rather than squeezing it. */
+.startrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.whocard {
+  flex: 0 1 460px;
+  min-width: 0;
+}
+
+.starthere {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--focus);
+  white-space: nowrap;
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+.starthere::after { content: " \25B8"; }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .starthere { animation: none; }
+}
+
 .whobar {
   display: flex;
   flex-wrap: wrap;
@@ -456,7 +493,7 @@ select option { background: var(--card-sunk); color: var(--cream); }
 .ttext { font-size: 15px; font-weight: 600; }
 
 .tstat { font-weight: 800; letter-spacing: .01em; }
-.tstat.s-open { color: var(--cream-dim); }
+.tstat.s-open { color: var(--danger); }
 .tstat.s-doing { color: var(--orange); }
 .tstat.s-done { color: var(--green); }
 
@@ -660,32 +697,32 @@ footer a:hover { color: var(--orange); }
   <div id="topNote" class="banner-note" hidden></div>
 
   <!-- who -->
-  <section class="card" aria-labelledby="whoHead">
-    <h2 id="whoHead" class="srOnly">Who you are</h2>
-    <div id="whoAsk">
-      <div class="whobar">
-        <div class="field">
-          <label for="whoName" id="whoNameLabel">Your name</label>
-          <span class="hint">Pick yourself from the list. It stays on this device and rides
-            along on every update, so the committee knows who did what.</span>
-          <div id="whoField"></div>
+  <div class="startrow">
+    <span class="starthere" id="startHere" aria-hidden="true">Start here</span>
+    <section class="card whocard" aria-labelledby="whoHead">
+      <h2 id="whoHead" class="srOnly">Who you are</h2>
+      <div id="whoAsk">
+        <div class="whobar">
+          <div class="field">
+            <label for="whoName" id="whoNameLabel">Your name</label>
+            <div id="whoField"></div>
+          </div>
+          <div class="field" id="codeField" hidden>
+            <label for="whoCode">Edit code</label>
+            <input type="text" id="whoCode" placeholder="Code from the chair">
+          </div>
+          <button class="btn" id="whoSave" type="button">Start</button>
         </div>
-        <div class="field" id="codeField" hidden>
-          <label for="whoCode">Edit code</label>
-          <input type="text" id="whoCode" placeholder="Code from the chair">
-        </div>
-        <button class="btn" id="whoSave" type="button">Start</button>
       </div>
-    </div>
-    <div id="whoIs" class="you" hidden>
-      <span>Signed in as <b id="whoLabel"></b></span>
-      <button class="btn ghost" id="whoChange" type="button">Not you?</button>
-      <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
-      <span class="mini-status" id="syncLine"></span>
-    </div>
-    <p class="locked" id="lockNote" hidden>Pick your name above to switch on the
-      crew you belong to. Everything else stays read-only.</p>
-  </section>
+      <div id="whoIs" class="you" hidden>
+        <span>Signed in as <b id="whoLabel"></b></span>
+        <button class="btn ghost" id="whoChange" type="button">Not you?</button>
+        <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
+        <span class="mini-status" id="syncLine"></span>
+      </div>
+      <p class="locked" id="lockNote" hidden>Pick your name to switch on your crew.</p>
+    </section>
+  </div>
 
   <div id="board"></div>
 
@@ -732,7 +769,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.17</p>
+    <p class="build">Build 2026-09-23.19</p>
   </div>
 </footer>
 
@@ -1138,6 +1175,7 @@ footer a:hover { color: var(--orange); }
     $("whoAsk").hidden = have;
     $("whoIs").hidden = !have;
     $("lockNote").hidden = have;
+    $("startHere").hidden = have;
     if (have) $("whoLabel").textContent = me;
   }
 
@@ -1198,9 +1236,9 @@ footer a:hover { color: var(--orange); }
   }
 
   function statusLabel(t) {
-    if (t.status === "doing") return "Working on it";
-    if (t.status === "done") return "Done";
-    return "Not started";
+    if (t.status === "doing") return "In Progress";
+    if (t.status === "done") return "Completed";
+    return "Not Started";
   }
 
   function buildTask(t) {
@@ -1269,8 +1307,8 @@ footer a:hover { color: var(--orange); }
       confirm.textContent = changed ? "Confirm" : "Confirmed";
     }
 
-    [["open", "Not started"], ["doing", "Working on it"],
-     ["done", "Done"]].forEach(function (pair) {
+    [["open", "Not Started"], ["doing", "In Progress"],
+     ["done", "Completed"]].forEach(function (pair) {
       var b = el("button", "chip", pair[1]);
       b.type = "button";
       b.disabled = !mayEdit(t);
