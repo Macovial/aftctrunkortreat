@@ -726,7 +726,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.11</p>
+    <p class="build">Build 2026-09-23.12</p>
   </div>
 </footer>
 
@@ -923,6 +923,27 @@ footer a:hover { color: var(--orange); }
       });
     }
     return { sections: SECTIONS, tasks: tasks, activity: [], eventDate: EVENT_DATE };
+  }
+
+  /* The last board the sheet sent, kept so the page can draw something the
+     moment it opens instead of sitting empty for a second or two. Separate
+     key from the practice-mode copy so the two can never mix. */
+  var CACHE_KEY = "tt2026.board";
+
+  function cacheBoard(s) {
+    if (!LIVE || !s || !s.tasks) return;
+    try { store(CACHE_KEY, JSON.stringify({ at: Date.now(), state: s })); }
+    catch (e) { /* a full or blocked store is not worth failing over */ }
+  }
+
+  function cachedBoard() {
+    if (!LIVE) return null;
+    try {
+      var raw = store(CACHE_KEY);
+      if (!raw) return null;
+      var box = JSON.parse(raw);
+      return (box && box.state && box.state.tasks) ? box.state : null;
+    } catch (e) { return null; }
   }
 
   function saveLocal(s) {
@@ -1511,10 +1532,11 @@ footer a:hover { color: var(--orange); }
         "Practice mode. This page is not connected to the committee sheet yet, so anything you change here stays in this browser only.",
         false);
       $("syncLine").textContent = "Updated " + fmtWhen(new Date().toISOString());
+      cacheBoard(state);
       render();
     }, function (err) {
-      topNote(err + " Showing the last saved copy of the list.", true);
-      if (!state) { state = localState(); render(); }
+      topNote(err + " Showing the last copy this device saw.", true);
+      if (!state) { state = cachedBoard() || localState(); render(); }
     });
   }
 
@@ -1543,8 +1565,10 @@ footer a:hover { color: var(--orange); }
   setInterval(countdown, 3600000);
   mountWho();
   paintWho();
-  state = localState();
+  /* Draw the last board first, then go and get the current one. */
+  state = cachedBoard() || localState();
   render();
+  if (LIVE && cachedBoard()) $("syncLine").textContent = "Checking for changes";
   loadState(false);
 
   /* Quiet refresh, so two people working at once see each other. */
