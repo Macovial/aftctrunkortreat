@@ -455,6 +455,11 @@ select option { background: var(--card-sunk); color: var(--cream); }
 
 .ttext { font-size: 15px; font-weight: 600; }
 
+.tstat { font-weight: 800; letter-spacing: .01em; }
+.tstat.s-open { color: var(--cream-dim); }
+.tstat.s-doing { color: var(--orange); }
+.tstat.s-done { color: var(--green); }
+
 .tmeta {
   margin-top: 5px;
   display: flex;
@@ -727,7 +732,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.13</p>
+    <p class="build">Build 2026-09-23.17</p>
   </div>
 </footer>
 
@@ -795,6 +800,7 @@ footer a:hover { color: var(--orange); }
      admin list comes from the script, so it changes without touching this
      file. This is a guard against wrong taps, not a security boundary. */
   var admins = [];
+  var lastCrews = null;
   var canEdit = {};
 
   function isAdmin() {
@@ -817,6 +823,15 @@ footer a:hover { color: var(--orange); }
       if (o && !isTbd(o)) seen[t.section].named = true;
       if (o && o.toLowerCase().indexOf(mine) > -1) seen[t.section].mine = true;
     });
+
+    /* Signing up for a crew is enough. A helper never appears in an owner
+       cell, and a brand new lead will not either until somebody edits that
+       column, so the sign-up itself has to grant access or new volunteers
+       arrive locked out of the crew they just joined. */
+    var joined = ((state && state.crews) || {})[mine] || "";
+    if (joined && !seen[joined]) seen[joined] = { named: true, mine: true };
+    if (joined && seen[joined]) seen[joined].mine = true;
+
     var admin = isAdmin();
     Object.keys(seen).forEach(function (k) {
       canEdit[k] = admin || seen[k].mine || !seen[k].named;
@@ -824,6 +839,45 @@ footer a:hover { color: var(--orange); }
   }
 
   function mayEdit(t) { return !!me && !!canEdit[t.section]; }
+
+  /* The first crew whose owner column actually names this person. Not the
+     same as what they may edit: everyone may edit a crew with no lead, and
+     the chair may edit all of them, but neither is anybody's home. */
+  function homeSection() {
+    if (!me || !state || !state.tasks) return "";
+    var mine = me.toLowerCase();
+
+    /* A lead is named in their crew's owner column, and the sheet wins,
+       since a reassignment there is the newest word on who owns the work. */
+    for (var i = 0; i < SECTIONS.length; i++) {
+      var key = SECTIONS[i].key;
+      for (var j = 0; j < state.tasks.length; j++) {
+        var t = state.tasks[j];
+        if (t.section !== key) continue;
+        if (String(t.owner || "").toLowerCase().indexOf(mine) > -1) return key;
+      }
+    }
+
+    /* A helper is on no owner line at all, so fall back to the crew they
+       signed up for on the volunteer page. */
+    var crews = (state && state.crews) || {};
+    var bySignUp = crews[mine];
+    if (bySignUp) {
+      for (var k = 0; k < SECTIONS.length; k++) {
+        if (SECTIONS[k].key === bySignUp) return bySignUp;
+      }
+    }
+    return "";
+  }
+
+  function goHome() {
+    var key = homeSection();
+    if (!key) return;
+    var box = document.getElementById("sec-" + key);
+    if (box && box.scrollIntoView) {
+      box.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
 
   /* A crew's lead is whatever its owner column says most often, with the
      "Crew: " prefix trimmed off. Shown once in the header instead of on
@@ -1051,41 +1105,18 @@ footer a:hover { color: var(--orange); }
       sel.appendChild(o);
     });
 
-    var other = el("option", null, "My name is not on the list");
-    other.value = "__other__";
-    sel.appendChild(other);
-
-    var txt = el("input");
-    txt.type = "text";
-    txt.placeholder = "Type your name";
-    txt.autocomplete = "name";
-    txt.hidden = true;
-    if (opts.disabled) txt.disabled = true;
-
-    /* A saved name the sheet has never heard of still shows, in the box. */
-    if (opts.value && !known) {
-      other.selected = true;
-      txt.hidden = false;
-      txt.value = opts.value;
-    }
-
-    sel.addEventListener("change", function () {
-      txt.hidden = sel.value !== "__other__";
-      if (!txt.hidden) txt.focus();
-    });
-
+    /* No free-text escape hatch. If a name is missing it belongs on the
+       sign-up sheet, or in EXTRA_PEOPLE in the script. */
     if (opts.onEnter) {
-      txt.addEventListener("keydown", function (e) {
+      sel.addEventListener("keydown", function (e) {
         if (e.key === "Enter") { e.preventDefault(); opts.onEnter(); }
       });
     }
 
     host.appendChild(sel);
-    host.appendChild(txt);
 
     return function () {
-      var v = sel.value === "__other__" ? txt.value : sel.value;
-      return String(v || "").replace(/\s+/g, " ").trim();
+      return String(sel.value || "").replace(/\s+/g, " ").trim();
     };
   }
 
@@ -1122,6 +1153,8 @@ footer a:hover { color: var(--orange); }
     var c = $("whoCode").value.trim();
     if (c) { code = c; store("tt2026.code", c); }
     paintWho(); render();
+    /* Straight to your own crew, so nobody scrolls past nine others. */
+    goHome();
   });
 
   $("whoChange").addEventListener("click", function () {
@@ -1164,10 +1197,10 @@ footer a:hover { color: var(--orange); }
       : "";
   }
 
-  function statusTag(t) {
-    if (t.status === "doing") return el("span", "tag doing", "Working on it");
-    if (t.status === "done") return el("span", "tag done", "Done");
-    return null;
+  function statusLabel(t) {
+    if (t.status === "doing") return "Working on it";
+    if (t.status === "done") return "Done";
+    return "Not started";
   }
 
   function buildTask(t) {
@@ -1177,7 +1210,10 @@ footer a:hover { color: var(--orange); }
     var row = el("div", "trow");
 
     var mid = el("div", "tmid");
-    mid.appendChild(el("div", "ttext", t.task));
+    var line = el("div", "ttext");
+    line.appendChild(el("span", "tstat s-" + t.status, statusLabel(t)));
+    line.appendChild(document.createTextNode(" - " + t.task));
+    mid.appendChild(line);
 
     var meta = el("div", "tmeta");
     /* The crew's own name lives in the header. Only an exception shows here. */
@@ -1185,8 +1221,6 @@ footer a:hover { color: var(--orange); }
       meta.appendChild(el("span", "tag" + (isTbd(t.owner) ? " tbd" : ""),
         t.owner || "Unassigned"));
     }
-    var st = statusTag(t);
-    if (st) meta.appendChild(st);
     if (t.notes.length) {
       meta.appendChild(el("span", "tnotes",
         t.notes.length === 1 ? "1 update" : t.notes.length + " updates"));
@@ -1423,6 +1457,7 @@ footer a:hover { color: var(--orange); }
       });
 
       var block = el("section", "sec");
+      block.id = "sec-" + sec.key;
       var head = el("div", "sechead");
       var hl = el("div", "sectitle");
       hl.appendChild(el("h2", null, sec.title));
@@ -1545,6 +1580,10 @@ footer a:hover { color: var(--orange); }
       state = res.state || res;
       if (!state.tasks) { topNote("The sheet came back empty. Run setUp() in the script.", true); return; }
       admins = state.admins || [];
+      /* A save reply travels light and carries no crew map. Keep the last one
+         rather than forgetting who is on which crew until the next full load. */
+      if (!state.crews && lastCrews) state.crews = lastCrews;
+      else if (state.crews) lastCrews = state.crews;
       if (state.people && state.people.length) {
         var before = people.join("|");
         people = state.people;
