@@ -726,7 +726,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.10</p>
+    <p class="build">Build 2026-09-23.11</p>
   </div>
 </footer>
 
@@ -1280,9 +1280,11 @@ footer a:hover { color: var(--orange); }
       post.disabled = true;
       msg.className = "mini-status";
       msg.textContent = "Saving";
+      ta.value = "";
       send({ action: "note", id: t.id, note: v }, function (err) {
         post.disabled = false;
-        if (err) { msg.className = "mini-status bad"; msg.textContent = err; }
+        if (err) { msg.className = "mini-status bad"; msg.textContent = err; ta.value = v; }
+        else { msg.textContent = ""; }
       });
     });
     brow.appendChild(post);
@@ -1444,10 +1446,40 @@ footer a:hover { color: var(--orange); }
     n.textContent = text;
   }
 
+  /* Apply the change on screen first, then send it. Apps Script takes a
+     second or two to answer, and waiting for that made every tick feel
+     broken. If the save fails we put the old value back and say so. */
+  function applyHere(params) {
+    if (!state || !state.tasks) return null;
+    var t = null;
+    for (var i = 0; i < state.tasks.length; i++) {
+      if (state.tasks[i].id === params.id) { t = state.tasks[i]; break; }
+    }
+    if (!t) return null;
+
+    var was = { status: t.status, owner: t.owner, notes: t.notes.slice() };
+    var now = new Date().toISOString();
+
+    if (params.action === "status") { t.status = params.status; t.at = now; }
+    else if (params.action === "owner") { t.owner = params.owner; t.at = now; }
+    else if (params.action === "note") {
+      t.notes = t.notes.concat([{ when: now, person: me, note: params.note }]);
+      t.at = now;
+    } else return null;
+
+    return function undo() {
+      t.status = was.status; t.owner = was.owner; t.notes = was.notes;
+    };
+  }
+
   function send(params, after) {
     if (!me) { topNote("Add your name at the top of the page first.", true); return; }
     params.person = me;
     if (code) params.code = code;
+
+    var undo = applyHere(params);
+    if (undo) render();
+
     $("syncLine").textContent = "Saving";
     call(params, function (res) {
       $("syncLine").textContent = "Saved " + fmtWhen(new Date().toISOString());
@@ -1456,7 +1488,8 @@ footer a:hover { color: var(--orange); }
       after && after(null);
     }, function (err) {
       $("syncLine").textContent = "";
-      topNote(err, true);
+      if (undo) { undo(); render(); }
+      topNote(err + " Nothing was saved, so the board has been put back.", true);
       after && after(err);
     });
   }
