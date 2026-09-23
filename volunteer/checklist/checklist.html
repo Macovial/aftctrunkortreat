@@ -1,0 +1,1588 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Live committee checklist for AFTC's Trunk or Treat 2026. Check off work, leave updates, claim an open crew lead.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Committee Checklist - AFTC Trunk or Treat 2026">
+<meta property="og:description" content="What is done, what is next, and who has it.">
+<title>Committee Checklist 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Creepster&family=Public+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+/* Same committed theme as the trunk host and volunteer pages: the deep purple
+   and orange used across AFTC's 2026 materials. Every color is painted
+   explicitly so the page holds on any host ground. */
+:root {
+  --ground: #2A0A3D;
+  --ground-deep: #1E0630;
+  --card: #3A1252;
+  --card-sunk: #2E0C43;
+  --cream: #F7E7C8;
+  --cream-dim: #CBB99B;
+  --orange: #E8761A;
+  --orange-ink: #2A0A3D;
+  --line: #52246E;
+  --focus: #FFC46B;
+  --green: #6FCF8B;
+  --danger: #FF7A5C;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--cream);
+  font-family: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: "Bricolage Grotesque", "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  color: var(--cream);
+  text-wrap: balance;
+  margin: 0;
+}
+
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+[hidden] { display: none !important; }
+
+/* ---------- hero ---------- */
+
+.band {
+  background: var(--ground-deep);
+  border-bottom: 5px solid var(--orange);
+  padding: 26px 20px 28px;
+}
+
+.band-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 13px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.band h1 {
+  font-family: "Creepster", "Bricolage Grotesque", cursive;
+  font-size: clamp(38px, 8vw, 62px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, .3);
+}
+
+.band p.lede {
+  margin: 0 auto;
+  max-width: 52ch;
+  color: var(--cream-dim);
+  text-wrap: balance;
+  font-size: 16.5px;
+}
+
+.factbar {
+  width: 100%;
+  margin-top: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  background: rgba(232, 118, 26, .1);
+  border: 1px solid rgba(232, 118, 26, .38);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fb {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 11px 16px;
+  border-right: 1px solid rgba(232, 118, 26, .28);
+}
+
+.fb:last-child { border-right: 0; }
+
+.fb b {
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: 12.5px;
+  color: var(--orange);
+}
+
+.fb span { color: var(--cream); font-size: 14.5px; font-weight: 600; }
+
+@media (max-width: 760px) {
+  .fb {
+    flex: 1 1 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    border-right: 0;
+    border-bottom: 1px solid rgba(232, 118, 26, .28);
+    padding: 9px 14px;
+  }
+  .fb:last-child { border-bottom: 0; }
+  .fb span { text-align: right; }
+}
+
+/* ---------- shell ---------- */
+
+main { max-width: 980px; margin: 0 auto; padding: 22px 20px 10px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px 20px 22px;
+}
+
+.card + .card { margin-top: 18px; }
+
+/* ---------- who are you ---------- */
+
+.whobar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.whobar .field { flex: 1 1 240px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+label { font-size: 14px; font-weight: 600; color: var(--cream); }
+
+.hint { font-size: 13px; color: var(--cream-dim); font-weight: 400; }
+
+input[type="text"], select, textarea {
+  font: inherit;
+  font-size: 15.5px;
+  color: var(--cream);
+  background: var(--card-sunk);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 9px 11px;
+  width: 100%;
+  transition: border-color .12s ease;
+}
+
+textarea { resize: vertical; min-height: 68px; line-height: 1.5; }
+
+input[type="text"]:focus, select:focus, textarea:focus {
+  border-color: var(--orange);
+  outline: none;
+}
+
+select option { background: var(--card-sunk); color: var(--cream); }
+
+.btn {
+  font: inherit;
+  font-weight: 700;
+  font-size: 14.5px;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 9px 16px;
+  border: 1px solid var(--orange);
+  background: var(--orange);
+  color: var(--orange-ink);
+  transition: filter .12s ease, background .12s ease;
+  white-space: nowrap;
+}
+
+.btn:hover { filter: brightness(1.08); }
+
+.btn.ghost {
+  background: transparent;
+  color: var(--cream);
+  border-color: var(--line);
+}
+
+.btn.ghost:hover { border-color: var(--orange); color: var(--orange); }
+
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+
+.namefield { display: flex; flex-direction: column; gap: 7px; }
+
+.namefield select:invalid { color: var(--cream-dim); }
+
+.you {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 14.5px;
+}
+
+.you b { color: var(--focus); }
+
+.locked {
+  margin: 12px 0 0;
+  padding: 10px 13px;
+  border: 1px dashed rgba(232, 118, 26, .55);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--cream-dim);
+}
+
+/* ---------- progress ---------- */
+
+.prog-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.prog-top h2 { font-size: 19px; }
+
+.prog-num { font-size: 14px; color: var(--cream-dim); }
+
+.meter {
+  height: 14px;
+  border-radius: 7px;
+  background: var(--card-sunk);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  display: flex;
+}
+
+.meter i { display: block; height: 100%; transition: width .35s ease; }
+.meter i.done    { background: var(--green); }
+.meter i.doing   { background: var(--orange); }
+.meter i.blocked { background: var(--danger); }
+
+.key {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13.5px;
+  color: var(--cream-dim);
+}
+
+.key span { display: inline-flex; align-items: center; gap: 7px; }
+
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.done { background: var(--green); }
+.dot.doing { background: var(--orange); }
+.dot.blocked { background: var(--danger); }
+.dot.open { background: var(--line); }
+
+.crewgrid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 10px;
+}
+
+.crewcell {
+  background: var(--card-sunk);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line);
+  border-radius: 5px;
+  padding: 9px 11px;
+}
+
+.crewcell.noLead { border-left-color: var(--orange); }
+
+.crewcell b { display: block; font-size: 13.5px; font-weight: 700; }
+
+.crewcell .mini {
+  margin-top: 6px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(247, 231, 200, .1);
+  overflow: hidden;
+}
+
+.crewcell .mini i { display: block; height: 100%; background: var(--green); }
+
+.crewcell small { color: var(--cream-dim); font-size: 12.5px; }
+
+/* ---------- filters ---------- */
+
+.filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.filters .field { flex: 1 1 170px; }
+
+.toggles { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  background: rgba(247, 231, 200, .05);
+  color: var(--cream-dim);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--orange-ink);
+}
+
+/* ---------- sections ---------- */
+
+.sec { margin-top: 26px; }
+
+.sechead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  background: var(--orange);
+  color: var(--orange-ink);
+  border-radius: 6px 6px 0 0;
+  padding: 9px 15px;
+}
+
+.sechead h2 {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--orange-ink);
+}
+
+.sechead .count { font-size: 13px; font-weight: 700; }
+
+.secbody {
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+  padding: 14px 15px 16px;
+  background: var(--card);
+}
+
+.secblurb { margin: 0 0 12px; font-size: 14.5px; color: var(--cream-dim); }
+
+/* ---------- task ---------- */
+
+.task {
+  background: var(--card-sunk);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line);
+  border-radius: 6px;
+  margin-bottom: 9px;
+}
+
+.task.s-doing   { border-left-color: var(--orange); }
+.task.s-done    { border-left-color: var(--green); }
+.task.s-blocked { border-left-color: var(--danger); }
+.task.s-done .ttext { color: var(--cream-dim); }
+
+.trow {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 11px 13px;
+}
+
+.tick {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  border-radius: 5px;
+  border: 2px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+  color: var(--ground-deep);
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background .12s ease, border-color .12s ease;
+}
+
+.tick:hover { border-color: var(--orange); }
+.tick[aria-checked="true"] { background: var(--green); border-color: var(--green); }
+.tick:disabled { cursor: not-allowed; opacity: .5; }
+
+.tmid { flex: 1 1 auto; min-width: 0; }
+
+.ttext { font-size: 15px; font-weight: 600; }
+
+.tmeta {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--cream-dim);
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  color: var(--cream-dim);
+  white-space: nowrap;
+}
+
+.tag.tbd { background: var(--orange); border-color: var(--orange); color: var(--orange-ink); }
+.tag.blocked { background: var(--danger); border-color: var(--danger); color: var(--orange-ink); }
+.tag.doing { border-color: var(--orange); color: var(--orange); }
+
+.tnotes { font-weight: 600; color: var(--focus); }
+
+.topen {
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--cream-dim);
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.topen:hover { border-color: var(--orange); color: var(--orange); }
+
+.panel {
+  border-top: 1px solid var(--line);
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.panel h4 {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.statusrow { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.ownerrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.ownerrow .field { flex: 1 1 200px; }
+
+.notelist { display: flex; flex-direction: column; gap: 8px; }
+
+.note {
+  background: rgba(247, 231, 200, .05);
+  border-left: 2px solid var(--line);
+  border-radius: 0 4px 4px 0;
+  padding: 7px 11px;
+  font-size: 14px;
+}
+
+.note b { color: var(--focus); font-weight: 700; }
+.note time { color: var(--cream-dim); font-size: 12.5px; margin-left: 6px; }
+.note p { margin: 3px 0 0; }
+
+.noteform { display: flex; flex-direction: column; gap: 8px; }
+.noteform .btnrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.mini-status { font-size: 13px; color: var(--cream-dim); }
+.mini-status.bad { color: var(--danger); }
+.mini-status.good { color: var(--green); }
+
+/* ---------- lead card ---------- */
+
+.lead {
+  background: var(--card-sunk);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--orange);
+  border-radius: 6px;
+  padding: 13px;
+  margin-bottom: 9px;
+}
+
+.lead.filled { border-left-color: var(--green); }
+
+.lead h3 { font-size: 16px; font-weight: 700; }
+
+.lead p { margin: 4px 0 0; font-size: 14px; color: var(--cream-dim); }
+
+.claimrow { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.claimrow .field { flex: 1 1 220px; }
+
+.leadname { margin-top: 8px; font-size: 15px; font-weight: 700; color: var(--green); }
+
+/* ---------- activity ---------- */
+
+.feed { display: flex; flex-direction: column; gap: 7px; max-height: 420px; overflow-y: auto; }
+
+.fitem {
+  font-size: 14px;
+  border-bottom: 1px dotted var(--line);
+  padding-bottom: 7px;
+}
+
+.fitem:last-child { border-bottom: 0; }
+
+.fitem b { color: var(--focus); }
+.fitem span { color: var(--cream-dim); }
+
+/* ---------- add ---------- */
+
+.addgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 620px) { .addgrid { grid-template-columns: 1fr; } }
+
+/* ---------- misc ---------- */
+
+.banner-note {
+  margin: 0 0 18px;
+  padding: 11px 14px;
+  border: 1px solid rgba(232, 118, 26, .5);
+  background: rgba(232, 118, 26, .09);
+  border-radius: 6px;
+  font-size: 14.5px;
+}
+
+.banner-note.bad { border-color: var(--danger); background: rgba(255, 122, 92, .1); }
+
+.empty { color: var(--cream-dim); font-size: 14.5px; font-style: italic; }
+
+.srOnly {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+footer { border-top: 1px solid var(--line); padding: 24px 20px 60px; margin-top: 30px; }
+
+footer div {
+  max-width: 980px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: var(--cream-dim);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+footer p { margin: 0; }
+footer a { color: var(--focus); }
+footer a:hover { color: var(--orange); }
+.build { color: #7C6A8A; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="band-inner">
+    <p class="eyebrow">AFTC's Trunk or Treat 2026</p>
+    <h1>Committee Checklist</h1>
+    <p class="lede">What is done, what is next, and who has it. Tick your work off here so the
+      whole committee sees it. Anyone on the committee can leave an update.</p>
+    <div class="factbar">
+      <div class="fb"><b>Date</b><span>Wednesday, October 28</span></div>
+      <div class="fb"><b>Time</b><span>6:00 to 7:30 PM</span></div>
+      <div class="fb"><b>Where</b><span>CSD Football Field</span></div>
+      <div class="fb"><b>Countdown</b><span id="countdown">Loading</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div id="topNote" class="banner-note" hidden></div>
+
+  <!-- who -->
+  <section class="card" aria-labelledby="whoHead">
+    <h2 id="whoHead" class="srOnly">Who you are</h2>
+    <div id="whoAsk">
+      <div class="whobar">
+        <div class="field">
+          <label for="whoName" id="whoNameLabel">Your name</label>
+          <span class="hint">Pick yourself from the list. It stays on this device and rides
+            along on every update, so the committee knows who did what.</span>
+          <div id="whoField"></div>
+        </div>
+        <div class="field" id="codeField" hidden>
+          <label for="whoCode">Edit code</label>
+          <input type="text" id="whoCode" placeholder="Code from the chair">
+        </div>
+        <button class="btn" id="whoSave" type="button">Start</button>
+      </div>
+    </div>
+    <div id="whoIs" class="you" hidden>
+      <span>Signed in as <b id="whoLabel"></b></span>
+      <button class="btn ghost" id="whoChange" type="button">Not you?</button>
+      <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
+      <span class="mini-status" id="syncLine"></span>
+    </div>
+    <p class="locked" id="lockNote" hidden>Add your name above and the checkboxes,
+      notes and claim buttons switch on.</p>
+  </section>
+
+  <!-- progress -->
+  <section class="card" aria-labelledby="progHead">
+    <div class="prog-top">
+      <h2 id="progHead">Where the committee stands</h2>
+      <span class="prog-num" id="progNum"></span>
+    </div>
+    <div class="meter" id="meter" role="img" aria-label="Overall progress">
+      <i class="done" style="width:0"></i><i class="doing" style="width:0"></i><i class="blocked" style="width:0"></i>
+    </div>
+    <div class="key">
+      <span><i class="dot done"></i> Done <b id="cDone">0</b></span>
+      <span><i class="dot doing"></i> Working on it <b id="cDoing">0</b></span>
+      <span><i class="dot blocked"></i> Blocked <b id="cBlocked">0</b></span>
+      <span><i class="dot open"></i> Not started <b id="cOpen">0</b></span>
+      <span>No owner yet <b id="cTbd">0</b></span>
+    </div>
+    <div class="crewgrid" id="crewGrid"></div>
+  </section>
+
+  <!-- filters -->
+  <section class="card" aria-labelledby="filtHead">
+    <h2 id="filtHead" class="srOnly">Filters</h2>
+    <div class="filters">
+      <div class="field">
+        <label for="q">Search</label>
+        <input type="text" id="q" placeholder="Word in a task, a name, a date">
+      </div>
+      <div class="field">
+        <label for="crewSel">Crew</label>
+        <select id="crewSel"><option value="">Every crew</option></select>
+      </div>
+      <div class="field">
+        <label for="statSel">Status</label>
+        <select id="statSel">
+          <option value="">Any status</option>
+          <option value="open">Not started</option>
+          <option value="doing">Working on it</option>
+          <option value="blocked">Blocked</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+    </div>
+    <div class="toggles" style="margin-top:12px">
+      <button class="chip" id="tMine" type="button" aria-pressed="false">Only mine</button>
+      <button class="chip" id="tOpen" type="button" aria-pressed="false">Hide finished</button>
+      <button class="chip" id="tSettled" type="button" aria-pressed="false">Show already settled</button>
+      <button class="chip" id="tClear" type="button" aria-pressed="false">Clear filters</button>
+    </div>
+  </section>
+
+  <div id="board"></div>
+
+  <!-- add -->
+  <section class="card" aria-labelledby="addHead" style="margin-top:26px">
+    <h2 id="addHead" style="font-size:19px;margin-bottom:4px">Something missing?</h2>
+    <p class="hint" style="margin:0 0 14px">Add it here and it shows up for everyone.</p>
+    <div class="addgrid">
+      <div class="field">
+        <label for="addSec">Put it under</label>
+        <select id="addSec"></select>
+      </div>
+      <div class="field">
+        <label for="addOwner">Crew or person</label>
+        <input type="text" id="addOwner" placeholder="Logistics: TBD">
+      </div>
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label for="addTask">What needs doing</label>
+      <textarea id="addTask" placeholder="Borrow the arrow signs from the front office"></textarea>
+    </div>
+    <div class="noteform" style="margin-top:10px">
+      <div class="btnrow">
+        <button class="btn" id="addBtn" type="button">Add it</button>
+        <span class="mini-status" id="addStatus"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- activity -->
+  <section class="card" aria-labelledby="actHead" style="margin-top:26px">
+    <h2 id="actHead" style="font-size:19px;margin-bottom:12px">Latest updates</h2>
+    <div class="feed" id="feed"><p class="empty">Nothing yet.</p></div>
+  </section>
+
+</main>
+
+<footer>
+  <div>
+    <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
+    <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
+    <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
+    <p class="build">Build 2026-09-22.2</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------- config */
+
+  /* Paste the Apps Script /exec URL here after deploying the back end.
+     Until it is filled in the page runs from this browser only, so it is safe
+     to click around and nothing is shared. */
+  var EXEC_URL = "PASTE_YOUR_EXEC_URL_HERE";
+
+  var EVENT_DATE = "2026-10-28";
+  var LIVE = EXEC_URL.indexOf("script.google.com") === 0 ||
+             EXEC_URL.indexOf("https://script.google.com") === 0;
+
+  var SECTIONS = [{"key": "leads", "title": "Crew leads still open", "blurb": "Logistics, Setup and Decorations is the only crew still without a lead. Roxanne Tan is already on the crew. Every date below that belongs to it has no owner until this is filled.", "kind": "lead", "counts": true}, {"key": "behind", "title": "Behind or unconfirmed", "blurb": "These dates have already passed. Confirm each one or say what is holding it up.", "kind": "task", "counts": true}, {"key": "sep22", "title": "By September 22", "kind": "task", "counts": true}, {"key": "sep29", "title": "By September 29", "kind": "task", "counts": true}, {"key": "oct1", "title": "October 1, hard date", "blurb": "The FOX ticket has to be in on this date or the equipment will not arrive.", "kind": "task", "counts": true}, {"key": "oct6", "title": "By October 6", "kind": "task", "counts": true}, {"key": "oct13", "title": "By October 13", "kind": "task", "counts": true}, {"key": "oct20", "title": "By October 20", "kind": "task", "counts": true}, {"key": "oct2127", "title": "October 21 to 27", "kind": "task", "counts": true}, {"key": "oct28day", "title": "October 28, daytime setup", "kind": "task", "counts": true}, {"key": "oct28eve", "title": "October 28, 6:00 to 7:30 PM", "kind": "task", "counts": true}, {"key": "oct2930", "title": "October 29 to 30", "kind": "task", "counts": true}, {"key": "decisions", "title": "Needs a decision", "blurb": "Nothing here has an owner yet. Each one blocks work further down the list.", "kind": "task", "counts": true}, {"key": "settled", "title": "Already settled", "blurb": "Closed before the page went up. Kept here so nobody reopens a question that is answered.", "kind": "ref", "counts": false}];
+  var SEED = [["T001", "leads", "Logistics, Setup and Decorations. Tables, bins, barricades, signage, the food truck, and dressing the entrance. Helpers still wanted, Roxanne Tan already on it.", "TBD"], ["T002", "behind", "Confirm the FOX ticket for the field light generators was opened. September 10 was the submission deadline and the generators were unreliable last year.", "Logistics and Decorations: TBD"], ["T003", "behind", "Confirm the trick-or-treat promo video was filmed on September 16 as planned.", "Publicity: Rosalyn Ramos"], ["T004", "behind", "Confirm the video went up publicly on the registration website and social media on September 18, and that weekly reposts have started.", "Publicity: Rosalyn Ramos"], ["T005", "behind", "Confirm the first ParentSquare post and social announcement went out September 17.", "Publicity / Nha"], ["T006", "behind", "Confirm the finished flyer from Kate Kovacs is in hand and matches the current web address.", "Publicity: Rosalyn Ramos"], ["T007", "behind", "Get the link to the trunk host registration list. Check the registration link and QR code still resolve.", "Trunk Reg: Andrea Aguilar"], ["T008", "behind", "Check with Sulghi, interim PE and Athletics supervisor, whether FAA still wants to sell that evening.", "Concessions: Mat Domenichini"], ["T009", "behind", "Recruit a lead for Logistics, Setup and Decorations, the last crew still showing LEAD NEEDED on the sign-up page. Push the link again.", "Committee Chair"], ["T010", "sep22", "Invite returning hosts from the Past Trunk Participants list.", "Trunk Reg: Andrea Aguilar"], ["T011", "sep22", "Get a yes or no from FAA. If no, start looking for an alternative.", "Concessions: Mat Domenichini"], ["T012", "sep22", "Decide the booth list. Face painting is confirmed. Pumpkin painting is still open.", "Booth: Julie Baer"], ["T013", "sep22", "Invite the California School for the Blind through Lisa Nunez.", "Publicity: Rosalyn Ramos"], ["T014", "sep22", "Contact the School Resource Officer for safety coordination.", "Safety: Margot Simpson"], ["T015", "sep22", "Settle the theme direction.", "Logistics and Decorations: TBD"], ["T016", "sep29", "Contact Mozzeria about availability and terms.", "Concessions: Mat Domenichini"], ["T017", "sep29", "Booth supply list and rough budget to the Committee Chair.", "Booth: Julie Baer"], ["T018", "sep29", "Invite CHP and a fire truck to attend.", "Safety: Margot Simpson"], ["T019", "sep29", "Get the award category list from the Judges and Awards coordinator.", "Judges: Amy Eshelman"], ["T020", "sep29", "Decorations supply list to the Committee Chair.", "Logistics and Decorations: TBD"], ["T021", "sep29", "Check the equipment list against the baseline: 7 light generators, 7 folding tables, 6 trash bins, 2 portable restrooms.", "Logistics and Decorations: TBD"], ["T022", "oct1", "Submit the FOX ticket for tables, trash bins, field lighting and portable restrooms.", "Logistics and Decorations: TBD"], ["T023", "oct6", "Confirm the food truck or drop it, so the setup crew can plan placement.", "Concessions: Mat Domenichini"], ["T024", "oct6", "Collect the supplies each booth activity needs.", "Booth: Julie Baer"], ["T025", "oct6", "Confirm whether CHP is coming, and how many.", "Safety: Margot Simpson"], ["T026", "oct6", "Prize budget approved by the Committee Chair.", "Judges: Amy Eshelman"], ["T027", "oct6", "Order the Trunk or Treat plastic bags. They have lead time, so order early.", "Logistics and Decorations: TBD"], ["T028", "oct6", "Confirm the light generators were serviced.", "Logistics and Decorations: TBD"], ["T029", "oct13", "Recruit department trunks through supervisors and principals.", "Trunk Reg: Andrea Aguilar"], ["T030", "oct13", "Agree the menu and quantities. FAA ran out in 2025, so plan for more.", "Concessions: Mat Domenichini"], ["T031", "oct13", "Recruit student volunteers, coordinating with the Real World Program.", "Booth: Julie Baer"], ["T032", "oct13", "Principal and family emails. Campus-wide email through Lisa Nunez.", "Publicity: Rosalyn Ramos"], ["T033", "oct13", "Collect or create the prizes.", "Judges: Amy Eshelman"], ["T034", "oct13", "Collect and organize the decorating supplies. Real World Program students assist.", "Logistics and Decorations: TBD"], ["T035", "oct13", "Reuse the layout map, with wider car spacing than 2025.", "Logistics and Decorations: TBD"], ["T036", "oct20", "Give the setup crew the power and parking needs for the food truck and clubhouse.", "Concessions: Mat Domenichini"], ["T037", "oct20", "Assign volunteers to stations. Check every activity is safe and inclusive.", "Booth: Julie Baer"], ["T038", "oct20", "Reminder round across every channel.", "Publicity: Rosalyn Ramos"], ["T039", "oct20", "Agree the crowd and traffic plan with the setup crew: barricades between the gates, back road closed between the basin and the MSAC.", "Safety: Margot Simpson"], ["T040", "oct20", "Purchase the gift cards.", "Judges: Amy Eshelman"], ["T041", "oct20", "Plan the entrance display.", "Logistics and Decorations: TBD"], ["T042", "oct20", "Signage and barricade plan. Confirm the back road closure.", "Logistics and Decorations: TBD"], ["T043", "oct20", "Recruit day-of cleanup help. Confirm bin and liner counts with the setup crew.", "Cleanup: Real World Program"], ["T044", "oct2127", "Oct 21: Send trunk hosts their setup instructions: arrival window, spacing, what to bring, where to enter.", "Trunk Reg: Andrea Aguilar"], ["T045", "oct2127", "Oct 26: Final reminder to hosts with the day-of text number.", "Trunk Reg: Andrea Aguilar"], ["T046", "oct2127", "Oct 26: Final publicity push, including the Haunted Cottages tie-in.", "Publicity: Rosalyn Ramos"], ["T047", "oct2127", "Oct 26 to 27: Every crew confirms its people.", "All crews"], ["T048", "oct2127", "Oct 27: Pack a kit per station so nothing is assembled on the field.", "Booth: Julie Baer"], ["T049", "oct2127", "Oct 27: Brief volunteers on exits, safety zones and the 7:30 clear-out.", "Safety: Margot Simpson"], ["T050", "oct2127", "Oct 27: Sort and label the prizes by category.", "Judges: Amy Eshelman"], ["T051", "oct2127", "Oct 27: Pre-build whatever decorations can be built off the field.", "Logistics and Decorations: TBD"], ["T052", "oct2127", "Oct 27: Stage equipment where it can be moved quickly.", "Logistics and Decorations: TBD"], ["T053", "oct2127", "Oct 27: Confirm the disposal plan and where full bags go.", "Cleanup: Real World Program"], ["T054", "oct2127", "Oct 27: Confirm the disc golf course layout and fencing with Carley.", "Disc Golf: Carley Carbin"], ["T055", "oct28day", "Daytime setup across the field. Keep off the grass until football practice ends.", "Logistics and Decorations: TBD"], ["T056", "oct28day", "Put out road barricades and signage. Close the back road. Help the food truck into place.", "Logistics and Decorations: TBD"], ["T057", "oct28day", "Build the disc golf course in the northwest corner with white fencing, before the field fills.", "Disc Golf: Carley Carbin"], ["T058", "oct28day", "Set up the entrance display and shared decorations.", "Logistics and Decorations: TBD"], ["T059", "oct28day", "Set up the activity stations, two hours before gates.", "Booth: Julie Baer"], ["T060", "oct28day", "Clubhouse open before gates. Truck in position per the layout map.", "Concessions: Mat Domenichini"], ["T061", "oct28day", "Place bins with liners before gates open.", "Cleanup: Real World Program"], ["T062", "oct28day", "Be reachable by text all evening. Greet hosts at the gate with Safety.", "Trunk Reg: Andrea Aguilar"], ["T063", "oct28eve", "Guide trunk hosts in. Watch the exits and safety zones.", "Safety: Margot Simpson"], ["T064", "oct28eve", "Run the activity stations.", "Booth: Julie Baer"], ["T065", "oct28eve", "Photo and video coverage with Yearbook and Talon Media.", "Publicity: Rosalyn Ramos"], ["T066", "oct28eve", "Hand the prizes to the coordinator for the final 30 minutes.", "Judges: Amy Eshelman"], ["T067", "oct28eve", "Sweep for trash during the event.", "Cleanup: Real World Program"], ["T068", "oct28eve", "7:30: Clear the field. Registered cars out about 15 minutes after close.", "Safety: Margot Simpson"], ["T069", "oct28eve", "Break down the stations and the disc golf course. Return the fencing.", "Booth / Disc Golf"], ["T070", "oct28eve", "Teardown after 7:30: barricades, lights, tables, bins.", "Cleanup: Real World Program"], ["T071", "oct2930", "Next-day sweep with Real World Program students. Return all borrowed materials.", "Cleanup: Real World Program"], ["T072", "oct2930", "Hand the host list to Publicity for thank-you notes.", "Trunk Reg: Andrea Aguilar"], ["T073", "oct2930", "Report what sold and what ran short, for next year.", "Concessions: Mat Domenichini"], ["T074", "oct2930", "Final cleanup report to the Committee Chair.", "Cleanup: Real World Program"], ["T075", "oct2930", "Oct 30: Thank-you post with photos. Notes to participants, volunteers and vendors.", "Publicity: Rosalyn Ramos"], ["T076", "decisions", "Rain back-up plan. The track cannot take vehicles when it is too wet, and Jeff Bibb made this a condition of field use.", "Committee Chair"], ["T077", "decisions", "Student Life van at Trunk or Treat on the 28th to promote the Haunt House.", "Chris DeSouza"], ["T078", "decisions", "Pumpkin painting contest: in or out.", "Booth: Julie Baer"], ["T079", "decisions", "Dedicated AFTC booth: in or out, and who staffs it.", "Committee Chair"], ["T080", "decisions", "Costume and trunk voting method, confirmed as no iPads.", "Judges: Amy Eshelman"], ["T081", "settled", "Event date locked: Wednesday, October 28, 2026. Chosen to avoid the Middle School Halloween Party on the 29th and the home game on the 30th.", "Committee"], ["T082", "settled", "Field use confirmed by Athletic Director Jeff Bibb, with two conditions: a rain back-up plan and follow-up on the light generators.", "Committee"], ["T083", "settled", "Haunt House partnership confirmed. The Middle School Haunted Cottages run alongside Trunk or Treat on the 28th so every attendee can go.", "Chris DeSouza"], ["T084", "settled", "Chris DeSouza added as Student Life liaison. Rona Lev added as Committee Advisor.", "Committee"], ["T085", "settled", "Layout map is complete from last year and will be reused.", "Logistics"], ["T086", "settled", "Volunteer sign-up page (Pick A Team) published September 10. One lead per crew.", "Committee Chair"], ["T087", "settled", "Trunk Registration and Communication lead: Andrea Aguilar.", "Committee"], ["T088", "settled", "Publicity and Outreach lead: Rosalyn Ramos.", "Committee"], ["T089", "settled", "Judges and Awards: Amy Eshelman coordinates.", "Committee"], ["T090", "settled", "Disc Golf / Glow Putt Night: Carley Carbin, confirmed.", "Committee"], ["T091", "settled", "Roxanne Tan signed up to help on the Logistics and Setup crew.", "Committee"], ["T092", "settled", "Games and Activities split into two tracks: Disc Golf and Booth Activities.", "Committee"], ["T093", "settled", "Kate Kovacs confirmed she will create the event flyer.", "Publicity"], ["T094", "settled", "Official web address set to aftctrunkortreat.kissfistcsd.com. QR codes, both flyers, the crew timeline and the trunk host video script were all updated.", "Committee Chair"], ["T095", "settled", "Registration site restored. It went offline when the GitHub repository was switched to private. The repository is public again and must stay that way.", "Committee Chair"], ["T096", "settled", "Event name standardized to AFTC’s Trunk or Treat across all materials.", "Committee"], ["T097", "settled", "ParentSquare handed to AFTC Secretary Nha. Lisa Nunez keeps campus-wide email.", "Publicity"], ["T098", "settled", "Promo video deadline moved up: filmed September 16, posted publicly September 18.", "Publicity"], ["T099", "settled", "Trunk host registration page now offers CSD family and CSD staff only under Connected to CSD.", "Trunk Reg"], ["T100", "settled", "Outside community agency outreach dropped. The Outreach Contact List was deleted.", "Committee"], ["T101", "settled", "The 80-car turnout goal was dropped from the Crew Assignments file and the registration setup guide.", "Committee"], ["T102", "settled", "Planning files folded into one. Crew Assignments and Timeline was merged into Planning Timeline, which is now the single planning document.", "Committee Chair"], ["T103", "settled", "Helper caps settled: Trunk Registration 1, Booth Activities 2, Safety and Security 4, Logistics 2. None for Concessions, Publicity, Judges and Awards or Cleanup.", "Committee Chair"], ["T104", "settled", "Crew leads filled from the sign-up page: Mat Domenichini on Concessions, Julie Baer on Booth Activities, Margot Simpson on Safety and Security. The Real World Program leads Cleanup.", "Committee"], ["T105", "settled", "Decorations and Theme merged into Logistics, Setup and Decorations.", "Committee"], ["T106", "settled", "Marnee Wafer-Hoecker signed up as the Judges and Awards helper on prizes.", "Committee"]];
+
+  /* ------------------------------------------------------------- utilities */
+
+  function $(id) { return document.getElementById(id); }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function store(key, val) {
+    try {
+      if (val === undefined) return localStorage.getItem(key);
+      if (val === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, val);
+    } catch (e) { return null; }
+    return null;
+  }
+
+  function fmtWhen(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return String(iso).slice(0, 10);
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var h = d.getHours(), ap = h >= 12 ? "PM" : "AM";
+    h = h % 12; if (!h) h = 12;
+    var m = d.getMinutes(); if (m < 10) m = "0" + m;
+    return months[d.getMonth()] + " " + d.getDate() + ", " + h + ":" + m + " " + ap;
+  }
+
+  /* Crew name is the part before the colon, or the whole owner string. */
+  function crewOf(owner) {
+    owner = String(owner || "").trim();
+    if (!owner) return "Unassigned";
+    var i = owner.indexOf(":");
+    var name = (i > -1 ? owner.slice(0, i) : owner).trim();
+    var j = name.indexOf("/");
+    if (j > 0) name = name.slice(0, j).trim();
+    return name || "Unassigned";
+  }
+
+  function isTbd(owner) { return /\bTBD\b/i.test(String(owner || "")); }
+
+  /* ------------------------------------------------------------- transport */
+
+  var jsonpSeq = 0;
+
+  function call(params, done, fail) {
+    if (!LIVE) { localCall(params, done, fail); return; }
+
+    var name = "ttcb" + (++jsonpSeq) + "_" + Date.now();
+    var script = document.createElement("script");
+    var finished = false;
+
+    var timer = setTimeout(function () {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      fail && fail("The page could not reach the committee sheet. Check your connection and try again.");
+    }, 20000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      try { delete window[name]; } catch (e) { window[name] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[name] = function (res) {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      if (res && res.ok) done(res);
+      else fail && fail((res && res.error) || "That did not save.");
+    };
+
+    var parts = ["callback=" + name, "t=" + Date.now()];
+    for (var k in params) {
+      if (!Object.prototype.hasOwnProperty.call(params, k)) continue;
+      if (params[k] == null || params[k] === "") continue;
+      parts.push(encodeURIComponent(k) + "=" + encodeURIComponent(params[k]));
+    }
+
+    script.src = EXEC_URL + "?" + parts.join("&");
+    script.onerror = function () {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      fail && fail("The committee sheet did not answer. It may still be waking up. Try again.");
+    };
+    document.head.appendChild(script);
+  }
+
+  /* Practice mode. Everything works, nothing leaves this browser. */
+  function localState() {
+    var raw = store("tt2026.local");
+    if (raw) {
+      try { return JSON.parse(raw); } catch (e) {}
+    }
+    var tasks = [];
+    for (var i = 0; i < SEED.length; i++) {
+      tasks.push({
+        id: SEED[i][0], section: SEED[i][1], sort: i, task: SEED[i][2],
+        owner: SEED[i][3], status: SEED[i][1] === "settled" ? "done" : "open",
+        by: "", at: "", notes: []
+      });
+    }
+    return { sections: SECTIONS, tasks: tasks, activity: [], eventDate: EVENT_DATE };
+  }
+
+  function saveLocal(s) {
+    store("tt2026.local", JSON.stringify(s));
+  }
+
+  function localCall(params, done, fail) {
+    var s = localState();
+    var action = params.action || "load";
+    var who = params.person || "You";
+    var t = null, i;
+
+    for (i = 0; i < s.tasks.length; i++) {
+      if (s.tasks[i].id === params.id) { t = s.tasks[i]; break; }
+    }
+
+    function note(action, detail) {
+      s.activity.unshift({ when: new Date().toISOString(), person: who,
+                           action: action, detail: detail });
+      s.activity = s.activity.slice(0, 40);
+    }
+
+    if (action === "status" && t) {
+      t.status = params.status; t.by = who; t.at = new Date().toISOString();
+      note("status " + params.status, t.task.slice(0, 90));
+    } else if (action === "note" && t) {
+      t.notes.push({ when: new Date().toISOString(), person: who, note: params.note });
+      t.by = who; t.at = new Date().toISOString();
+      note("note", t.task.slice(0, 90));
+    } else if ((action === "owner" || action === "claim") && t) {
+      t.owner = params.owner; t.by = who; t.at = new Date().toISOString();
+      if (action === "claim") t.status = "done";
+      note("owner set to " + params.owner, t.task.slice(0, 90));
+    } else if (action === "add") {
+      s.tasks.push({ id: "L" + Date.now(), section: params.section,
+                     sort: 9999 + s.tasks.length, task: params.task,
+                     owner: params.owner || "TBD", status: "open",
+                     by: who, at: new Date().toISOString(), notes: [] });
+      note("added a task", String(params.task).slice(0, 90));
+    }
+
+    saveLocal(s);
+    setTimeout(function () { done({ ok: true, state: s }); }, 120);
+  }
+
+  /* ----------------------------------------------------------------- state */
+
+  var state = null;
+  var people = [];
+  try { people = JSON.parse(store("tt2026.people") || "[]") || []; } catch (e) { people = []; }
+  var me = store("tt2026.name") || "";
+  var code = store("tt2026.code") || "";
+  var openPanels = {};
+  var filters = { q: "", crew: "", status: "", mine: false, hideDone: false, settled: false };
+
+  /* ---------------------------------------------------------- name control */
+
+  /**
+   * Builds a name picker inside `host`. When the roster has loaded it is a
+   * dropdown of everyone on the Pick A Team sheet, with a way out for anyone
+   * not on it yet. Before the roster arrives, or if the sheet cannot be read,
+   * it degrades to a plain box. Returns a function that reads the value.
+   */
+  function nameField(host, opts) {
+    opts = opts || {};
+    host.innerHTML = "";
+    host.className = "namefield";
+
+    if (!people.length) {
+      var lone = el("input");
+      lone.type = "text";
+      lone.id = opts.id || "";
+      lone.placeholder = opts.placeholder || "First and last name";
+      lone.autocomplete = "name";
+      if (opts.value) lone.value = opts.value;
+      if (opts.disabled) lone.disabled = true;
+      if (opts.onEnter) {
+        lone.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") { e.preventDefault(); opts.onEnter(); }
+        });
+      }
+      host.appendChild(lone);
+      return function () { return lone.value.replace(/\s+/g, " ").trim(); };
+    }
+
+    var sel = el("select");
+    sel.id = opts.id || "";
+    if (opts.disabled) sel.disabled = true;
+
+    var first = el("option", null, opts.placeholder || "Choose your name");
+    first.value = "";
+    sel.appendChild(first);
+
+    var known = false;
+    people.forEach(function (n) {
+      var o = el("option", null, n);
+      o.value = n;
+      if (opts.value && opts.value.toLowerCase() === n.toLowerCase()) {
+        o.selected = true; known = true;
+      }
+      sel.appendChild(o);
+    });
+
+    var other = el("option", null, "My name is not on the list");
+    other.value = "__other__";
+    sel.appendChild(other);
+
+    var txt = el("input");
+    txt.type = "text";
+    txt.placeholder = "Type your name";
+    txt.autocomplete = "name";
+    txt.hidden = true;
+    if (opts.disabled) txt.disabled = true;
+
+    /* A saved name the sheet has never heard of still shows, in the box. */
+    if (opts.value && !known) {
+      other.selected = true;
+      txt.hidden = false;
+      txt.value = opts.value;
+    }
+
+    sel.addEventListener("change", function () {
+      txt.hidden = sel.value !== "__other__";
+      if (!txt.hidden) txt.focus();
+    });
+
+    if (opts.onEnter) {
+      txt.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); opts.onEnter(); }
+      });
+    }
+
+    host.appendChild(sel);
+    host.appendChild(txt);
+
+    return function () {
+      var v = sel.value === "__other__" ? txt.value : sel.value;
+      return String(v || "").replace(/\s+/g, " ").trim();
+    };
+  }
+
+  /* ------------------------------------------------------------------- who */
+
+  var readWho = null;
+
+  function mountWho() {
+    readWho = nameField($("whoField"), {
+      id: "whoName",
+      value: me,
+      placeholder: "Choose your name",
+      onEnter: function () { $("whoSave").click(); }
+    });
+  }
+
+  function paintWho() {
+    var have = !!me;
+    $("whoAsk").hidden = have;
+    $("whoIs").hidden = !have;
+    $("lockNote").hidden = have;
+    if (have) $("whoLabel").textContent = me;
+    $("tMine").disabled = !have;
+  }
+
+  $("whoSave").addEventListener("click", function () {
+    var v = readWho ? readWho() : "";
+    if (v.length < 2) {
+      topNote("Pick your name from the list, or choose the last option and type it.", true);
+      var f = $("whoName"); if (f) f.focus();
+      return;
+    }
+    topNote("");
+    me = v; store("tt2026.name", me);
+    var c = $("whoCode").value.trim();
+    if (c) { code = c; store("tt2026.code", c); }
+    paintWho(); render();
+  });
+
+  $("whoChange").addEventListener("click", function () {
+    me = ""; store("tt2026.name", null);
+    mountWho(); paintWho(); render();
+    var f = $("whoName"); if (f) f.focus();
+  });
+
+  $("refreshBtn").addEventListener("click", function () { loadState(true); });
+
+  /* -------------------------------------------------------------- painting */
+
+  function countdown() {
+    var ev = new Date(EVENT_DATE + "T00:00:00");
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var days = Math.round((ev.getTime() - today.getTime()) / 86400000);
+    $("countdown").textContent =
+      days > 1 ? days + " days to go" :
+      days === 1 ? "Tomorrow" :
+      days === 0 ? "Today" : "Wrapped";
+  }
+
+  function tracked(t) {
+    for (var i = 0; i < SECTIONS.length; i++) {
+      if (SECTIONS[i].key === t.section) return SECTIONS[i].counts !== false;
+    }
+    return true;
+  }
+
+  function paintProgress() {
+    var done = 0, doing = 0, blocked = 0, open = 0, tbd = 0, total = 0;
+    var crews = {};
+
+    state.tasks.forEach(function (t) {
+      if (!tracked(t)) return;
+      total++;
+      if (t.status === "done") done++;
+      else if (t.status === "doing") doing++;
+      else if (t.status === "blocked") blocked++;
+      else open++;
+      if (t.status !== "done" && isTbd(t.owner)) tbd++;
+
+      if (t.section === "leads") return;
+      var c = crewOf(t.owner);
+      if (!crews[c]) crews[c] = { done: 0, total: 0, tbd: false };
+      crews[c].total++;
+      if (t.status === "done") crews[c].done++;
+      if (isTbd(t.owner)) crews[c].tbd = true;
+    });
+
+    var pct = total ? Math.round(done / total * 100) : 0;
+    $("progNum").textContent = done + " of " + total + " done, " + pct + " per cent";
+    var bars = $("meter").children;
+    bars[0].style.width = (total ? done / total * 100 : 0) + "%";
+    bars[1].style.width = (total ? doing / total * 100 : 0) + "%";
+    bars[2].style.width = (total ? blocked / total * 100 : 0) + "%";
+    $("meter").setAttribute("aria-label", "Overall progress, " + pct + " per cent done");
+
+    $("cDone").textContent = done;
+    $("cDoing").textContent = doing;
+    $("cBlocked").textContent = blocked;
+    $("cOpen").textContent = open;
+    $("cTbd").textContent = tbd;
+
+    var grid = $("crewGrid");
+    grid.innerHTML = "";
+    Object.keys(crews).sort().forEach(function (name) {
+      var c = crews[name];
+      var cell = el("div", "crewcell" + (c.tbd ? " noLead" : ""));
+      cell.appendChild(el("b", null, name));
+      var mini = el("div", "mini");
+      var fill = el("i");
+      fill.style.width = (c.total ? c.done / c.total * 100 : 0) + "%";
+      mini.appendChild(fill);
+      cell.appendChild(mini);
+      cell.appendChild(el("small", null, c.done + " of " + c.total +
+        (c.tbd ? ", no lead" : "")));
+      grid.appendChild(cell);
+    });
+  }
+
+  function fillSelects() {
+    var crews = {};
+    state.tasks.forEach(function (t) { crews[crewOf(t.owner)] = 1; });
+    var sel = $("crewSel");
+    var keep = sel.value;
+    sel.innerHTML = '<option value="">Every crew</option>';
+    Object.keys(crews).sort().forEach(function (c) {
+      var o = el("option", null, c); o.value = c; sel.appendChild(o);
+    });
+    sel.value = keep;
+
+    var add = $("addSec");
+    if (!add.options.length) {
+      SECTIONS.forEach(function (s) {
+        if (s.key === "settled" || s.kind === "lead") return;
+        var o = el("option", null, s.title); o.value = s.key; add.appendChild(o);
+      });
+    }
+  }
+
+  function passes(t) {
+    if (filters.crew && crewOf(t.owner) !== filters.crew) return false;
+    if (filters.status && t.status !== filters.status) return false;
+    if (filters.hideDone && t.status === "done") return false;
+    if (filters.mine && me) {
+      var hay = (t.owner + " " + t.by).toLowerCase();
+      if (hay.indexOf(me.toLowerCase()) === -1) return false;
+    }
+    if (filters.q) {
+      var q = filters.q.toLowerCase();
+      var blob = (t.task + " " + t.owner + " " + t.by).toLowerCase();
+      var hit = blob.indexOf(q) > -1;
+      if (!hit) {
+        for (var i = 0; i < t.notes.length; i++) {
+          if ((t.notes[i].note + " " + t.notes[i].person).toLowerCase().indexOf(q) > -1) {
+            hit = true; break;
+          }
+        }
+      }
+      if (!hit) return false;
+    }
+    return true;
+  }
+
+  function statusTag(t) {
+    if (t.status === "blocked") return el("span", "tag blocked", "Blocked");
+    if (t.status === "doing") return el("span", "tag doing", "Working on it");
+    return null;
+  }
+
+  function buildTask(t) {
+    var wrap = el("div", "task s-" + t.status);
+    wrap.setAttribute("data-id", t.id);
+
+    var row = el("div", "trow");
+
+    var tick = el("button", "tick");
+    tick.type = "button";
+    tick.setAttribute("role", "checkbox");
+    tick.setAttribute("aria-checked", t.status === "done" ? "true" : "false");
+    tick.setAttribute("aria-label", (t.status === "done" ? "Reopen: " : "Mark done: ") + t.task);
+    tick.textContent = t.status === "done" ? "✓" : "";
+    tick.disabled = !me;
+    tick.addEventListener("click", function () {
+      send({ action: "status", id: t.id, status: t.status === "done" ? "open" : "done" });
+    });
+    row.appendChild(tick);
+
+    var mid = el("div", "tmid");
+    mid.appendChild(el("div", "ttext", t.task));
+
+    var meta = el("div", "tmeta");
+    var ownerTag = el("span", "tag" + (isTbd(t.owner) ? " tbd" : ""), t.owner || "Unassigned");
+    meta.appendChild(ownerTag);
+    var st = statusTag(t);
+    if (st) meta.appendChild(st);
+    if (t.notes.length) {
+      meta.appendChild(el("span", "tnotes",
+        t.notes.length === 1 ? "1 update" : t.notes.length + " updates"));
+    }
+    if (t.by) meta.appendChild(el("span", null, "Last touched by " + t.by + ", " + fmtWhen(t.at)));
+    mid.appendChild(meta);
+    row.appendChild(mid);
+
+    var toggle = el("button", "topen", openPanels[t.id] ? "Close" : "Update");
+    toggle.type = "button";
+    toggle.setAttribute("aria-expanded", openPanels[t.id] ? "true" : "false");
+    toggle.addEventListener("click", function () {
+      openPanels[t.id] = !openPanels[t.id];
+      render();
+    });
+    row.appendChild(toggle);
+
+    wrap.appendChild(row);
+
+    if (openPanels[t.id]) wrap.appendChild(buildPanel(t));
+    return wrap;
+  }
+
+  function buildPanel(t) {
+    var p = el("div", "panel");
+
+    /* status */
+    var sh = el("h4", null, "Status");
+    p.appendChild(sh);
+    var srow = el("div", "statusrow");
+    [["open", "Not started"], ["doing", "Working on it"],
+     ["blocked", "Blocked"], ["done", "Done"]].forEach(function (pair) {
+      var b = el("button", "chip", pair[1]);
+      b.type = "button";
+      b.setAttribute("aria-pressed", t.status === pair[0] ? "true" : "false");
+      b.disabled = !me;
+      b.addEventListener("click", function () {
+        send({ action: "status", id: t.id, status: pair[0] });
+      });
+      srow.appendChild(b);
+    });
+    p.appendChild(srow);
+
+    /* owner */
+    p.appendChild(el("h4", null, "Who has it"));
+    var orow = el("div", "ownerrow");
+    var ofield = el("div", "field");
+    var oin = el("input");
+    oin.type = "text";
+    oin.value = t.owner;
+    oin.placeholder = "Crew: Name";
+    oin.disabled = !me;
+    ofield.appendChild(oin);
+    orow.appendChild(ofield);
+    var obtn = el("button", "btn ghost", "Save owner");
+    obtn.type = "button";
+    obtn.disabled = !me;
+    obtn.addEventListener("click", function () {
+      var v = oin.value.trim();
+      if (!v) return;
+      send({ action: "owner", id: t.id, owner: v });
+    });
+    orow.appendChild(obtn);
+    p.appendChild(orow);
+
+    /* notes */
+    p.appendChild(el("h4", null, "Updates"));
+    var list = el("div", "notelist");
+    if (!t.notes.length) {
+      list.appendChild(el("p", "empty", "No updates on this one yet."));
+    } else {
+      t.notes.slice().reverse().forEach(function (n) {
+        var box = el("div", "note");
+        var head = el("div");
+        head.appendChild(el("b", null, n.person || "Someone"));
+        var tm = el("time", null, fmtWhen(n.when));
+        head.appendChild(tm);
+        box.appendChild(head);
+        box.appendChild(el("p", null, n.note));
+        list.appendChild(box);
+      });
+    }
+    p.appendChild(list);
+
+    var form = el("div", "noteform");
+    var ta = el("textarea");
+    ta.placeholder = me
+      ? "What changed? Who did you hear from? What is in the way?"
+      : "Add your name at the top of the page first.";
+    ta.disabled = !me;
+    form.appendChild(ta);
+    var brow = el("div", "btnrow");
+    var post = el("button", "btn", "Post update");
+    post.type = "button";
+    post.disabled = !me;
+    var msg = el("span", "mini-status");
+    post.addEventListener("click", function () {
+      var v = ta.value.trim();
+      if (!v) { ta.focus(); return; }
+      post.disabled = true;
+      msg.className = "mini-status";
+      msg.textContent = "Saving";
+      send({ action: "note", id: t.id, note: v }, function (err) {
+        post.disabled = false;
+        if (err) { msg.className = "mini-status bad"; msg.textContent = err; }
+      });
+    });
+    brow.appendChild(post);
+    brow.appendChild(msg);
+    form.appendChild(brow);
+    p.appendChild(form);
+
+    return p;
+  }
+
+  function buildLead(t) {
+    var filled = !isTbd(t.owner) && t.status === "done";
+    var wrap = el("div", "lead" + (filled ? " filled" : ""));
+    var bits = t.task.split(". ");
+    wrap.appendChild(el("h3", null, bits[0]));
+    if (bits.length > 1) wrap.appendChild(el("p", null, bits.slice(1).join(". ")));
+
+    if (filled) {
+      wrap.appendChild(el("p", "leadname", t.owner + " has this crew."));
+      var undo = el("button", "btn ghost", "That is wrong, reopen it");
+      undo.type = "button";
+      undo.style.marginTop = "10px";
+      undo.disabled = !me;
+      undo.addEventListener("click", function () {
+        send({ action: "owner", id: t.id, owner: "TBD" });
+        send({ action: "status", id: t.id, status: "open" });
+      });
+      wrap.appendChild(undo);
+    } else {
+      var row = el("div", "claimrow");
+      var f = el("div", "field");
+      var lid = "lead_" + t.id;
+      var lab = el("label", null, "Name of the lead");
+      lab.setAttribute("for", lid);
+      f.appendChild(lab);
+      var host = el("div");
+      f.appendChild(host);
+      var readLead = nameField(host, {
+        id: lid,
+        value: me,
+        placeholder: "Choose the lead",
+        disabled: !me
+      });
+      row.appendChild(f);
+      var b = el("button", "btn", "Take this crew");
+      b.type = "button";
+      b.disabled = !me;
+      var m = el("span", "mini-status");
+      b.addEventListener("click", function () {
+        var v = readLead() || me;
+        if (!v) return;
+        b.disabled = true;
+        m.textContent = "Saving";
+        send({ action: "claim", id: t.id, owner: v }, function (err) {
+          b.disabled = false;
+          if (err) { m.className = "mini-status bad"; m.textContent = err; }
+        });
+      });
+      row.appendChild(b);
+      row.appendChild(m);
+      wrap.appendChild(row);
+    }
+
+    var noteBtn = el("button", "topen", openPanels[t.id] ? "Close notes" : "Notes and status");
+    noteBtn.type = "button";
+    noteBtn.style.marginTop = "10px";
+    noteBtn.addEventListener("click", function () {
+      openPanels[t.id] = !openPanels[t.id];
+      render();
+    });
+    wrap.appendChild(noteBtn);
+    if (openPanels[t.id]) wrap.appendChild(buildPanel(t));
+    return wrap;
+  }
+
+  function paintBoard() {
+    var board = $("board");
+    board.innerHTML = "";
+
+    SECTIONS.forEach(function (sec) {
+      if (sec.key === "settled" && !filters.settled) return;
+
+      var rows = state.tasks.filter(function (t) {
+        return t.section === sec.key && passes(t);
+      });
+      if (!rows.length) return;
+
+      var block = el("section", "sec");
+      var head = el("div", "sechead");
+      head.appendChild(el("h2", null, sec.title));
+      var done = rows.filter(function (t) { return t.status === "done"; }).length;
+      head.appendChild(el("span", "count", done + " of " + rows.length + " done"));
+      block.appendChild(head);
+
+      var body = el("div", "secbody");
+      if (sec.blurb) body.appendChild(el("p", "secblurb", sec.blurb));
+
+      rows.forEach(function (t) {
+        body.appendChild(sec.kind === "lead" ? buildLead(t) : buildTask(t));
+      });
+
+      block.appendChild(body);
+      board.appendChild(block);
+    });
+
+    if (!board.children.length) {
+      board.appendChild(el("p", "empty", "Nothing matches those filters."));
+    }
+  }
+
+  function paintFeed() {
+    var feed = $("feed");
+    feed.innerHTML = "";
+    if (!state.activity || !state.activity.length) {
+      feed.appendChild(el("p", "empty", "Nothing yet. The first person to tick a box shows up here."));
+      return;
+    }
+    state.activity.forEach(function (a) {
+      var row = el("div", "fitem");
+      row.appendChild(el("b", null, a.person || "Someone"));
+      row.appendChild(document.createTextNode(" " + a.action + ". "));
+      row.appendChild(el("span", null, a.detail));
+      row.appendChild(document.createTextNode(" "));
+      row.appendChild(el("span", null, fmtWhen(a.when)));
+      feed.appendChild(row);
+    });
+  }
+
+  function render() {
+    if (!state) return;
+    paintProgress();
+    fillSelects();
+    paintBoard();
+    paintFeed();
+  }
+
+  /* --------------------------------------------------------------- actions */
+
+  function topNote(text, bad) {
+    var n = $("topNote");
+    if (!text) { n.hidden = true; return; }
+    n.hidden = false;
+    n.className = "banner-note" + (bad ? " bad" : "");
+    n.textContent = text;
+  }
+
+  function send(params, after) {
+    if (!me) { topNote("Add your name at the top of the page first.", true); return; }
+    params.person = me;
+    if (code) params.code = code;
+    $("syncLine").textContent = "Saving";
+    call(params, function (res) {
+      $("syncLine").textContent = "Saved " + fmtWhen(new Date().toISOString());
+      if (res.state) { state = res.state; render(); }
+      else loadState(false);
+      after && after(null);
+    }, function (err) {
+      $("syncLine").textContent = "";
+      topNote(err, true);
+      after && after(err);
+    });
+  }
+
+  function loadState(loud) {
+    if (loud) $("syncLine").textContent = "Refreshing";
+    call({ action: "load" }, function (res) {
+      state = res.state || res;
+      if (!state.tasks) { topNote("The sheet came back empty. Run setUp() in the script.", true); return; }
+      if (state.people && state.people.length) {
+        var before = people.join("|");
+        people = state.people;
+        store("tt2026.people", JSON.stringify(people));
+        if (people.join("|") !== before) mountWho();
+      }
+      if (state.needsCode) $("codeField").hidden = false;
+      topNote(LIVE ? "" :
+        "Practice mode. This page is not connected to the committee sheet yet, so anything you change here stays in this browser only.",
+        false);
+      $("syncLine").textContent = "Updated " + fmtWhen(new Date().toISOString());
+      render();
+    }, function (err) {
+      topNote(err + " Showing the last saved copy of the list.", true);
+      if (!state) { state = localState(); render(); }
+    });
+  }
+
+  /* ------------------------------------------------------------- filter UI */
+
+  function bindFilters() {
+    var t;
+    $("q").addEventListener("input", function () {
+      clearTimeout(t);
+      var v = this.value;
+      t = setTimeout(function () { filters.q = v.trim(); paintBoard(); }, 160);
+    });
+    $("crewSel").addEventListener("change", function () {
+      filters.crew = this.value; paintBoard();
+    });
+    $("statSel").addEventListener("change", function () {
+      filters.status = this.value; paintBoard();
+    });
+
+    function toggle(id, key, after) {
+      $(id).addEventListener("click", function () {
+        filters[key] = !filters[key];
+        this.setAttribute("aria-pressed", filters[key] ? "true" : "false");
+        (after || paintBoard)();
+      });
+    }
+    toggle("tMine", "mine");
+    toggle("tOpen", "hideDone");
+    toggle("tSettled", "settled");
+
+    $("tClear").addEventListener("click", function () {
+      filters = { q: "", crew: "", status: "", mine: false, hideDone: false, settled: false };
+      $("q").value = ""; $("crewSel").value = ""; $("statSel").value = "";
+      ["tMine", "tOpen", "tSettled"].forEach(function (i) {
+        $(i).setAttribute("aria-pressed", "false");
+      });
+      paintBoard();
+    });
+  }
+
+  $("addBtn").addEventListener("click", function () {
+    var task = $("addTask").value.trim();
+    var st = $("addStatus");
+    if (!task) { $("addTask").focus(); return; }
+    st.className = "mini-status";
+    st.textContent = "Saving";
+    $("addBtn").disabled = true;
+    send({ action: "add", section: $("addSec").value, task: task,
+           owner: $("addOwner").value.trim() }, function (err) {
+      $("addBtn").disabled = false;
+      if (err) { st.className = "mini-status bad"; st.textContent = err; return; }
+      st.className = "mini-status good";
+      st.textContent = "Added.";
+      $("addTask").value = ""; $("addOwner").value = "";
+      setTimeout(function () { st.textContent = ""; }, 4000);
+    });
+  });
+
+  /* ------------------------------------------------------------------ boot */
+
+  countdown();
+  setInterval(countdown, 3600000);
+  mountWho();
+  paintWho();
+  bindFilters();
+  state = localState();
+  render();
+  loadState(false);
+
+  /* Quiet refresh, so two people working at once see each other. */
+  setInterval(function () {
+    if (!document.hidden) loadState(false);
+  }, 90000);
+
+  window.addEventListener("focus", function () { loadState(false); });
+
+  /* If a policy blocks the call, say so on the page. Most people testing this
+     will not have a console open. */
+  document.addEventListener("securitypolicyviolation", function (e) {
+    if (String(e.blockedURI || "").indexOf("script.google.com") > -1) {
+      topNote("This host blocks calls out to Google, so updates cannot save from here. " +
+              "Use the page on aftctrunkortreat.kissfistcsd.com.", true);
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
