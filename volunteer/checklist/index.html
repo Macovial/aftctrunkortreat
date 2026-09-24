@@ -752,12 +752,6 @@ footer a:hover { color: var(--orange); }
       <label for="addTask">What needs doing</label>
       <textarea id="addTask" placeholder="Borrow the arrow signs from the front office"></textarea>
     </div>
-    <div class="addgrid" style="margin-top:12px">
-      <div class="field">
-        <label for="addDue">Due date</label>
-        <input type="date" id="addDue" min="2026-09-01" max="2026-12-31">
-      </div>
-    </div>
     <div class="noteform" style="margin-top:10px">
       <div class="btnrow">
         <button class="btn" id="addBtn" type="button">Add it</button>
@@ -773,7 +767,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.36</p>
+    <p class="build">Build 2026-09-23.37</p>
   </div>
 </footer>
 
@@ -1697,13 +1691,12 @@ footer a:hover { color: var(--orange); }
     }));
 
     send({ action: "add", section: sect, task: task,
-           due: $("addDue").value,
            owner: owner }, function (err) {
       $("addBtn").disabled = false;
       if (err) { st.className = "mini-status bad"; st.textContent = err; return; }
       st.className = "mini-status good";
       st.textContent = "Added.";
-      $("addTask").value = ""; $("addDue").value = "";
+      $("addTask").value = "";
       setTimeout(function () { st.textContent = ""; }, 4000);
     });
   });
