@@ -696,8 +696,8 @@ footer a:hover { color: var(--orange); }
   <div class="band-inner">
     <p class="eyebrow">AFTC's Trunk or Treat 2026</p>
     <h1>Committee Checklist</h1>
-    <p class="lede">What is done, what is next, and who has it. Tick your work off here so the
-      whole committee sees it. Anyone on the committee can leave an update.</p>
+    <p class="lede">Pick your name below to open your crew's list. Set a status or leave an
+      update.</p>
     <div class="factbar">
       <div class="fb"><b>Countdown</b><span class="clock" id="countdown">Loading</span></div>
     </div>
@@ -771,7 +771,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.30</p>
+    <p class="build">Build 2026-09-23.33</p>
   </div>
 </footer>
 
@@ -1527,11 +1527,8 @@ footer a:hover { color: var(--orange); }
     var board = $("board");
     board.innerHTML = "";
 
-    if (!me) {
-      board.appendChild(el("p", "empty",
-        "Pick your name at the top of the page to see your crew's list."));
-      return;
-    }
+    /* No name, nothing on the board. The sign-in box says what to do. */
+    if (!me) return;
 
     SECTIONS.forEach(function (sec) {
       if (!visible[sec.key]) return;
