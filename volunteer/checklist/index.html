@@ -747,7 +747,7 @@ footer a:hover { color: var(--orange); }
   <!-- add -->
   <section class="card" id="addCard" aria-labelledby="addHead" style="margin-top:26px" hidden>
     <h2 id="addHead" style="font-size:19px;margin-bottom:4px">Something missing?</h2>
-    <p class="hint" style="margin:0 0 14px" id="addHint">Add it here and it joins your crew's list.</p>
+    <p class="hint" style="margin:0 0 14px" id="addHint">Add to your list.</p>
     <div class="field">
       <label for="addTask">What needs doing</label>
       <textarea id="addTask" placeholder="Borrow the arrow signs from the front office"></textarea>
@@ -773,7 +773,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.35</p>
+    <p class="build">Build 2026-09-23.36</p>
   </div>
 </footer>
 
@@ -1303,7 +1303,7 @@ footer a:hover { color: var(--orange); }
     $("addStatus").textContent = "";
     if (me) {
       $("addHint").textContent = target
-        ? "Add it here and it joins " + crewName(target) + "."
+        ? "Add to your list."
         : "You can add tasks once a crew lists your name.";
     }
   }
