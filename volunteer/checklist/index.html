@@ -741,20 +741,16 @@ footer a:hover { color: var(--orange); }
   <!-- add -->
   <section class="card" id="addCard" aria-labelledby="addHead" style="margin-top:26px" hidden>
     <h2 id="addHead" style="font-size:19px;margin-bottom:4px">Something missing?</h2>
-    <p class="hint" style="margin:0 0 14px">Add it here and it shows up for everyone.</p>
-    <div class="addgrid">
-      <div class="field">
-        <label for="addSec">Put it under</label>
-        <select id="addSec"></select>
-      </div>
+    <p class="hint" style="margin:0 0 14px" id="addHint">Add it here and it joins your crew's list.</p>
+    <div class="field">
+      <label for="addTask">What needs doing</label>
+      <textarea id="addTask" placeholder="Borrow the arrow signs from the front office"></textarea>
+    </div>
+    <div class="addgrid" style="margin-top:12px">
       <div class="field">
         <label for="addDue">Due date</label>
         <input type="date" id="addDue" min="2026-09-01" max="2026-12-31">
       </div>
-    </div>
-    <div class="field" style="margin-top:12px">
-      <label for="addTask">What needs doing</label>
-      <textarea id="addTask" placeholder="Borrow the arrow signs from the front office"></textarea>
     </div>
     <div class="noteform" style="margin-top:10px">
       <div class="btnrow">
@@ -771,7 +767,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.33</p>
+    <p class="build">Build 2026-09-23.34</p>
   </div>
 </footer>
 
@@ -1282,23 +1278,28 @@ footer a:hover { color: var(--orange); }
       pad(hh) + ":" + pad(mm) + ":" + pad(s);
   }
 
-  /* Only the add-task form has a picker now, and it offers a crew only if
-     this person can edit it. */
+  /* There is no crew picker any more. A new task goes on the crew that is
+     already theirs: the one that names them, or failing that the first they
+     are allowed to see. */
+  function addTarget() {
+    var home = homeSection();
+    if (home && home !== "settled") return home;
+    for (var i = 0; i < SECTIONS.length; i++) {
+      var k = SECTIONS[i].key;
+      if (k !== "settled" && visible[k] && canEdit[k]) return k;
+    }
+    return "";
+  }
+
   function fillSelects() {
-    var add = $("addSec");
-    var keep = add.value;
-    add.innerHTML = "";
-    SECTIONS.forEach(function (s) {
-      if (s.key === "settled" || !visible[s.key] || !canEdit[s.key]) return;
-      var o = el("option", null, s.title); o.value = s.key; add.appendChild(o);
-    });
-    add.value = keep;
-    var none = !add.options.length;
-    add.disabled = none;
-    $("addBtn").disabled = none;
-    $("addStatus").textContent = none && me
-      ? "You can add tasks once a crew lists your name."
-      : "";
+    var target = addTarget();
+    $("addBtn").disabled = !target;
+    $("addStatus").textContent = "";
+    if (me) {
+      $("addHint").textContent = target
+        ? "Add it here and it joins " + crewName(target) + "."
+        : "You can add tasks once a crew lists your name.";
+    }
   }
 
   function statusLabel(t) {
@@ -1683,7 +1684,8 @@ footer a:hover { color: var(--orange); }
     $("addBtn").disabled = true;
     /* No owner box any more. A new task inherits whatever its crew's other
        tasks already say, so it lands with the right name on it. */
-    var sect = $("addSec").value;
+    var sect = addTarget();
+    if (!sect) return;
     var owner = crewOwner(state.tasks.filter(function (t) {
       return t.section === sect;
     }));
