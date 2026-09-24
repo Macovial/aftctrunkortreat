@@ -188,15 +188,24 @@ main { max-width: 980px; margin: 0 auto; padding: 22px 20px 10px; }
   animation: blink 1.2s ease-in-out infinite;
 }
 
-.starthere::after { content: " \25B8"; }
-
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%      { opacity: .2; }
 }
 
+/* A louder, brighter pulse for a few seconds after somebody is sent back. */
+.starthere.nudge {
+  animation: nudge .45s ease-in-out 6;
+  color: var(--orange);
+}
+
+@keyframes nudge {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .35; transform: scale(1.12); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .starthere { animation: none; }
+  .starthere, .starthere.nudge { animation: none; }
 }
 
 .whobar {
@@ -769,7 +778,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.19</p>
+    <p class="build">Build 2026-09-23.21</p>
   </div>
 </footer>
 
@@ -905,6 +914,24 @@ footer a:hover { color: var(--orange); }
       }
     }
     return "";
+  }
+
+  /* Back to the sign-in box, with the flag flashed so it is obvious why. */
+  function goStart() {
+    var row = document.querySelector(".startrow");
+    if (row && row.scrollIntoView) {
+      row.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    var flag = $("startHere");
+    if (flag) {
+      flag.classList.remove("nudge");
+      void flag.offsetWidth;          /* restart the animation */
+      flag.classList.add("nudge");
+    }
+    setTimeout(function () {
+      var f = $("whoName");
+      if (f && f.focus) { try { f.focus(); } catch (e) {} }
+    }, 450);
   }
 
   function goHome() {
@@ -1176,6 +1203,7 @@ footer a:hover { color: var(--orange); }
     $("whoIs").hidden = !have;
     $("lockNote").hidden = have;
     $("startHere").hidden = have;
+    if (have) $("startHere").classList.remove("nudge");
     if (have) $("whoLabel").textContent = me;
   }
 
@@ -1272,6 +1300,8 @@ footer a:hover { color: var(--orange); }
     toggle.type = "button";
     toggle.setAttribute("aria-expanded", openPanels[t.id] ? "true" : "false");
     toggle.addEventListener("click", function () {
+      /* No name, no panel. Send them back to the top instead. */
+      if (!me) { goStart(); return; }
       openPanels[t.id] = !openPanels[t.id];
       render();
     });
@@ -1591,7 +1621,7 @@ footer a:hover { color: var(--orange); }
   }
 
   function send(params, after) {
-    if (!me) { topNote("Add your name at the top of the page first.", true); return; }
+    if (!me) { goStart(); return; }
     params.person = me;
     if (code) params.code = code;
 
@@ -1642,6 +1672,7 @@ footer a:hover { color: var(--orange); }
   }
 
   $("addBtn").addEventListener("click", function () {
+    if (!me) { goStart(); return; }
     var task = $("addTask").value.trim();
     var st = $("addStatus");
     if (!task) { $("addTask").focus(); return; }
