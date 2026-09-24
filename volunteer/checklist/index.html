@@ -768,7 +768,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.26</p>
+    <p class="build">Build 2026-09-23.27</p>
   </div>
 </footer>
 
@@ -1388,28 +1388,6 @@ footer a:hover { color: var(--orange); }
 
     p.appendChild(srow);
     paintChips();
-
-    /* owner */
-    p.appendChild(el("h4", null, "Who has it"));
-    var orow = el("div", "ownerrow");
-    var ofield = el("div", "field");
-    var oin = el("input");
-    oin.type = "text";
-    oin.value = t.owner;
-    oin.placeholder = "Crew: Name";
-    oin.disabled = !mayEdit(t);
-    ofield.appendChild(oin);
-    orow.appendChild(ofield);
-    var obtn = el("button", "btn ghost", "Save owner");
-    obtn.type = "button";
-    obtn.disabled = !mayEdit(t);
-    obtn.addEventListener("click", function () {
-      var v = oin.value.trim();
-      if (!v) return;
-      send({ action: "owner", id: t.id, owner: v });
-    });
-    orow.appendChild(obtn);
-    p.appendChild(orow);
 
     /* notes */
     p.appendChild(el("h4", null, "Updates"));
