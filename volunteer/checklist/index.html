@@ -745,10 +745,6 @@ footer a:hover { color: var(--orange); }
         <select id="addSec"></select>
       </div>
       <div class="field">
-        <label for="addOwner">Crew or person</label>
-        <input type="text" id="addOwner" placeholder="Logistics: TBD">
-      </div>
-      <div class="field">
         <label for="addDue">Due date</label>
         <input type="date" id="addDue" min="2026-09-01" max="2026-12-31">
       </div>
@@ -778,7 +774,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.23</p>
+    <p class="build">Build 2026-09-23.24</p>
   </div>
 </footer>
 
@@ -1716,14 +1712,21 @@ footer a:hover { color: var(--orange); }
     st.className = "mini-status";
     st.textContent = "Saving";
     $("addBtn").disabled = true;
-    send({ action: "add", section: $("addSec").value, task: task,
+    /* No owner box any more. A new task inherits whatever its crew's other
+       tasks already say, so it lands with the right name on it. */
+    var sect = $("addSec").value;
+    var owner = crewOwner(state.tasks.filter(function (t) {
+      return t.section === sect;
+    }));
+
+    send({ action: "add", section: sect, task: task,
            due: $("addDue").value,
-           owner: $("addOwner").value.trim() }, function (err) {
+           owner: owner }, function (err) {
       $("addBtn").disabled = false;
       if (err) { st.className = "mini-status bad"; st.textContent = err; return; }
       st.className = "mini-status good";
       st.textContent = "Added.";
-      $("addTask").value = ""; $("addOwner").value = ""; $("addDue").value = "";
+      $("addTask").value = ""; $("addDue").value = "";
       setTimeout(function () { st.textContent = ""; }, 4000);
     });
   });
