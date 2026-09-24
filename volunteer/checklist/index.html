@@ -778,7 +778,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.21</p>
+    <p class="build">Build 2026-09-23.23</p>
   </div>
 </footer>
 
@@ -848,6 +848,7 @@ footer a:hover { color: var(--orange); }
   var admins = [];
   var lastCrews = null;
   var canEdit = {};
+  var visible = {};
 
   function isAdmin() {
     var n = String(me || "").toLowerCase();
@@ -885,6 +886,34 @@ footer a:hover { color: var(--orange); }
   }
 
   function mayEdit(t) { return !!me && !!canEdit[t.section]; }
+
+  /* What this person actually sees. Their own crew and nothing else, so the
+     board opens on their work instead of a hundred other people's. Narrower
+     than what they may edit: a crew with no lead is open to everyone, but it
+     is nobody's crew, so it does not show unless they signed up for it. */
+  function computeVisible() {
+    visible = {};
+    if (!me || !state || !state.tasks) return;
+
+    if (isAdmin()) {
+      SECTIONS.forEach(function (s) { visible[s.key] = true; });
+      return;
+    }
+
+    var mine = me.toLowerCase();
+    state.tasks.forEach(function (t) {
+      if (String(t.owner || "").toLowerCase().indexOf(mine) > -1) visible[t.section] = true;
+    });
+
+    var joined = ((state && state.crews) || {})[mine];
+    if (joined) visible[joined] = true;
+
+    /* Nobody should land on an empty page. If we cannot work out whose crew
+       this is, show the lot rather than nothing. */
+    var any = false;
+    for (var k in visible) { if (visible[k]) { any = true; break; } }
+    if (!any) SECTIONS.forEach(function (s) { visible[s.key] = true; });
+  }
 
   /* The first crew whose owner column actually names this person. Not the
      same as what they may edit: everyone may edit a crew with no lead, and
@@ -1251,7 +1280,7 @@ footer a:hover { color: var(--orange); }
     var keep = add.value;
     add.innerHTML = "";
     SECTIONS.forEach(function (s) {
-      if (s.key === "settled" || !canEdit[s.key]) return;
+      if (s.key === "settled" || !visible[s.key] || !canEdit[s.key]) return;
       var o = el("option", null, s.title); o.value = s.key; add.appendChild(o);
     });
     add.value = keep;
@@ -1511,7 +1540,14 @@ footer a:hover { color: var(--orange); }
     var board = $("board");
     board.innerHTML = "";
 
+    if (!me) {
+      board.appendChild(el("p", "empty",
+        "Pick your name at the top of the page to see your crew's list."));
+      return;
+    }
+
     SECTIONS.forEach(function (sec) {
+      if (!visible[sec.key]) return;
       var rows = state.tasks.filter(function (t) {
         return t.section === sec.key;
       });
@@ -1579,6 +1615,7 @@ footer a:hover { color: var(--orange); }
   function render() {
     if (!state) return;
     computeCanEdit();
+    computeVisible();
     fillSelects();
     paintBoard();
     paintFeed();
