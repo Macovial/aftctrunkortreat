@@ -101,8 +101,9 @@ h1, h2, h3 {
 }
 
 .factbar {
-  width: 100%;
-  margin-top: 2px;
+  margin: 2px auto 0;
+  max-width: 520px;
+  justify-content: center;
   display: flex;
   flex-wrap: wrap;
   background: rgba(232, 118, 26, .1);
@@ -134,17 +135,25 @@ h1, h2, h3 {
 
 .fb span { color: var(--cream); font-size: 14.5px; font-weight: 600; }
 
+/* The clock itself: tabular figures so the seconds do not jiggle the width. */
+.fb span.clock {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: .01em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
 @media (max-width: 760px) {
+  .factbar { max-width: none; }
   .fb {
     flex: 1 1 100%;
-    flex-direction: row;
-    justify-content: space-between;
     border-right: 0;
     border-bottom: 1px solid rgba(232, 118, 26, .28);
-    padding: 9px 14px;
+    padding: 10px 14px;
   }
   .fb:last-child { border-bottom: 0; }
-  .fb span { text-align: right; }
+  .fb span.clock { font-size: 17px; }
 }
 
 /* ---------- shell ---------- */
@@ -579,9 +588,6 @@ select option { background: var(--card-sunk); color: var(--cream); }
 
 .statusrow { display: flex; flex-wrap: wrap; gap: 7px; }
 
-.ownerrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
-.ownerrow .field { flex: 1 1 200px; }
-
 .notelist { display: flex; flex-direction: column; gap: 8px; }
 
 .note {
@@ -693,10 +699,7 @@ footer a:hover { color: var(--orange); }
     <p class="lede">What is done, what is next, and who has it. Tick your work off here so the
       whole committee sees it. Anyone on the committee can leave an update.</p>
     <div class="factbar">
-      <div class="fb"><b>Date</b><span>Wednesday, October 28</span></div>
-      <div class="fb"><b>Time</b><span>6:00 to 7:30 PM</span></div>
-      <div class="fb"><b>Where</b><span>CSD Football Field</span></div>
-      <div class="fb"><b>Countdown</b><span id="countdown">Loading</span></div>
+      <div class="fb"><b>Countdown</b><span class="clock" id="countdown">Loading</span></div>
     </div>
   </div>
 </header>
@@ -768,7 +771,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.27</p>
+    <p class="build">Build 2026-09-23.30</p>
   </div>
 </footer>
 
@@ -1254,15 +1257,29 @@ footer a:hover { color: var(--orange); }
 
   /* -------------------------------------------------------------- painting */
 
+  /* Counts down to the 6:00 PM start, not to midnight, so the last day reads
+     honestly. Runs on the viewer's own clock. */
   function countdown() {
-    var ev = new Date(EVENT_DATE + "T00:00:00");
-    var now = new Date();
-    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    var days = Math.round((ev.getTime() - today.getTime()) / 86400000);
+    var ev = new Date(EVENT_DATE + "T18:00:00");
+    var left = ev.getTime() - Date.now();
+
+    if (left <= 0) {
+      /* The event runs 90 minutes. Say so while it is on, then stop. */
+      $("countdown").textContent =
+        left > -90 * 60000 ? "Happening now" : "Wrapped";
+      return;
+    }
+
+    var s = Math.floor(left / 1000);
+    var d = Math.floor(s / 86400); s -= d * 86400;
+    var hh = Math.floor(s / 3600);  s -= hh * 3600;
+    var mm = Math.floor(s / 60);    s -= mm * 60;
+
+    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
     $("countdown").textContent =
-      days > 1 ? days + " days to go" :
-      days === 1 ? "Tomorrow" :
-      days === 0 ? "Today" : "Wrapped";
+      (d ? d + (d === 1 ? " day " : " days ") : "") +
+      pad(hh) + ":" + pad(mm) + ":" + pad(s);
   }
 
   /* Only the add-task form has a picker now, and it offers a crew only if
@@ -1689,7 +1706,7 @@ footer a:hover { color: var(--orange); }
   /* ------------------------------------------------------------------ boot */
 
   countdown();
-  setInterval(countdown, 3600000);
+  setInterval(countdown, 1000);
   mountWho();
   paintWho();
   /* Draw the last board first, then go and get the current one. */
