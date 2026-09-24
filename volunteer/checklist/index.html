@@ -761,12 +761,6 @@ footer a:hover { color: var(--orange); }
     </div>
   </section>
 
-  <!-- activity -->
-  <section class="card" aria-labelledby="actHead" style="margin-top:26px">
-    <h2 id="actHead" style="font-size:19px;margin-bottom:12px">Latest updates</h2>
-    <div class="feed" id="feed"><p class="empty">Nothing yet.</p></div>
-  </section>
-
 </main>
 
 <footer>
@@ -774,7 +768,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.25</p>
+    <p class="build">Build 2026-09-23.26</p>
   </div>
 </footer>
 
@@ -1592,31 +1586,12 @@ footer a:hover { color: var(--orange); }
     }
   }
 
-  function paintFeed() {
-    var feed = $("feed");
-    feed.innerHTML = "";
-    if (!state.activity || !state.activity.length) {
-      feed.appendChild(el("p", "empty", "Nothing yet. Changes show up here as they happen."));
-      return;
-    }
-    state.activity.forEach(function (a) {
-      var row = el("div", "fitem");
-      row.appendChild(el("b", null, a.action));
-      row.appendChild(document.createTextNode(". "));
-      row.appendChild(el("span", null, a.detail));
-      row.appendChild(document.createTextNode(" "));
-      row.appendChild(el("span", null, fmtWhen(a.when)));
-      feed.appendChild(row);
-    });
-  }
-
   function render() {
     if (!state) return;
     computeCanEdit();
     computeVisible();
     fillSelects();
     paintBoard();
-    paintFeed();
   }
 
   /* --------------------------------------------------------------- actions */
