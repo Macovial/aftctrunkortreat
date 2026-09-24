@@ -173,6 +173,12 @@ main { max-width: 980px; margin: 0 auto; padding: 22px 20px 10px; }
 
 /* The sign-in box, narrow and centred, with a flag beside it. On a phone the
    flag drops above the box rather than squeezing it. */
+.startlede {
+  text-align: center;
+  max-width: 460px;
+  margin: 0 auto 12px;
+}
+
 .startrow {
   display: flex;
   align-items: center;
@@ -696,8 +702,6 @@ footer a:hover { color: var(--orange); }
   <div class="band-inner">
     <p class="eyebrow">AFTC's Trunk or Treat 2026</p>
     <h1>Committee Checklist</h1>
-    <p class="lede">Pick your name below to open your crew's list. Set a status or leave an
-      update.</p>
     <div class="factbar">
       <div class="fb"><b>Countdown</b><span class="clock" id="countdown">Loading</span></div>
     </div>
@@ -709,6 +713,8 @@ footer a:hover { color: var(--orange); }
   <div id="topNote" class="banner-note" hidden></div>
 
   <!-- who -->
+  <p class="lede startlede">Pick your name below to open your crew's list. Set a status or
+    leave an update.</p>
   <div class="startrow">
     <span class="starthere" id="startHere" aria-hidden="true">Start here</span>
     <section class="card whocard" aria-labelledby="whoHead">
@@ -767,7 +773,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-23.34</p>
+    <p class="build">Build 2026-09-23.35</p>
   </div>
 </footer>
 
