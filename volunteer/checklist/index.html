@@ -507,6 +507,16 @@ select option { background: var(--card-sunk); color: var(--cream); }
   align-items: flex-start;
   gap: 11px;
   padding: 11px 13px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background .12s ease;
+}
+
+/* The whole row opens the task, so it has to look like it does. */
+.trow:hover { background: rgba(247, 231, 200, .045); }
+.trow:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
 }
 
 .tick {
@@ -809,7 +819,7 @@ footer a:hover { color: var(--orange); }
     <p>Questions about the list? Email <a href="mailto:j.r.goff@gmail.com">j.r.goff@gmail.com</a></p>
     <p>Volunteer sign-up: <a href="/volunteer">aftctrunkortreat.kissfistcsd.com/volunteer</a></p>
     <p>Hosted by Association of Families, Teachers and Counselors at CSD.</p>
-    <p class="build">Build 2026-09-29.39</p>
+    <p class="build">Build 2026-09-29.40</p>
   </div>
 </footer>
 
@@ -1379,18 +1389,43 @@ footer a:hover { color: var(--orange); }
 
     var toggle = el("button", "topen", openPanels[t.id] ? "Close" : "Update");
     toggle.type = "button";
-    toggle.setAttribute("aria-expanded", openPanels[t.id] ? "true" : "false");
-    toggle.addEventListener("click", function () {
+    toggle.tabIndex = -1;          /* the row carries the focus, not the button */
+    toggle.setAttribute("aria-hidden", "true");
+    row.appendChild(toggle);
+
+    /* Anywhere on the row opens the task. The button is left in place because
+       it is what tells people the row does anything, but it is decoration now:
+       the row is the control, which keeps one target for mouse, touch and
+       keyboard instead of a small button people have to aim at. */
+    function toggleTask() {
       /* No name, no panel. Send them back to the top instead. */
       if (!me) { goStart(); return; }
       openPanels[t.id] = !openPanels[t.id];
       render();
+    }
+
+    row.setAttribute("role", "button");
+    row.tabIndex = 0;
+    row.setAttribute("aria-expanded", openPanels[t.id] ? "true" : "false");
+    row.setAttribute("aria-label",
+      (openPanels[t.id] ? "Close " : "Open ") + statusLabel(t) + ", " + t.task);
+    row.addEventListener("click", toggleTask);
+    row.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+        e.preventDefault();
+        toggleTask();
+      }
     });
-    row.appendChild(toggle);
 
     wrap.appendChild(row);
 
-    if (openPanels[t.id]) wrap.appendChild(buildPanel(t));
+    if (openPanels[t.id]) {
+      var panel = buildPanel(t);
+      /* The panel sits inside the same card. Without this a tap on a status
+         button would travel up to the row and shut the task again. */
+      panel.addEventListener("click", function (e) { e.stopPropagation(); });
+      wrap.appendChild(panel);
+    }
     return wrap;
   }
 
