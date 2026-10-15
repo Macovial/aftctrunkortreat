@@ -1,1 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vote | AFTC's Trunk or Treat 2026</title>
+<meta name="description" content="Score the trunks and host costumes at AFTC's Trunk or Treat 2026.">
+<meta name="theme-color" content="#1E0630">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Creepster&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<header class="band">
+  <div class="band-inner">
+    <p class="eyebrow">AFTC's Trunk or Treat 2026</p>
+    <h1>Cast your vote</h1>
+    <p class="lede" id="lede">Tap a photo, score it 1 to 5 in each category, and submit. Score as many as you like, once each.</p>
+  </div>
+</header>
+
+<main>
+  <!-- Voter view -->
+  <section id="voter">
+    <div class="notice" id="setupNote" hidden>
+      <h2>Voting is not connected yet</h2>
+      <p>The committee is still setting this page up. Check back soon.</p>
+    </div>
+
+    <div class="notice" id="loadErr" hidden>
+      <h2>Could not load the photos</h2>
+      <p id="loadErrMsg"></p>
+      <button class="btn ghost small" id="retryLoad" type="button">Try again</button>
+    </div>
+
+    <div class="notice" id="closed" hidden>
+      <h2>Voting is closed</h2>
+      <p id="closedMsg">Thanks for voting. Winners will be announced soon.</p>
+      <a class="btn primary" id="winnersLink" href="results/" hidden>See the winners</a>
+    </div>
+
+    <div id="votingArea" hidden>
+      <div class="codebar" id="codeBar" hidden>
+        <form class="field" id="codeForm">
+          <label for="codeInput">Voting code from your card</label>
+          <div style="display:flex;gap:8px">
+            <input id="codeInput" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="ABC123">
+            <button class="btn primary small" type="submit">Save</button>
+          </div>
+        </form>
+        <p class="have" id="codeHave" hidden>Voting with code <b id="codeShow"></b> <button class="linkbtn" id="codeChange" type="button">Change</button></p>
+      </div>
+
+      <nav class="tabs" role="tablist" aria-label="Contests">
+        <button role="tab" id="tab-trunk" data-tab="trunk" aria-selected="true" aria-controls="gallery">Trunks <span class="count" id="count-trunk"></span></button>
+        <button role="tab" id="tab-costume" data-tab="costume" aria-selected="false" aria-controls="gallery">Costumes <span class="count" id="count-costume"></span></button>
+      </nav>
+
+      <div id="gallery" class="grid" role="tabpanel" aria-live="polite"></div>
+      <p class="empty" id="empty" hidden></p>
+    </div>
+
+    <p class="empty" id="loading">Loading photos...</p>
+  </section>
+
+  <!-- Admin view (shown after the PIN) -->
+  <section id="admin" hidden>
+    <div class="admin-head">
+      <h2>Admin</h2>
+      <button class="btn ghost small" id="exitAdmin" type="button">Exit admin</button>
+    </div>
+    <p class="warn" id="adminWarn" hidden></p>
+
+    <div class="card">
+      <h3>Voting controls</h3>
+      <div class="switch-row">
+        <div><strong>Voting</strong><span id="votingState">Closed</span></div>
+        <button class="toggle" id="tVoting" type="button" role="switch" aria-checked="false" aria-label="Voting open"></button>
+      </div>
+      <div class="switch-row">
+        <div><strong>Publish results</strong><span id="publishState">Close voting first, then publish.</span></div>
+        <button class="toggle" id="tPublish" type="button" role="switch" aria-checked="false" aria-label="Publish results"></button>
+      </div>
+      <div class="switch-row">
+        <div><strong>Require voting codes</strong><span id="codeState">Off: one ballot per phone per entry.</span></div>
+        <button class="toggle" id="tCodes" type="button" role="switch" aria-checked="false" aria-label="Require voting codes"></button>
+      </div>
+      <form class="field-row" id="minForm">
+        <label for="minBallots">Minimum ballots to place</label>
+        <input id="minBallots" type="number" min="1" max="1000" inputmode="numeric">
+        <button class="btn ghost small" type="submit">Save</button>
+      </form>
+      <form class="field-row" id="genForm">
+        <label for="genCount">Make voting codes</label>
+        <input id="genCount" type="number" min="1" max="1000" value="100" inputmode="numeric">
+        <button class="btn ghost small" type="submit">Make</button>
+      </form>
+      <p class="stats" id="stats"></p>
+      <p class="adm-links">
+        <a href="results/" target="_blank" rel="noopener">Open results page</a>
+        <a id="sheetLink" href="#" target="_blank" rel="noopener" hidden>Open scores spreadsheet</a>
+      </p>
+    </div>
+
+    <details class="card" id="walkCard">
+      <summary>Add a walk-in host</summary>
+      <form class="form-grid" id="walkForm">
+        <div class="two">
+          <div class="f"><label for="walkName">Host name</label><input id="walkName" type="text" maxlength="120" required></div>
+          <div class="f"><label for="walkNum">Trunk #</label><input id="walkNum" type="number" min="1" inputmode="numeric" placeholder="Auto"></div>
+        </div>
+        <div class="f"><label for="walkTheme">Trunk name or theme</label><input id="walkTheme" type="text" maxlength="120"></div>
+        <button class="btn primary" type="submit">Add host</button>
+      </form>
+    </details>
+
+    <div class="host-tools">
+      <input id="hostSearch" type="search" placeholder="Search name, theme, or trunk #" aria-label="Search hosts">
+      <button class="btn ghost small" id="refreshHosts" type="button">Refresh</button>
+    </div>
+    <div id="hostList"></div>
+    <p class="empty" id="hostEmpty" hidden>No hosts match.</p>
+  </section>
+</main>
+
+<footer>
+  <button class="linkbtn" id="adminBtn" type="button">Admin</button>
+</footer>
+
+<!-- Score sheet -->
+<div class="overlay" id="scoreSheet" hidden>
+  <form class="panel" id="scoreForm" role="dialog" aria-modal="true" aria-labelledby="scoreTitle">
+    <img class="score-photo" id="scorePhoto" alt="">
+    <div class="score-head">
+      <div class="num" id="scoreNum"></div>
+      <h2 id="scoreTitle"></h2>
+      <p class="theme" id="scoreTheme"></p>
+    </div>
+    <p class="scale">1 poor, 2 fair, 3 good, 4 very good, 5 excellent</p>
+    <div id="critList"></div>
+    <div class="score-total">Total <b id="scoreTotal">0</b> of <span id="scoreMax">25</span></div>
+    <p class="honor">Please do not score your own trunk or costume.</p>
+    <p class="err" id="scoreErr"></p>
+    <div class="actions">
+      <button class="btn ghost" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="scoreSubmit" disabled>Submit score</button>
+    </div>
+  </form>
+</div>
+
+<!-- Admin PIN -->
+<div class="overlay" id="pinSheet" hidden>
+  <form class="panel pin-panel" id="pinForm" role="dialog" aria-modal="true" aria-labelledby="pinTitle" autocomplete="off">
+    <h2 id="pinTitle">Admin</h2>
+    <label for="pinInput">Enter the admin PIN</label>
+    <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" maxlength="12">
+    <div class="pin-wait" id="pinWait" hidden aria-live="assertive">
+      <p><span id="pinMsg">Wrong PIN</span>. Try again in <span class="big" id="pinCount">2</span></p>
+      <div class="bar"><span id="pinBar"></span></div>
+    </div>
+    <p class="err" id="pinErr"></p>
+    <div class="actions">
+      <button class="btn ghost" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="pinGo">Enter</button>
+    </div>
+  </form>
+</div>
+
+<input type="file" id="camera" accept="image/*" capture="environment" hidden>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script>
+(function () {
+  var api = TT.api, el = TT.el, toast = TT.toast;
+  var $ = function (id) { return document.getElementById(id); };
+
+  var CRITERIA = {
+    trunk: [
+      ['Creativity', 'Original idea or a clever twist on a familiar one.'],
+      ['Theme execution', 'How fully the idea is carried out, down to the details.'],
+      ['Visual impact', 'Eye-catching from a distance, including lighting after dark.'],
+      ['Interaction', 'Sound, props, effects, and how the hosts engage with kids.'],
+      ['Effort and craftsmanship', 'How well it is built. Handmade work counts in its favor.']
+    ],
+    costume: [
+      ['Creativity', 'Original idea or a clever take on a familiar character.'],
+      ['Craftsmanship', 'How well it is made. Handmade work counts in its favor.'],
+      ['Character', 'Staying in character with voice and movement, and playing it up for kids.'],
+      ['Theme tie-in', 'How well the costume matches the trunk.']
+    ]
+  };
+  var SCALE = ['Poor', 'Fair', 'Good', 'Very good', 'Excellent'];
+
+  var state = {
+    tab: 'trunk',
+    data: null,
+    scored: { trunk: {}, costume: {} },
+    voter: voterId(),
+    code: TT.getItem('localStorage', 'tot2026_code') || '',
+    current: null,
+    picks: [],
+    pin: null,
+    admin: null,
+    camTarget: null
+  };
+
+  function voterId() {
+    var id = TT.getItem('localStorage', 'tot2026_voter');
+    if (!id) {
+      var bytes = new Uint8Array(16);
+      (window.crypto || window.msCrypto).getRandomValues(bytes);
+      id = Array.prototype.map.call(bytes, function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+      TT.setItem('localStorage', 'tot2026_voter', id);
+    }
+    return id;
+  }
+
+  function entryLabel(e) { return e.number ? 'Trunk ' + e.number : 'Trunk'; }
+
+  /* ================= Voter view ================= */
+
+  function loadEntries(quiet) {
+    if (!window.VOTING_API_URL) {
+      $('loading').hidden = true;
+      $('setupNote').hidden = false;
+      return Promise.resolve();
+    }
+    return api('entries', { voter: state.voter, code: state.code }).then(function (r) {
+      $('loading').hidden = true;
+      if (!r.ok) throw new Error(r.error || 'Something went wrong.');
+      $('loadErr').hidden = true;
+      state.data = r;
+      if (r.badCode) { state.code = ''; TT.setItem('localStorage', 'tot2026_code', null); toast('That voting code was not found. Check your card.', true); }
+      ['trunk', 'costume'].forEach(function (k) {
+        state.scored[k] = {};
+        (r.scored[k] || []).forEach(function (id) { state.scored[k][id] = true; });
+      });
+      renderVoter();
+    }).catch(function (err) {
+      $('loading').hidden = true;
+      if (quiet && state.data) return;
+      $('loadErrMsg').textContent = err.message;
+      $('loadErr').hidden = false;
+    });
+  }
+
+  function renderVoter() {
+    var d = state.data;
+    if (!d) return;
+    var open = d.settings.votingOpen;
+    $('closed').hidden = open;
+    $('votingArea').hidden = !open;
+    $('lede').hidden = !open;
+    $('winnersLink').hidden = !d.settings.resultsPublished;
+    $('closedMsg').textContent = d.settings.resultsPublished ? 'Thanks for voting. The winners are posted.' : 'Thanks for voting. Winners will be announced soon.';
+    if (!open) return;
+
+    $('codeBar').hidden = !d.settings.requireCode;
+    $('codeForm').hidden = !!state.code;
+    $('codeHave').hidden = !state.code;
+    $('codeShow').textContent = state.code;
+
+    ['trunk', 'costume'].forEach(function (k) {
+      var done = d[k].filter(function (e) { return state.scored[k][e.id]; }).length;
+      $('count-' + k).textContent = d[k].length ? '(' + done + '/' + d[k].length + ')' : '';
+      $('tab-' + k).setAttribute('aria-selected', String(state.tab === k));
+    });
+
+    var list = d[state.tab];
+    var g = $('gallery');
+    g.innerHTML = '';
+    list.forEach(function (e) {
+      var done = !!state.scored[state.tab][e.id];
+      g.appendChild(el('button', { type: 'button', class: 'entry' + (done ? ' is-done' : ''), 'data-id': e.id, 'aria-label': entryLabel(e) + ', ' + e.name + (done ? ', scored' : '') }, [
+        el('img', { class: 'ph', src: e.photo, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer' }),
+        done ? el('span', { class: 'done', text: 'Scored' }) : null,
+        el('span', { class: 'meta' }, [
+          el('span', { class: 'num', text: entryLabel(e) }),
+          el('span', { class: 'name', text: e.name }),
+          e.theme ? el('span', { class: 'theme', text: e.theme }) : null
+        ])
+      ]));
+    });
+    var empty = $('empty');
+    empty.hidden = list.length > 0;
+    empty.textContent = state.tab === 'trunk' ? 'Trunk photos will show up here as they are taken.' : 'Costume photos will show up here as they are taken.';
+  }
+
+  document.querySelector('.tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tab]');
+    if (!b) return;
+    state.tab = b.getAttribute('data-tab');
+    renderVoter();
+  });
+
+  $('gallery').addEventListener('click', function (e) {
+    var card = e.target.closest('.entry');
+    if (!card) return;
+    var id = card.getAttribute('data-id');
+    if (state.scored[state.tab][id]) { toast('You already scored this one.'); return; }
+    if (state.data.settings.requireCode && !state.code) {
+      toast('Enter the voting code from your card first.', true);
+      $('codeInput').focus();
+      return;
+    }
+    var entry = state.data[state.tab].filter(function (x) { return x.id === id; })[0];
+    if (entry) openScore(entry);
+  });
+
+  $('codeForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var c = $('codeInput').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (c.length < 4) { toast('Enter the code printed on your card.', true); return; }
+    state.code = c;
+    TT.setItem('localStorage', 'tot2026_code', c);
+    $('codeInput').value = '';
+    loadEntries();
+  });
+  $('codeChange').addEventListener('click', function () {
+    state.code = '';
+    TT.setItem('localStorage', 'tot2026_code', null);
+    state.scored = { trunk: {}, costume: {} };
+    renderVoter();
+    $('codeInput').focus();
+  });
+  $('retryLoad').addEventListener('click', function () { $('loadErr').hidden = true; $('loading').hidden = false; loadEntries(); });
+
+  /* ----- score sheet ----- */
+
+  function openScore(entry) {
+    var crit = CRITERIA[state.tab];
+    state.current = { entry: entry, contest: state.tab };
+    state.picks = crit.map(function () { return 0; });
+    $('scorePhoto').src = entry.photo;
+    $('scorePhoto').alt = (state.tab === 'trunk' ? 'Trunk' : 'Costume') + ' photo for ' + entry.name;
+    $('scoreNum').textContent = entryLabel(entry) + (state.tab === 'trunk' ? ' trunk' : ' costume');
+    $('scoreTitle').textContent = entry.name;
+    $('scoreTheme').textContent = entry.theme || '';
+    $('scoreMax').textContent = String(crit.length * 5);
+    $('scoreErr').textContent = '';
+    var list = $('critList');
+    list.innerHTML = '';
+    crit.forEach(function (c, i) {
+      var picks = el('div', { class: 'picks', role: 'radiogroup', 'aria-label': c[0] });
+      for (var n = 1; n <= 5; n++) {
+        picks.appendChild(el('button', { type: 'button', role: 'radio', 'aria-checked': 'false', 'data-i': String(i), 'data-n': String(n), 'aria-label': n + ', ' + SCALE[n - 1], text: String(n) }));
+      }
+      list.appendChild(el('div', { class: 'crit' }, [
+        el('div', { class: 'crit-top' }, [
+          el('span', { class: 'crit-name', text: c[0] }),
+          el('span', { class: 'crit-pick', id: 'pick-' + i })
+        ]),
+        el('p', { class: 'crit-desc', text: c[1] }),
+        picks
+      ]));
+    });
+    updateScore();
+    $('scoreSheet').hidden = false;
+    $('scoreSheet').scrollTop = 0;
+    document.body.classList.add('locked');
+  }
+
+  function closeScore() {
+    $('scoreSheet').hidden = true;
+    document.body.classList.remove('locked');
+    state.current = null;
+  }
+
+  function updateScore() {
+    var total = 0, complete = true;
+    state.picks.forEach(function (v, i) {
+      total += v;
+      if (!v) complete = false;
+      var p = $('pick-' + i);
+      if (p) p.textContent = v ? v + ', ' + SCALE[v - 1] : '';
+    });
+    $('scoreTotal').textContent = String(total);
+    $('scoreSubmit').disabled = !complete;
+  }
+
+  $('critList').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-n]');
+    if (!b) return;
+    var i = Number(b.getAttribute('data-i')), n = Number(b.getAttribute('data-n'));
+    state.picks[i] = n;
+    b.parentNode.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-checked', String(x === b)); });
+    updateScore();
+  });
+
+  $('scoreSheet').addEventListener('click', function (e) {
+    if (e.target === $('scoreSheet') || e.target.hasAttribute('data-close')) closeScore();
+  });
+
+  $('scoreForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var cur = state.current;
+    if (!cur || state.picks.some(function (v) { return !v; })) return;
+    var btn = $('scoreSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    api('vote', { contest: cur.contest, hostId: cur.entry.id, scores: state.picks.slice(), voter: state.voter, code: state.code }).then(function (r) {
+      btn.textContent = 'Submit score';
+      if (r.ok || r.already) {
+        state.scored[cur.contest][cur.entry.id] = true;
+        closeScore();
+        renderVoter();
+        toast(r.ok ? 'Score saved. Thank you!' : 'You already scored this one.');
+        return;
+      }
+      btn.disabled = false;
+      if (r.closed) { closeScore(); loadEntries(); toast('Voting just closed.', true); return; }
+      if (r.badCode || r.needCode) {
+        state.code = '';
+        TT.setItem('localStorage', 'tot2026_code', null);
+        closeScore();
+        renderVoter();
+        toast(r.error, true);
+        return;
+      }
+      $('scoreErr').textContent = r.error || 'Something went wrong. Try again.';
+    }).catch(function (err) {
+      btn.textContent = 'Submit score';
+      btn.disabled = false;
+      $('scoreErr').textContent = err.message;
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!$('scoreSheet').hidden) closeScore();
+    else if (!$('pinSheet').hidden) pin.close();
+  });
+
+  /* ================= Admin view ================= */
+
+  var pin = TT.pinDialog({
+    check: function (p) { return api('login', { pin: p }); },
+    onSuccess: function (p) { state.pin = p; enterAdmin(); }
+  });
+
+  $('adminBtn').addEventListener('click', function () {
+    if (!window.VOTING_API_URL) { toast('Voting is not connected yet.', true); return; }
+    var saved = TT.getPin();
+    if (saved) { state.pin = saved; enterAdmin(); } else pin.open();
+  });
+
+  function adminApi(action, data, timeoutMs, retried) {
+    return api(action, Object.assign({ pin: state.pin }, data || {}), timeoutMs).then(function (r) {
+      if (r.pinError && !r.wrong && !retried) {
+        return new Promise(function (res) { setTimeout(res, (r.waitMs || 2000) + 150); })
+          .then(function () { return adminApi(action, data, timeoutMs, true); });
+      }
+      if (r.pinError) {
+        exitAdmin();
+        toast(r.wrong ? 'That PIN no longer works. Enter it again.' : 'Busy. Try again in a moment.', true);
+        if (r.wrong) pin.open();
+        throw new Error('pin');
+      }
+      if (!r.ok) throw new Error(r.error || 'Something went wrong.');
+      return r;
+    });
+  }
+
+  function failToast(err) { if (err.message !== 'pin') toast(err.message, true); }
+
+  function enterAdmin() {
+    $('voter').hidden = true;
+    $('admin').hidden = false;
+    document.querySelector('.band').hidden = true;
+    $('adminBtn').hidden = true;
+    window.scrollTo(0, 0);
+    loadAdmin();
+  }
+
+  function exitAdmin() {
+    TT.clearPin();
+    state.pin = null;
+    state.admin = null;
+    $('admin').hidden = true;
+    $('voter').hidden = false;
+    document.querySelector('.band').hidden = false;
+    $('adminBtn').hidden = false;
+    $('hostList').innerHTML = '';
+    loadEntries();
+  }
+  $('exitAdmin').addEventListener('click', exitAdmin);
+
+  function loadAdmin() {
+    $('hostList').innerHTML = '';
+    $('hostEmpty').hidden = false;
+    $('hostEmpty').textContent = 'Loading hosts...';
+    return adminApi('adminData').then(function (r) {
+      state.admin = r;
+      $('adminWarn').hidden = !r.warning;
+      $('adminWarn').textContent = r.warning || '';
+      $('sheetLink').href = r.scoresUrl;
+      $('sheetLink').hidden = !r.scoresUrl;
+      renderSettings();
+      renderHosts();
+    }).catch(function (err) {
+      $('hostEmpty').textContent = err.message === 'pin' ? '' : err.message;
+      failToast(err);
+    });
+  }
+  $('refreshHosts').addEventListener('click', loadAdmin);
+
+  function renderSettings() {
+    var a = state.admin, s = a.settings;
+    $('tVoting').setAttribute('aria-checked', String(s.votingOpen));
+    $('votingState').textContent = s.votingOpen ? 'Open: voters can score.' : 'Closed.';
+    $('tPublish').setAttribute('aria-checked', String(s.resultsPublished));
+    $('tPublish').disabled = s.votingOpen && !s.resultsPublished;
+    $('publishState').textContent = s.resultsPublished ? 'Published: winners are public on the results page.' : (s.votingOpen ? 'Close voting first, then publish.' : 'Hidden: results page needs the PIN.');
+    $('tCodes').setAttribute('aria-checked', String(s.requireCode));
+    $('codeState').textContent = s.requireCode ? 'On: one ballot per code per entry. ' + a.codeCount + ' codes made.' : 'Off: one ballot per phone per entry.';
+    $('minBallots').value = s.minBallots;
+    var live = { trunk: 0, costume: 0 };
+    a.hosts.forEach(function (h) {
+      if (h.trunkPhoto && h.trunkElig === 'Pass') live.trunk++;
+      if (h.costumePhoto && h.costumeElig === 'Pass') live.costume++;
+    });
+    $('stats').textContent = a.hosts.length + ' hosts. Live for voting: ' + live.trunk + ' trunks, ' + live.costume + ' costumes. Ballots: ' + a.ballots.trunk + ' trunk, ' + a.ballots.costume + ' costume.';
+  }
+
+  function saveSettings(change, okMsg) {
+    return adminApi('setSettings', { settings: change }).then(function (r) {
+      state.admin.settings = r.settings;
+      renderSettings();
+      if (okMsg) toast(okMsg);
+    }).catch(failToast);
+  }
+
+  $('tVoting').addEventListener('click', function () {
+    var open = state.admin.settings.votingOpen;
+    if (open && !confirm('Close voting now? Voters will not be able to score anything.')) return;
+    if (!open && state.admin.settings.resultsPublished && !confirm('Reopening voting takes the published results down. Continue?')) return;
+    saveSettings({ votingOpen: !open }, open ? 'Voting is closed.' : 'Voting is open.');
+  });
+  $('tPublish').addEventListener('click', function () {
+    var pub = state.admin.settings.resultsPublished;
+    if (!pub && !confirm('Publish the winners? Anyone with the results link will see them.')) return;
+    saveSettings({ resultsPublished: !pub }, pub ? 'Results hidden.' : 'Results published.');
+  });
+  $('tCodes').addEventListener('click', function () {
+    var on = state.admin.settings.requireCode;
+    if (!on && state.admin.codeCount === 0) { toast('Make voting codes first.', true); return; }
+    saveSettings({ requireCode: !on }, on ? 'Voting codes off.' : 'Voting codes required.');
+  });
+  $('minForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    saveSettings({ minBallots: Number($('minBallots').value) }, 'Minimum saved.');
+  });
+  $('genForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var n = Number($('genCount').value);
+    if (!confirm('Make ' + n + ' new voting codes? They go in the Voting Codes tab of the scores spreadsheet.')) return;
+    adminApi('generateCodes', { count: n }).then(function (r) {
+      state.admin.codeCount = r.codeCount;
+      renderSettings();
+      toast(n + ' codes made. ' + r.codeCount + ' in total.');
+    }).catch(failToast);
+  });
+
+  $('walkForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    adminApi('addWalkIn', { name: $('walkName').value, number: $('walkNum').value, theme: $('walkTheme').value }).then(function (r) {
+      btn.disabled = false;
+      state.admin.hosts.push(r.host);
+      sortHosts();
+      e.target.reset();
+      $('walkCard').open = false;
+      renderSettings();
+      renderHosts();
+      toast('Added as Trunk ' + r.host.number + '.');
+      var node = document.querySelector('.host[data-id="' + r.host.id + '"]');
+      if (node) node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }).catch(function (err) { btn.disabled = false; failToast(err); });
+  });
+
+  function sortHosts() {
+    state.admin.hosts.sort(function (a, b) {
+      var na = a.number === '' ? Infinity : Number(a.number), nb = b.number === '' ? Infinity : Number(b.number);
+      return na !== nb ? na - nb : a.name.localeCompare(b.name);
+    });
+  }
+
+  $('hostSearch').addEventListener('input', renderHosts);
+
+  function renderHosts() {
+    var q = $('hostSearch').value.trim().toLowerCase();
+    var list = $('hostList');
+    list.innerHTML = '';
+    var shown = 0;
+    state.admin.hosts.forEach(function (h) {
+      if (q && (String(h.number) + ' ' + h.name + ' ' + h.theme).toLowerCase().indexOf(q) < 0) return;
+      list.appendChild(hostCard(h));
+      shown++;
+    });
+    $('hostEmpty').hidden = shown > 0;
+    $('hostEmpty').textContent = state.admin.hosts.length ? 'No hosts match.' : 'No hosts yet. Registered hosts appear here automatically.';
+  }
+
+  function slotStatus(h, kind) {
+    var photo = h[kind + 'Photo'], elig = h[kind + 'Elig'];
+    if (!photo) return kind === 'costume' ? ['', 'Not in the costume contest.'] : ['todo', 'Needs a photo.'];
+    if (elig === 'Pass') return ['live', 'Live for voting.'];
+    if (elig === 'Fail') return ['', 'Hidden from voters.'];
+    return ['todo', 'Mark Pass to show it.'];
+  }
+
+  function slot(h, kind) {
+    var photo = h[kind + 'Photo'], elig = h[kind + 'Elig'];
+    var st = slotStatus(h, kind);
+    return el('div', { class: 'slot', 'data-kind': kind }, [
+      el('div', { class: 'slot-label', text: kind === 'trunk' ? 'Trunk' : 'Costume' }),
+      el('div', { class: 'thumb' }, [photo ? el('img', { src: photo, alt: '', referrerpolicy: 'no-referrer' }) : document.createTextNode('No photo')]),
+      el('button', { type: 'button', class: 'btn small ' + (photo ? 'ghost' : 'primary'), 'data-act': 'photo', text: photo ? 'Retake' : 'Take photo' }),
+      photo ? el('div', { class: 'elig', role: 'group', 'aria-label': 'Eligibility' }, [
+        el('button', { type: 'button', 'data-act': 'elig', 'data-v': 'Pass', 'aria-pressed': String(elig === 'Pass'), text: 'Pass' }),
+        el('button', { type: 'button', 'data-act': 'elig', 'data-v': 'Fail', 'aria-pressed': String(elig === 'Fail'), text: 'Fail' })
+      ]) : null,
+      el('div', { class: 'slot-status' + (st[0] ? ' ' + st[0] : ''), text: st[1] }),
+      photo ? el('button', { type: 'button', class: 'linkbtn', 'data-act': 'remove', text: 'Remove photo' }) : null
+    ]);
+  }
+
+  function hostCard(h) {
+    var hasNum = h.number !== '';
+    return el('article', { class: 'host', 'data-id': h.id }, [
+      el('div', { class: 'host-top' }, [
+        el('div', { class: 'host-num' + (hasNum ? '' : ' none'), text: hasNum ? String(h.number) : 'No #' }),
+        el('div', { class: 'host-id' }, [
+          el('h3', {}, [h.name, h.source === 'Walk-in' ? el('span', { class: 'tag', text: 'Walk-in' }) : null]),
+          el('p', { text: h.theme || 'No theme given' })
+        ]),
+        el('button', { type: 'button', class: 'btn ghost small', 'data-act': 'edit', text: 'Edit' })
+      ]),
+      el('div', { class: 'slots' }, [slot(h, 'trunk'), slot(h, 'costume')]),
+      el('form', { class: 'edit-form', hidden: true }, [
+        el('div', { class: 'form-grid' }, [
+          el('div', { class: 'two' }, [
+            el('div', { class: 'f' }, [el('label', { text: 'Host name' }), el('input', { type: 'text', name: 'name', value: h.name, maxlength: '120', required: true })]),
+            el('div', { class: 'f' }, [el('label', { text: 'Trunk #' }), el('input', { type: 'number', name: 'number', value: h.number, min: '1', inputmode: 'numeric' })])
+          ]),
+          el('div', { class: 'f' }, [el('label', { text: 'Trunk name or theme' }), el('input', { type: 'text', name: 'theme', value: h.theme, maxlength: '120' })])
+        ]),
+        el('div', { class: 'actions' }, [
+          el('button', { type: 'button', class: 'btn ghost small', 'data-act': 'cancel', text: 'Cancel' }),
+          el('button', { type: 'submit', class: 'btn primary small', text: 'Save' })
+        ])
+      ])
+    ]);
+  }
+
+  function replaceHost(h) {
+    var i = state.admin.hosts.findIndex(function (x) { return x.id === h.id; });
+    if (i >= 0) state.admin.hosts[i] = h; else state.admin.hosts.push(h);
+    var old = document.querySelector('.host[data-id="' + h.id + '"]');
+    if (old) old.replaceWith(hostCard(h));
+    renderSettings();
+  }
+
+  function findHost(id) { return state.admin.hosts.filter(function (x) { return x.id === id; })[0]; }
+
+  $('hostList').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (!b) return;
+    var card = b.closest('.host');
+    var h = findHost(card.getAttribute('data-id'));
+    var slotEl = b.closest('.slot');
+    var kind = slotEl ? slotEl.getAttribute('data-kind') : null;
+    var act = b.getAttribute('data-act');
+
+    if (act === 'edit') { card.querySelector('.edit-form').hidden = false; card.querySelector('input[name="name"]').focus(); return; }
+    if (act === 'cancel') { card.querySelector('.edit-form').hidden = true; return; }
+    if (act === 'photo') {
+      state.camTarget = { id: h.id, kind: kind };
+      $('camera').value = '';
+      $('camera').click();
+      return;
+    }
+    if (act === 'elig') {
+      var v = b.getAttribute('data-v');
+      if (h[kind + 'Elig'] === v) v = '';
+      adminApi('setEligibility', { hostId: h.id, kind: kind, value: v }).then(function (r) { replaceHost(r.host); }).catch(failToast);
+      return;
+    }
+    if (act === 'remove') {
+      var what = kind === 'trunk' ? 'trunk photo? The trunk leaves voting until a new photo is taken.' : 'costume photo? This takes them out of the costume contest.';
+      if (!confirm('Remove the ' + what)) return;
+      adminApi('removePhoto', { hostId: h.id, kind: kind }).then(function (r) { replaceHost(r.host); toast('Photo removed.'); }).catch(failToast);
+    }
+  });
+
+  $('hostList').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    var card = form.closest('.host');
+    adminApi('updateHost', {
+      hostId: card.getAttribute('data-id'),
+      name: form.elements.name.value,
+      number: form.elements.number.value,
+      theme: form.elements.theme.value
+    }).then(function (r) {
+      replaceHost(r.host);
+      sortHosts();
+      renderHosts();
+      toast('Saved.');
+    }).catch(failToast);
+  });
+
+  $('camera').addEventListener('change', function () {
+    var file = this.files && this.files[0];
+    var target = state.camTarget;
+    if (!file || !target) return;
+    var card = document.querySelector('.host[data-id="' + target.id + '"]');
+    var thumb = card && card.querySelector('.slot[data-kind="' + target.kind + '"] .thumb');
+    var busy = el('div', { class: 'busy', text: 'Saving...' });
+    if (thumb) thumb.appendChild(busy);
+    resizeImage(file, 1600, 0.82).then(function (dataUrl) {
+      return adminApi('uploadPhoto', { hostId: target.id, kind: target.kind, image: dataUrl }, 90000);
+    }).then(function (r) {
+      replaceHost(r.host);
+      toast((target.kind === 'trunk' ? 'Trunk' : 'Costume') + ' photo saved.' + (r.host[target.kind + 'Elig'] === 'Pass' ? '' : ' Mark Pass to show it.'));
+    }).catch(function (err) {
+      if (busy.parentNode) busy.remove();
+      failToast(err);
+    });
+  });
+
+  // Shrinks the photo on the phone before upload so it sends quickly over cell data.
+  function resizeImage(file, maxSide, quality) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var s = Math.min(1, maxSide / Math.max(w, h));
+        var c = document.createElement('canvas');
+        c.width = Math.round(w * s);
+        c.height = Math.round(h * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('That photo could not be read. Try again.')); };
+      img.src = url;
+    });
+  }
+
+  /* ================= Start ================= */
+
+  if (TT.getPin() && window.VOTING_API_URL) {
+    $('loading').hidden = true;
+    state.pin = TT.getPin();
+    enterAdmin();
+  } else {
+    loadEntries();
+  }
+
+  // Pick up new photos and open/close changes while people browse.
+  setInterval(function () {
+    if (document.hidden || $('voter').hidden || !$('scoreSheet').hidden) return;
+    loadEntries(true);
+  }, 45000);
+})();
+</script>
+</body>
+</html>
