@@ -1,1 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Results | AFTC's Trunk or Treat 2026</title>
+<meta name="description" content="Trunk and costume contest results for AFTC's Trunk or Treat 2026.">
+<meta name="theme-color" content="#1E0630">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Creepster&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
 
+<header class="band">
+  <div class="band-inner">
+    <p class="eyebrow">AFTC's Trunk or Treat 2026</p>
+    <h1 id="pageTitle">Results</h1>
+  </div>
+</header>
+
+<main>
+  <p class="empty" id="loading">Loading...</p>
+
+  <div class="notice" id="setupNote" hidden>
+    <h2>Results are not connected yet</h2>
+    <p>The committee is still setting this page up.</p>
+  </div>
+
+  <div class="notice" id="loadErr" hidden>
+    <h2>Could not load results</h2>
+    <p id="loadErrMsg"></p>
+    <button class="btn ghost small" id="retry" type="button">Try again</button>
+  </div>
+
+  <!-- Public, before results are published -->
+  <section id="locked" hidden>
+    <div class="notice">
+      <h2 id="lockedTitle">Results are coming</h2>
+      <p id="lockedMsg">Winners will be posted here after voting closes. This page updates on its own.</p>
+      <a class="btn primary" href="../" id="voteLink" hidden>Go vote</a>
+    </div>
+  </section>
+
+  <!-- Public, after results are published -->
+  <section id="winners" hidden>
+    <div class="contest">
+      <h2>Best trunks</h2>
+      <div class="winners three" id="win-trunk"></div>
+    </div>
+    <div class="contest">
+      <h2>Best host costumes</h2>
+      <div class="winners two" id="win-costume"></div>
+    </div>
+  </section>
+
+  <!-- Committee only: live standings -->
+  <section id="live" hidden>
+    <div class="res-bar">
+      <p id="liveStatus"></p>
+      <button class="btn ghost small" id="lockBtn" type="button">Lock page</button>
+    </div>
+    <div class="contest">
+      <h2 id="head-trunk">Trunks</h2>
+      <div id="list-trunk"></div>
+    </div>
+    <div class="contest">
+      <h2 id="head-costume">Costumes</h2>
+      <div id="list-costume"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <button class="linkbtn" id="committeeBtn" type="button">Committee standings</button>
+</footer>
+
+<div class="overlay" id="pinSheet" hidden>
+  <form class="panel pin-panel" id="pinForm" role="dialog" aria-modal="true" aria-labelledby="pinTitle" autocomplete="off">
+    <h2 id="pinTitle">Committee standings</h2>
+    <label for="pinInput">Enter the admin PIN</label>
+    <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" maxlength="12">
+    <div class="pin-wait" id="pinWait" hidden aria-live="assertive">
+      <p><span id="pinMsg">Wrong PIN</span>. Try again in <span class="big" id="pinCount">2</span></p>
+      <div class="bar"><span id="pinBar"></span></div>
+    </div>
+    <p class="err" id="pinErr"></p>
+    <div class="actions">
+      <button class="btn ghost" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="pinGo">Enter</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../config.js"></script>
+<script src="../common.js"></script>
+<script>
+(function () {
+  var api = TT.api, el = TT.el;
+  var $ = function (id) { return document.getElementById(id); };
+  var REFRESH_MS = 30000;
+  var SHORT = {
+    'Creativity': 'Creat', 'Theme execution': 'Theme', 'Visual impact': 'Visual', 'Interaction': 'Interact',
+    'Effort and craftsmanship': 'Effort', 'Craftsmanship': 'Craft', 'Character': 'Char', 'Theme tie-in': 'Tie-in'
+  };
+  var PLACE = ['', '1st place', '2nd place', '3rd place'];
+  var pin = TT.getPin();
+  var timer = null;
+
+  function show(id) {
+    ['loading', 'setupNote', 'loadErr', 'locked', 'winners', 'live'].forEach(function (x) { $(x).hidden = x !== id; });
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    timer = setTimeout(load, REFRESH_MS);
+  }
+
+  function load() {
+    if (!window.VOTING_API_URL) { show('setupNote'); return; }
+    api('results', pin ? { pin: pin } : {}).then(function (r) {
+      if (r.pinError) {
+        if (r.wrong) { TT.clearPin(); pin = null; return load(); }
+        timer = setTimeout(load, (r.waitMs || 2000) + 150);
+        return;
+      }
+      if (!r.ok) throw new Error(r.error || 'Something went wrong.');
+      if (r.mode === 'live') renderLive(r);
+      else if (r.mode === 'published') renderWinners(r);
+      else renderLocked(r);
+      schedule();
+    }).catch(function (err) {
+      $('loadErrMsg').textContent = err.message;
+      if ($('live').hidden && $('winners').hidden && $('locked').hidden) show('loadErr');
+      schedule();
+    });
+  }
+
+  function renderLocked(r) {
+    show('locked');
+    $('pageTitle').textContent = 'Results';
+    $('lockedTitle').textContent = r.votingOpen ? 'Voting is open' : 'Results are coming';
+    $('lockedMsg').textContent = r.votingOpen
+      ? 'Winners will be posted here after voting closes. This page updates on its own.'
+      : 'Voting is closed and the scores are being checked. Winners will appear here soon.';
+    $('voteLink').hidden = !r.votingOpen;
+    $('committeeBtn').hidden = false;
+  }
+
+  function renderWinners(r) {
+    show('winners');
+    $('pageTitle').textContent = 'The winners';
+    $('committeeBtn').hidden = false;
+    ['trunk', 'costume'].forEach(function (k) {
+      var box = $('win-' + k);
+      box.innerHTML = '';
+      var c = r.contests[k];
+      if (!c.winners.length) { box.appendChild(el('p', { class: 'empty', text: 'No winners posted.' })); return; }
+      c.winners.forEach(function (w) {
+        box.appendChild(el('article', { class: 'winner' + (w.place === 1 ? ' first' : '') }, [
+          w.photo ? el('img', { src: w.photo, alt: (k === 'trunk' ? 'Trunk' : 'Costume') + ' photo for ' + w.name, referrerpolicy: 'no-referrer' }) : null,
+          el('div', { class: 'w-meta' }, [
+            el('div', { class: 'place', text: PLACE[w.place] || w.place + 'th place' }),
+            el('div', { class: 'who', text: w.name }),
+            el('div', { class: 'sub', text: (w.number ? 'Trunk ' + w.number : '') + (w.theme ? (w.number ? ': ' : '') + w.theme : '') })
+          ])
+        ]));
+      });
+    });
+  }
+
+  function renderLive(r) {
+    show('live');
+    $('pageTitle').textContent = 'Live standings';
+    $('committeeBtn').hidden = true;
+    var s = r.settings;
+    var t = new Date(r.time || Date.now());
+    $('liveStatus').textContent = 'Voting ' + (s.votingOpen ? 'open' : 'closed') + '. Results ' + (s.resultsPublished ? 'published' : 'hidden') +
+      '. Minimum ' + s.minBallots + ' ballots to place. Updated ' + t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' }) + '.';
+    ['trunk', 'costume'].forEach(function (k) {
+      var c = r.contests[k];
+      $('head-' + k).textContent = (k === 'trunk' ? 'Trunks' : 'Costumes') + ' (top ' + c.places + ' win, out of ' + c.maxScore + ')';
+      var box = $('list-' + k);
+      box.innerHTML = '';
+      if (!c.standings.length) { box.appendChild(el('p', { class: 'empty', text: 'No entries are live yet.' })); return; }
+      c.standings.forEach(function (e, i) {
+        var flag = '';
+        if (e.tie) flag = 'Tie: committee vote';
+        else if (!e.qualified) flag = 'Needs ' + (s.minBallots - e.ballots) + ' more ballot' + (s.minBallots - e.ballots === 1 ? '' : 's');
+        box.appendChild(el('div', { class: 'row-entry' + (e.place ? ' placed' : '') + (e.qualified ? '' : ' out') }, [
+          el('div', { class: 'rank', text: e.place ? PLACE[e.place].split(' ')[0] : String(i + 1) }),
+          el('div', { class: 'row-main' }, [
+            el('div', { class: 'who', text: (e.number ? e.number + '. ' : '') + e.name }),
+            el('div', { class: 'sub', text: c.criteria.map(function (n, j) { return (SHORT[n] || n) + ' ' + e.criteria[j].toFixed(1); }).join('  ') }),
+            flag ? el('div', { class: 'flag', text: flag }) : null
+          ]),
+          el('div', { class: 'row-score' }, [String(e.average.toFixed(2)), el('small', { text: e.ballots + ' ballot' + (e.ballots === 1 ? '' : 's') })])
+        ]));
+      });
+    });
+  }
+
+  var dialog = TT.pinDialog({
+    check: function (p) { return api('results', { pin: p }); },
+    onSuccess: function (p, r) { pin = p; renderLive(r); schedule(); }
+  });
+  $('committeeBtn').addEventListener('click', function () {
+    if (!window.VOTING_API_URL) return;
+    dialog.open();
+  });
+  $('lockBtn').addEventListener('click', function () {
+    TT.clearPin();
+    pin = null;
+    show('loading');
+    clearTimeout(timer);
+    load();
+  });
+  $('retry').addEventListener('click', function () { show('loading'); clearTimeout(timer); load(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('pinSheet').hidden) dialog.close(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { clearTimeout(timer); load(); } });
+
+  load();
+})();
+</script>
+</body>
+</html>
