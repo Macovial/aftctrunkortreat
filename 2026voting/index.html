@@ -58,6 +58,8 @@
         <button role="tab" id="tab-costume" data-tab="costume" aria-selected="false" aria-controls="gallery">Costumes <span class="count" id="count-costume"></span></button>
       </nav>
 
+      <div class="prizes" id="prizes"></div>
+
       <div id="gallery" class="grid" role="tabpanel" aria-live="polite"></div>
       <p class="empty" id="empty" hidden></p>
     </div>
@@ -270,6 +272,8 @@
       $('tab-' + k).setAttribute('aria-selected', String(state.tab === k));
     });
 
+    renderPrizes();
+
     var list = d[state.tab];
     var g = $('gallery');
     g.innerHTML = '';
@@ -288,6 +292,20 @@
     var empty = $('empty');
     empty.hidden = list.length > 0;
     empty.textContent = state.tab === 'trunk' ? 'Trunk photos will show up here as they are taken.' : 'Costume photos will show up here as they are taken.';
+  }
+
+  function renderPrizes() {
+    var box = $('prizes');
+    var list = TT.prizes[state.tab] || [];
+    box.innerHTML = '';
+    box.hidden = !list.length;
+    box.appendChild(el('h3', { text: state.tab === 'trunk' ? 'Trunk prizes' : 'Costume prizes' }));
+    list.forEach(function (p, i) {
+      box.appendChild(el('div', { class: 'prize-row' }, [
+        el('b', { text: ['1st', '2nd', '3rd'][i] || (i + 1) + 'th' }),
+        el('span', { text: p })
+      ]));
+    });
   }
 
   document.querySelector('.tabs').addEventListener('click', function (e) {
