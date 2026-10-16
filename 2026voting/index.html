@@ -626,7 +626,7 @@
 
   function slotStatus(h, kind) {
     var photo = h[kind + 'Photo'], elig = h[kind + 'Elig'];
-    if (!photo) return kind === 'costume' ? ['', 'Not in the costume contest.'] : ['todo', 'Needs a photo.'];
+    if (!photo) return kind === 'costume' ? ['', 'Optional. Take a photo to enter.'] : ['todo', 'Needs a photo.'];
     if (elig === 'Pass') return ['live', 'Live for voting.'];
     if (elig === 'Fail') return ['', 'Hidden from voters.'];
     return ['todo', 'Mark Pass to show it.'];
