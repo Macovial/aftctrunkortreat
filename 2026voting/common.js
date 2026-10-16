@@ -153,7 +153,14 @@
     return { open: open, close: close };
   }
 
+  // Prizes, in place order. Shown on the voting page and with the winners.
+  var PRIZES = {
+    trunk: ['$75 Amazon gift card', '$50 Amazon gift card', '$25 Amazon gift card'],
+    costume: ['Golden State Valkyries swag box and 2 Bay FC tickets', '2 Bay FC tickets']
+  };
+
   window.TT = {
+    prizes: PRIZES,
     api: api,
     el: el,
     toast: toast,
