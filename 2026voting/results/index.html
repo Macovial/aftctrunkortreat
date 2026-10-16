@@ -165,7 +165,8 @@
           el('div', { class: 'w-meta' }, [
             el('div', { class: 'place', text: PLACE[w.place] || w.place + 'th place' }),
             el('div', { class: 'who', text: w.name }),
-            el('div', { class: 'sub', text: (w.number ? 'Trunk ' + w.number : '') + (w.theme ? (w.number ? ': ' : '') + w.theme : '') })
+            el('div', { class: 'sub', text: (w.number ? 'Trunk ' + w.number : '') + (w.theme ? (w.number ? ': ' : '') + w.theme : '') }),
+            TT.prizes[k][w.place - 1] ? el('div', { class: 'prize', text: 'Prize: ' + TT.prizes[k][w.place - 1] }) : null
           ])
         ]));
       });
