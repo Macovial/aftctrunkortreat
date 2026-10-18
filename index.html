@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body style="margin:0">
 <title>Host a Trunk 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +26,7 @@
   --line: #52246E;
   --focus: #FFC46B;
   --danger: #FF9E5C;
+  --slime: #7CFC00;
 }
 
 * { box-sizing: border-box; }
@@ -127,17 +135,39 @@ h1, h2 {
 
 .boo {
   font-family: "Creepster", "Bricolage Grotesque", system-ui, cursive;
-  font-size: clamp(22px, 4vw, 30px);
-  font-weight: 400;
-  line-height: 1.3;
+  font-size: clamp(27px, 5.2vw, 40px);
+  font-weight: 700;
+  line-height: 1.25;
   letter-spacing: .045em;
-  color: var(--orange);
+  color: var(--slime);
   text-align: center;
-  margin: 20px 0 0;
-  max-width: 24ch;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, .35);
+  margin: 24px 0 0;
+  max-width: 30ch;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .45), 0 0 22px rgba(124, 252, 0, .35);
 }
 
+.boo-word {
+  display: inline-block;
+  font-size: 1.6em;
+  line-height: 1;
+  color: #FFC08A;
+  letter-spacing: .04em;
+  text-shadow: 0 0 20px rgba(255, 176, 102, .6), 0 3px 0 rgba(0, 0, 0, .35);
+  animation: booPop 3.4s ease-in-out infinite;
+}
+
+/* Sits still most of the cycle, then jumps. A constant wiggle stops being a
+   scare after two seconds; an occasional one keeps catching the eye. */
+@keyframes booPop {
+  0%, 84%, 100% { transform: scale(1) rotate(-2deg); }
+  88%           { transform: scale(1.22) rotate(3deg); }
+  92%           { transform: scale(.98) rotate(-2deg); }
+  96%           { transform: scale(1.06) rotate(1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boo-word { animation: none; }
+}
 
 .langbar {
   display: flex;
@@ -198,24 +228,6 @@ h1, h2 {
 .langbtn:not(.is-on):hover,
 .langbtn:not(.is-on):focus-visible { animation: none; }
 
-.boo-word {
-  display: inline-block;
-  font-size: 1.6em;
-  line-height: 1;
-  color: #FFC08A;
-  letter-spacing: .04em;
-  text-shadow: 0 0 20px rgba(255, 176, 102, .6), 0 3px 0 rgba(0, 0, 0, .35);
-  animation: booPop 3.4s ease-in-out infinite;
-}
-
-/* Sits still most of the cycle, then jumps. A constant wiggle stops being a
-   scare after two seconds; an occasional one keeps catching the eye. */
-@keyframes booPop {
-  0%, 84%, 100% { transform: scale(1) rotate(-2deg); }
-  88%           { transform: scale(1.22) rotate(3deg); }
-  92%           { transform: scale(.98) rotate(-2deg); }
-  96%           { transform: scale(1.06) rotate(1deg); }
-}
 
 .facts {
   display: flex;
@@ -1121,7 +1133,7 @@ footer a { color: var(--focus); }
       <div class="fact"><b data-t="lblTime">Time</b><span data-t="valTime">6:00 PM to 7:30 PM</span></div>
       <div class="fact"><b data-t="lblWhere">Where</b><span data-t="valWhere">CSD Football Field<br>39350 Gallaudet Dr<br>Fremont, CA 94538</span></div>
     </div>
-    <p class="boo" data-t="boo"><span class="boo-word">BOO!</span> The Middle School Haunted Cottages run the same night until 9 PM.</p>
+    <p class="boo" data-t="boo"><span class="boo-word">FEAST!</span> Two Deaf-owned kitchens are serving on the field: Mozzeria Pizza and Zwina Bites, Moroccan food.</p>
   </div>
 </header>
 
@@ -1213,7 +1225,7 @@ footer a { color: var(--focus); }
 </main>
 
 <footer>
-  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 8Z</span></div>
+  <div><span data-t="footer">Questions? Email <a href="mailto:aftctrunkortreat@gmail.com">aftctrunkortreat@gmail.com</a> and the committee will get back to you.</span><span style="display:block;margin-top:8px;opacity:.45;font-size:12px">build 9D</span></div>
 </footer>
 
 <script>
@@ -1282,7 +1294,7 @@ footer a { color: var(--focus); }
       valDate: 'Miércoles<br>28 de octubre de 2026',
       valTime: '6:00 PM a 7:30 PM',
       valWhere: 'Campo de Fútbol de CSD<br>39350 Gallaudet Dr<br>Fremont, CA 94538',
-      boo: '<span class="boo-word">¡BU!</span> Las Casas Embrujadas de la escuela secundaria abren esa misma noche hasta las 9 PM.',
+      boo: '<span class="boo-word">¡FESTÍN!</span> Dos negocios de personas sordas estarán vendiendo comida en el campo: Mozzeria Pizza y Zwina Bites, comida marroquí.',
       h2what: 'Qué significa participar',
       b1: 'Trae un vehículo. Embrújalo.',
       s1: 'Telarañas, lápidas, ese inflable que compraste el año pasado y nunca usaste.',
@@ -1480,3 +1492,7 @@ footer a { color: var(--focus); }
   }
 })();
 </script>
+
+
+</body>
+</html>
